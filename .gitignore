@@ -1,0 +1,10 @@
+*.swp
+*.sdf
+build_output
+*.suo
+ipch
+*~
+*#
+Debug
+Release
+*.opensdf
