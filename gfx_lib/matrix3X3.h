@@ -5,13 +5,17 @@
  *      Author: adi.hodos
  */
 
-#ifndef GFX_LIB_MATRIX3X3_H_
-#define GFX_LIB_MATRIX3X3_H_
+#ifndef GFX_LIB_MATRIX3X3_H__
+#define GFX_LIB_MATRIX3X3_H__
 
 #include <cassert>
 #include "gfx_misc.h"
 #include "vector2.h"
 #include "vector3.h"
+
+#if defined(D2D_SUPPORT__)
+#include <d2d1.h>
+#endif
 
 namespace gfx {
 
@@ -29,6 +33,10 @@ inverse_of(
   );
 
 class matrix3X3 {
+private :
+  int index_at(int row, int col) const {
+    return (row - 1) * 3 + col - 1;
+  }
 public:
   union {
     struct {
@@ -98,6 +106,28 @@ public:
 
   matrix3X3(const float* input, size_t count) {
     std::memcpy(elements_, input, std::min(_countof(elements_), count));
+  }
+
+#if defined(D2D_SUPPORT__)
+
+  matrix3X3(const D2D1::Matrix3x2F& d2mtx) {
+    a11_ = d2mtx._11; a12_ = d2mtx._21; a13_ = d2mtx._31;
+    a21_ = d2mtx._12; a22_ = d2mtx._22; a23_ = d2mtx._32;
+    a31_ = 0.0f;      a32_ = 0.0f;      a33_ = 1.0f;
+  }
+
+  operator D2D1::Matrix3x2F() const {
+    return D2D1::Matrix3x2F(a11_, a21_, a12_, a22_, a13_, a23_);
+  }
+
+#endif // D2D_SUPPORT__
+
+  float& operator()(int row, int col) {
+    return elements_[index_at(row, col)];
+  }
+
+  float operator()(int row, int col) const {
+    return elements_[index_at(row, col)];
   }
 
   matrix3X3& operator+=(const matrix3X3& rhs);

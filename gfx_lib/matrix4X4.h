@@ -33,6 +33,10 @@ inverse_of(
   );
 
 class matrix4X4 {
+private :
+  int index_at(int row, int col) const {
+    return (row - 1) * 4 + col - 1;
+  }
 public :
   union {
     struct {
@@ -73,6 +77,14 @@ public :
 
   matrix4X4(const float* input, size_t count) {
     std::memcpy(elements_, input, std::min(_countof(elements_), count));
+  }
+
+  float& operator()(int row, int col) {
+    return elements_[index_at(row, col)];
+  }
+
+  float operator()(int row, int col) const {
+    return elements_[index_at(row, col)];
   }
 
   matrix4X4& operator+=(const matrix4X4& rhs);

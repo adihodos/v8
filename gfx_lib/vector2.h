@@ -5,8 +5,8 @@
  *      Author: adi.hodos
  */
 
-#ifndef GFX_LIB_VECTOR2_H_
-#define GFX_LIB_VECTOR2_H_
+#ifndef GFX_LIB_VECTOR2_H__
+#define GFX_LIB_VECTOR2_H__
 
 #include <cassert>
 #include <cstring>
@@ -48,9 +48,18 @@ public:
   }
 
 #if defined(D2D_SUPPORT__)
+
   vector2(const D2D1_POINT_2F& d2p) : x_(d2p.x), y_(d2p.y) {}
 
-  vector2(const D2D1_POINT_2U& d2p) : x_(d2p.x), y_(d2p.y) {}
+  vector2(const D2D1_POINT_2U& d2p) 
+    : x_(static_cast<float>(d2p.x)), 
+      y_(static_cast<float>(d2p.y)) {}
+
+  vector2(const D2D1_SIZE_F& d2s) : x_(d2s.width), y_(d2s.height) {}
+
+  vector2(const D2D1_SIZE_U& d2s) 
+    : x_(static_cast<float>(d2s.width)), 
+      y_(static_cast<float>(d2s.height)) {}
 
   operator D2D1_POINT_2F() const {
     return D2D1::Point2F(x_, y_);
@@ -59,7 +68,8 @@ public:
   operator D2D1_SIZE_F() const {
     return D2D1::SizeF(x_, y_);
   }
-#endif
+
+#endif // D2D_SUPPORT__
 
   vector2& operator+=(const vector2& rhs) {
     x_ += rhs.x_;

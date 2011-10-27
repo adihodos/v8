@@ -74,5 +74,4 @@ struct gfx_countof_helper {
 
 } // ns gfx
 
-
 #endif /* GFX_MISC_H_ */
