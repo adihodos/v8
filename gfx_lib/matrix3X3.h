@@ -81,10 +81,32 @@ public:
     return matrix3X3::rotation(theta, org.x_, org.y_);
   }
 
+  
+  static matrix3X3 reflection_x_axis(float origin_x = 0.0f, float origin_y = 0.0f) {
+    origin_y;
+    return matrix3X3(-1.0f, 0.0f, -2 * origin_x,
+                      0.0f, 1.0f,  0.0f,
+                      0.0f, 0.0f,  1.0f);
+  }
+  
+  static matrix3X3 reflection_y_axis(float origin_x = 0.0f, float origin_y = 0.0f) {
+    origin_x;
+    return matrix3X3(-1.0f, 0.0f,  0.0f,
+                      0.0f, 1.0f, -2 * origin_y,
+                      0.0f, 0.0f,  1.0f);
+  }
+  
+  static matrix3X3 reflection(float org_x = 0.0f, float org_y = 0.0f) {
+    return matrix3X3( 1.0f, -1.0f, -org_y,
+                     -1.0f,  1.0f, -org_x,
+                      0.0f,  0.0f,  1.0f);
+  }
+
+  static matrix3X3 reflection(const vector2& origin) {
+    return reflection(origin.x_, origin.y_);
+  }
+
   static matrix3X3 scale(float sx, float sy, float x_org = 0.0f, float y_org = 0.0f) {
-    /*
-     * x = x0 + (x - x0) sx = x0 + xsx - x0sx = sxx + x0(1-sx)
-     */
     return matrix3X3(
         sx, 0.0f, (1.0f - sx) * x_org,
         0.0f, sy, (1.0f - sy) * y_org,
@@ -94,6 +116,18 @@ public:
 
   static matrix3X3 scale(float sx, float sy, const vector2& org) {
     return matrix3X3::scale(sx, sy, org.x_, org.y_);
+  }
+
+  static matrix3X3 shear_x_axis(float factor, float = 0.0f, float org_y = 0.0f) {
+    return matrix3X3(1.0f, factor, factor * org_y,
+                     0.0f, 1.0f,   -org_y,
+                     0.0f, 0.0f,   1.0f);
+  }
+
+  static matrix3X3 shear_y_axis(float factor, float org_x = 0.0f, float = 0.0f) {
+    return matrix3X3(1.0f,   0.0f, -org_x,
+                     factor, 1.0f, factor * org_x,
+                     0.0f,   0.0f, 1.0f);
   }
 
   matrix3X3() {}
