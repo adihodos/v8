@@ -13,6 +13,8 @@
 #include <cstring>
 #include <algorithm>
 #include <vector>
+#include <xmmintrin.h>
+#include <smmintrin.h>
 #include "gfx_misc.h"
 
 namespace gfx {
@@ -26,7 +28,7 @@ public :
       float z_;
       float w_;
     };
-    float elements_[4];
+    float   elements_[4];
   };
 
   static const vector4	null;
