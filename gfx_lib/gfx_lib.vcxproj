@@ -161,10 +161,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="camera.inl" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="circle.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="ellipse.h" />
     <ClInclude Include="gfx_misc.h" />
     <ClInclude Include="line.h" />
@@ -178,6 +181,7 @@
     <ClInclude Include="vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cc" />
     <ClCompile Include="matrix3X3.cc" />
     <ClCompile Include="matrix4X4.cc" />
     <ClCompile Include="pch_hdr.cc">

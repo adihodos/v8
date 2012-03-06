@@ -1,10 +1,8 @@
-/*
- * gfx_vector.h
+/**
+ * \file    vector4.h
  *
- *  Created on: Oct 5, 2011
- *      Author: adi.hodos
+ * \brief   Declares the vector 4 class and related functions.
  */
-
 #ifndef GFX_LIB_VECTOR4_H__
 #define GFX_LIB_VECTOR4_H__
 
@@ -13,12 +11,17 @@
 #include <cstring>
 #include <algorithm>
 #include <vector>
-#include <xmmintrin.h>
-#include <smmintrin.h>
+#include "vector3.h"
 #include "gfx_misc.h"
 
 namespace gfx {
 
+/**
+ * \class   vector4
+ *
+ * \brief   A four component vector.
+ *
+ */
 class vector4 {
 public :
   union {
@@ -28,7 +31,7 @@ public :
       float z_;
       float w_;
     };
-    float   elements_[4];
+    float   elements_[4];   ///< Array like access to the vector's elements */
   };
 
   static const vector4	null;
@@ -41,9 +44,25 @@ public :
 
   static const vector4	unit_z;
 
+  static const vector4  unit_w;
+
+  /**
+   * \fn    vector4::vector4()
+   *
+   * \brief Default constructor. Leaves elements uninitialized.
+   *
+   */
   vector4() {}
 
-  vector4(float x, float y, float z, float w = 1.0f)
+  static inline vector4 from_point(const gfx::vector3& pt) {
+      return vector4(pt.x_, pt.y_, pt.z_, 1.0f);
+  }
+
+  static inline vector4 from_vector(const gfx::vector3& v) {
+      return vector4(v.x_, v.y_, v.z_, 0.0f);
+  }
+
+  vector4(float x, float y, float z, float w)
     : x_(x), y_(y), z_(z), w_(w) {}
 
   vector4(const float* input, size_t count) {
@@ -89,14 +108,6 @@ public :
     }
     return *this;
   }
-
-  float* get_elements() {
-    return elements_;
-  }
-
-  const float* get_elements() const {
-    return elements_;
-  }
 };
 
 inline
@@ -121,19 +132,19 @@ operator!=(
 inline
 vector4
 operator-(const vector4& vec) {
-  return vector4(-vec.x_, -vec.y_, -vec.z_);
+  return vector4(-vec.x_, -vec.y_, -vec.z_, -vec.w_);
 }
 
 inline
 vector4
 operator+(const vector4& lhs, const vector4& rhs) {
-  return vector4(lhs.x_ + rhs.x_, lhs.y_ + rhs.y_, lhs.z_ + rhs.z_);
+  return vector4(lhs.x_ + rhs.x_, lhs.y_ + rhs.y_, lhs.z_ + rhs.z_, 0.0f);
 }
 
 inline
 vector4
 operator-(const vector4& lhs, const vector4& rhs) {
-  return vector4(lhs.x_ - rhs.x_, lhs.y_ - rhs.y_, lhs.z_ - rhs.z_);
+  return vector4(lhs.x_ - rhs.x_, lhs.y_ - rhs.y_, lhs.z_ - rhs.z_, lhs.w_ - rhs.z_);
 }
 
 inline
@@ -175,20 +186,6 @@ dot_product(
     )
 {
   return v1.x_ * v2.x_ + v1.y_ * v2.y_ + v1.z_ * v2.z_;
-}
-
-inline
-vector4
-cross_product(
-    const vector4& v1,
-    const vector4& v2
-    )
-{
-  return vector4(
-      v1.y_ * v2.z_ - v1.z_ * v2.y_,
-      v1.z_ * v2.x_ - v1.x_ * v2.z_,
-      v1.x_ * v2.y_ - v1.y_ * v2.x_
-      );
 }
 
 /*!

@@ -121,6 +121,33 @@ gfx::matrix4X4::determinant() const {
       );
 }
 
+gfx::matrix4X4& 
+gfx::matrix4X4::set_upper3x3(
+    const float* data
+    ) 
+{
+    for (size_t i = 0; i < 3; ++i) {
+        size_t row = i * 4;
+        for (size_t j = 0; j < 3; ++j) {
+            elements_[row + j] = data[i * 3 + j];
+        }
+    }
+    return *this;
+}
+
+void 
+gfx::matrix4X4::get_upper3x3(
+    float* data
+    ) const 
+{
+    for (size_t i = 0; i < 3; ++i) {
+        size_t row = i * 4;
+        for (size_t j = 0; j < 3; ++j) {
+            data[i * 3 + j] = elements_[row + j];
+        }
+    }
+}
+
 gfx::matrix4X4
 gfx::operator *(
     const gfx::matrix4X4& lhs,
@@ -165,19 +192,6 @@ gfx::operator *(
              + lhs.a43_ * rhs.a34_ + lhs.a44_ * rhs.a44_;
 
   return res;
-}
-
-gfx::vector3
-gfx::operator *(
-    const gfx::matrix4X4& mtx,
-    const gfx::vector3& vec
-    )
-{
-  return vector3(
-      mtx.a11_ * vec.x_ + mtx.a12_ * vec.y_ + mtx.a13_ * vec.z_ + mtx.a14_,
-      mtx.a21_ * vec.x_ + mtx.a22_ * vec.y_ + mtx.a23_ * vec.z_ + mtx.a24_,
-      mtx.a31_ * vec.x_ + mtx.a32_ * vec.y_ + mtx.a33_ * vec.z_ + mtx.a34_
-      );
 }
 
 gfx::vector4
@@ -249,4 +263,279 @@ gfx::adjoint_of(
     -mtx.a41_ * m6 + mtx.a42_ * m13 - mtx.a43_ * m15,
     mtx.a31_ * m6 - mtx.a32_ * m13 + mtx.a33_ * m15
     );
+}
+
+gfx::matrix4X4
+gfx::perspective_projection_left_handed( 
+    float aspect_ratio, 
+    float vertical_fov, 
+    float near_plane, 
+    float far_plane, 
+    float depth_min, 
+    float depth_max
+    )
+{
+    const float kDistToProjWnd = 1.0f / std::tan(vertical_fov / 2);
+    const float kNDmin = near_plane * depth_min;
+    const float kFDMax = far_plane * depth_max;
+    const float kNFDiff = far_plane - near_plane;
+    const float kFDMin = far_plane * depth_min;
+
+    return matrix4X4(
+        kDistToProjWnd / aspect_ratio, 
+        0.0f, 
+        0.0f, 
+        0.0f,
+        //
+        // second row
+        0.0f, 
+        kDistToProjWnd, 
+        0.0f, 
+        0.0f,
+        //
+        // third row
+        0.0f, 
+        0.0f, 
+        (kNDmin + kFDMax) / kNFDiff, 
+        near_plane * ((kFDMin - 2 * kNDmin - kFDMax) / kNFDiff),
+        //
+        // fourth row
+        0.0f, 
+        0.0f, 
+        1.0f,
+        0.0f
+        );
+}
+
+gfx::matrix4X4
+gfx::perspective_projection_right_handed( 
+    float aspect_ratio, 
+    float vertical_fov, 
+    float near_plane, 
+    float far_plane, 
+    float depth_min, 
+    float depth_max 
+    )
+{
+    const float kDistToProjWnd = 1.0f / (std::tan(vertical_fov / 2));
+    const float kFDMax = far_plane * depth_max;
+    const float kFDMin = far_plane * depth_min;
+    const float kNDMin = near_plane * depth_min;
+    const float kNFDiff = near_plane - far_plane;
+
+    return matrix4X4(
+        //
+        // first row
+        kDistToProjWnd / aspect_ratio, 
+        0.0f,
+        0.0f,
+        0.0f,
+        //
+        // second row
+        0.0f,
+        kDistToProjWnd,
+        0.0f,
+        0.0f,
+        //
+        //  third row
+        0.0f,
+        0.0f,
+        (kFDMax - kNDMin) / kNFDiff,
+        near_plane * ((kFDMax - kFDMin) / kNFDiff),
+        //
+        // fourth row
+        0.0f,
+        0.0f,
+        -1.0f,
+        0.0f
+        );
+}
+
+gfx::matrix4X4
+gfx::perspective_projection_oblique_right_handed( 
+    float near_plane, 
+    float far_plane, 
+    float wtop, 
+    float wbottom, 
+    float wleft, 
+    float wright, 
+    float depth_min, 
+    float depth_max 
+    )
+{
+    const float kRLDiff = wright - wleft;
+    const float kRLSum = wright + wleft;
+    const float kTBDiff = wtop - wbottom;
+    const float kTBSum = wtop + wbottom;
+    const float kFDMax = far_plane * depth_max;
+    const float kFDMin = far_plane * depth_min;
+    const float kNDMin = near_plane * depth_min;
+    const float kNFDiff = near_plane - far_plane;
+
+    return matrix4X4(
+        //
+        // first row
+        (2 * near_plane) / kRLDiff,
+        0.0f,
+        kRLSum / kRLDiff,
+        0.0f,
+        //
+        // second row
+        0.0f,
+        (2 * near_plane) / kTBDiff,
+        kTBSum / kTBDiff,
+        0.0f,
+        //
+        // third row
+        0.0f,
+        0.0f,
+        (kFDMax - kNDMin) / kNFDiff,
+        near_plane * ((kFDMax - kFDMin) / kNFDiff),
+        //
+        // fourth row
+        0.0f,
+        0.0f,
+        -1.0f,
+        0.0f
+        );
+}
+
+gfx::matrix4X4
+gfx::perspective_projection_oblique_left_handed( 
+    float near_plane, 
+    float far_plane, 
+    float wtop, 
+    float wbottom, 
+    float wleft, 
+    float wright, 
+    float depth_min, 
+    float depth_max 
+    )
+{
+    const float kRLDiff = wright - wleft;
+    const float kRLSum = wright + wleft;
+    const float kTBDiff = wtop - wbottom;
+    const float kTBSum = wtop + wbottom;
+    const float kNDmin = near_plane * depth_min;
+    const float kFDMax = far_plane * depth_max;
+    const float kNFDiff = far_plane - near_plane;
+    const float kFDMin = far_plane * depth_min;
+
+    return matrix4X4(
+        //
+        // first row
+        (2 * near_plane) / kRLDiff,
+        0.0f,
+        -(kRLSum / kRLDiff),
+        0.0f,
+        //
+        // second row
+        0.0f,
+        (2 * near_plane) / kTBDiff,
+        -(kTBSum / kTBDiff),
+        0.0f,
+        //
+        // third row
+        0.0f, 
+        0.0f, 
+        (kNDmin + kFDMax) / kNFDiff, 
+        near_plane * ((kFDMin - 2 * kNDmin - kFDMax) / kNFDiff),
+        //
+        // fourth row
+        0.0f, 
+        0.0f, 
+        1.0f,
+        0.0f
+        );
+}
+
+namespace gfx {
+
+namespace detail {
+
+gfx::matrix4X4
+ortho_parallel_projection_impl(
+    float near_plane, 
+    float far_plane, 
+    float wtop, 
+    float wbottom, 
+    float wleft, 
+    float wright, 
+    float depth_min, 
+    float depth_max,
+    bool left_handed
+    )
+{
+    const float kRLDiff = wright - wleft;
+    const float kRLSum = wright + wleft;
+    const float kTBDiff = wtop - wbottom;
+    const float kTBSum = wtop + wbottom;
+    const float kNDMax = near_plane * depth_max;
+    const float kFDMin = far_plane * depth_min;
+    const float kNFDiff = far_plane - near_plane;
+    const float kZScaleFactor = (depth_min - depth_max) / (kNFDiff);
+
+    return gfx::matrix4X4(
+        //
+        // first row
+        2.0f / kRLDiff,
+        0.0f,
+        0.0f,
+        -(kRLSum / kRLDiff),
+        //
+        // second row
+        0.0f,
+        2.0f / kTBDiff,
+        0.0f,
+        -(kTBSum / kTBDiff),
+        //
+        // third row
+        0.0f,
+        0.0f,
+        left_handed ? kZScaleFactor : -kZScaleFactor,
+        (-kNDMax + kFDMin) / kNFDiff,
+        //
+        // fourth row
+        0.0f,
+        0.0f,
+        0.0f,
+        1.0f
+        );
+}
+
+} // namespace detail
+} // namespace gfx
+
+gfx::matrix4X4
+gfx::orthographic_parallel_projection_right_handed( 
+    float near_plane, 
+    float far_plane, 
+    float wtop, 
+    float wbottom, 
+    float wleft, 
+    float wright, 
+    float depth_min, 
+    float depth_max
+    )
+{
+    return detail::ortho_parallel_projection_impl(near_plane, far_plane, wtop, 
+                                                  wbottom, wleft, wright, 
+                                                  depth_min, depth_max, false);
+}
+
+gfx::matrix4X4
+gfx::orthographic_parallel_projection_left_handed( 
+    float near_plane, 
+    float far_plane, 
+    float wtop, 
+    float wbottom, 
+    float wleft, 
+    float wright, 
+    float depth_min, 
+    float depth_max 
+    )
+{
+    return detail::ortho_parallel_projection_impl(near_plane, far_plane, wtop, 
+                                                  wbottom, wleft, wright, 
+                                                  depth_min, depth_max, true);
 }

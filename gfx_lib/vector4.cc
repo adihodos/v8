@@ -8,15 +8,15 @@
 #include "pch_hdr.h"
 #include "vector4.h"
 
-const gfx::vector4 gfx::vector4::null(0.0f, 0.0f, 0.0f);
+const gfx::vector4 gfx::vector4::null(0.0f, 0.0f, 0.0f, 0.0f);
 
-const gfx::vector4 gfx::vector4::unit(1.0f, 1.0f, 1.0f);
+const gfx::vector4 gfx::vector4::unit(1.0f, 1.0f, 1.0f, 0.0f);
 
-const gfx::vector4 gfx::vector4::unit_x(1.0f, 0.0f, 0.0f);
+const gfx::vector4 gfx::vector4::unit_x(1.0f, 0.0f, 0.0f, 0.0f);
 
-const gfx::vector4 gfx::vector4::unit_y(0.0f, 1.0f, 0.0f);
+const gfx::vector4 gfx::vector4::unit_y(0.0f, 1.0f, 0.0f, 0.0f);
 
-const gfx::vector4 gfx::vector4::unit_z(0.0f, 0.0f, 1.0f);
+const gfx::vector4 gfx::vector4::unit_z(0.0f, 0.0f, 1.0f, 0.0f);
 
 void
 gfx::mgs_ortho_normalize(
