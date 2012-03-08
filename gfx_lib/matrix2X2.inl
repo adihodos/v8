@@ -42,23 +42,35 @@ gfx::matrix_2X2<real_t>::matrix_2X2(const real_t* input, size_t count) {
 }
 
 template<typename real_t>
-void
+gfx::matrix_2X2<real_t>&
 gfx::matrix_2X2<real_t>::make_tensor_product( 
     const gfx::vector2<real_t>& u, 
     const gfx::vector2<real_t>& v 
     )
 {
-    return matrix_2X2_t(u.x_ * v.x_, u.x_ * v.y_,
-                        u.y_ * v.x, u.y_ * v.y_)
+    a11_ = u.x_ * v.x_;
+    a12_ = u.x_ * v.y_;
+    a21_ = u.y_ * v.x_; 
+    a22_ = u.y_ * v.y_;
+    return *this;
 }
 
 template<typename real_t>
-void
+gfx::matrix_2X2<real_t>&
 gfx::matrix_2X2<real_t>::make_rotation(float theta) {
     const real_t sin_theta = sin(theta);
     const real_t cos_theta = cos(theta);
     a11_ = cos_theta; a12_ = -sin_theta;
     a21_ = sin_theta; a22_ = cos_theta;
+    return *this;
+}
+
+template<typename real_t>
+gfx::matrix_2X2<real_t>&
+gfx::matrix_2X2<real_t>::make_skew_symmetric(real_t val) {
+    a11_ = real_t(0); a12_ = val;
+    a21_ = -val; a22_ = real_t(0);
+    return *this;
 }
 
 template<typename real_t>

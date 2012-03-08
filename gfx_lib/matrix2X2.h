@@ -11,7 +11,10 @@ namespace gfx {
 /**
  * \class   matrix_2X2.
  *
- * \brief   A 2x2 matrix, stored in row major format.
+ * \brief   A 2x2 matrix, stored in row major format. It follows the convention
+ * 			that it multiplies columns vectors, on the right (if M is a matrix
+ * 			and V is a vector, then one would write a multiplication like this :
+ * 			M * V);
  */
 template<typename real_t>
 class matrix_2X2 {
@@ -24,12 +27,16 @@ public :
 
     union {
         struct {
+            //
+            // First row elements.
             real_t  a11_;
             real_t  a12_;
+            //
+            // Second row elements.
             real_t  a21_;
             real_t  a22_;
         };
-        real_t elements_[4];
+        real_t elements_[4];	///< Used for array like access to the elements */
     };
 
     /**
@@ -46,6 +53,11 @@ public :
 
     static const matrix_2X2_t       identity;
 
+    /**
+     * \fn  matrix_2X2::matrix_2X2()
+     *
+     * \brief   Default constructor. Leaves elements uninitialized.
+     */
     matrix_2X2() {}
 
     /**
@@ -98,7 +110,7 @@ public :
      * 			u * v ^ T.
      *
      */
-    void make_tensor_product(
+    matrix_2X2<real_t> make_tensor_product(
         const gfx::vector2<real_t>& u, 
         const gfx::vector2<real_t>& v
         );
@@ -106,10 +118,18 @@ public :
     /**
      * \fn  void matrix_2X2::make_rotation(float theta);
      *
-     * \brief   Makes a rotation matrix, counter clockwise if theta > 0,
+     * \brief   Makes a rotation matrix. Rotation is counter clockwise if theta > 0,
      * 			clockwise if theta < 0.
      */
-    void make_rotation(float theta);
+    matrix_2X2<real_t>& make_rotation(float theta);
+
+    /**
+     * \fn  matrix_2X2<real_t>& matrix_2X2::make_skew_symmetric(real_t val);
+     *
+     * \brief   Makes a skew symmetric matrix, that is (a(i, j) = a(j, i) when i <> j
+     * 			and a(i, j) = 0 when a = j).
+     */
+    matrix_2X2<real_t>& make_skew_symmetric(real_t val);
 
     matrix_2X2<real_t>& operator+=(const matrix_2X2<real_t>& right);
 
@@ -127,12 +147,28 @@ public :
         return !math::op_eq<real_t, is_floating_point>::result(determinant(), real_t(0));
     }
 
+    /**
+     * \fn  real_t matrix_2X2::trace() const
+     *
+     * \brief   Gets the trace of the matrix 
+     * 			(sum of elements in the main diagonal).
+     */
     real_t trace() const {
         return a11_ + a22_;
     }
 
+    /**
+     * \fn  matrix_2X2<real_t>& matrix_2X2::invert();
+     *
+     * \brief   Inverts the matrix. det(m) must be non zero.
+     */
     matrix_2X2<real_t>& invert();
 
+    /**
+     * \fn  matrix_2X2<real_t>& matrix_2X2::transpose()
+     *
+     * \brief   Transposes the matrix.
+     */
     matrix_2X2<real_t>& transpose() {
         implementation_details::swap(a12_, a21_);
         return *this;
@@ -206,15 +242,31 @@ operator/(
     real_t k
     );
 
+/**
+ * \fn  template<typename real_t> gfx::matrix_2X2<real_t> adjoint_of(const gfx::matrix_2X2<real_t>& mtx);
+ *
+ * \brief   Returns the adjoint of the given matrix. The adjoint matrix is
+ * 			the transpose of the cofactor's matrix of matrix mtx.
+ */
 template<typename real_t>
 gfx::matrix_2X2<real_t>
 adjoint_of(const gfx::matrix_2X2<real_t>& mtx);
 
+/**
+ * \fn  template<typename real_t> inline gfx::matrix_2X2<real_t> transpose_of(const gfx::matrix_2X2<real_t>& mtx);
+ *
+ * \brief   Returns the transpose of the given matrix.
+ */
 template<typename real_t>
 inline
 gfx::matrix_2X2<real_t>
 transpose_of(const gfx::matrix_2X2<real_t>& mtx);
 
+/**
+ * \fn  template<typename real_t> inline gfx::matrix_2X2<real_t> inverse_of(const gfx::matrix_2X2<real_t>& mtx);
+ *
+ * \brief   Returns the inverse of the given matrix.
+ */
 template<typename real_t>
 inline
 gfx::matrix_2X2<real_t>
@@ -223,8 +275,8 @@ inverse_of(const gfx::matrix_2X2<real_t>& mtx);
 /**
  * \fn  template<typename real_t> gfx::matrix_2X2<real_t> multiply_transpose(const gfx::matrix_2X2<real_t>& other);
  *
- * \brief   Multiply the left matrix with the transpose of the right matrix, 
- * 			that is M * N ^ T.
+ * \brief   Multiplies the left side matrix with the transpose of the right 
+ * 			side matrix, that is LHS * RHS ^ T.
  */
 template<typename real_t>
 gfx::matrix_2X2<real_t>
@@ -237,7 +289,8 @@ multiply_transpose(
  * \fn  template<typename real_t> gfx::matrix_2X2<real_t> transpose_multiply( const gfx::matrix_2X2<real_t>& lhs,
  * const gfx::matrix_2X2<real_t>& rhs );
  *
- * \brief   Multiply the transpose of the left matrix with the right matrix.
+ * \brief   Multiplies the transpose of the left side matrix with the 
+ * 			right side matrix, that is LHS ^ T * RHS.
  */
 template<typename real_t>
 gfx::matrix_2X2<real_t>
@@ -250,8 +303,8 @@ transpose_multiply(
  * \fn  template<typename real_t> gfx::matrix_2X2<real_t> transpose_multiply_transpose( const gfx::matrix_2X2<real_t>& lhs,
  * const gfx::matrix_2X2<real_t>& rhs );
  *
- * \brief   Multiply the transpose of the left hand matrix with the transpose
- * 			of the right hand matrix.
+ * \brief   Multiplies the transpose of the left hand matrix with the transpose
+ * 			of the right hand matrix, that is LHS ^ T * RHS ^ T.
  */
 template<typename real_t>
 gfx::matrix_2X2<real_t>
@@ -260,8 +313,20 @@ transpose_multiply_transpose(
     const gfx::matrix_2X2<real_t>& rhs
     );
 
+/**
+ * \typedef matrix_2X2<float> matrix_2X2F
+ *
+ * \brief   Defines an alias representing a matrix_2X2 with simple precision
+ * 			components.
+ */
 typedef matrix_2X2<float>       matrix_2X2F;
 
+/**
+ * \typedef matrix_2X2<double> matrix_2X2D
+ *
+ * \brief   Defines an alias representing a matrix_2X2 with double precision
+ * 			components.
+ */
 typedef matrix_2X2<double>      matrix_2X2D;
 
 } // namespace gfx
