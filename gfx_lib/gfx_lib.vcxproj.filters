@@ -19,6 +19,15 @@
     <None Include="camera.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="vector3.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="vector4.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="matrix2X2.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gfx_misc.h">
@@ -63,6 +72,15 @@
     <ClInclude Include="camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="details.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix2X2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="matrix3X3.cc">
@@ -75,9 +93,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vector3.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vector4.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch_hdr.cc">

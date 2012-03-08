@@ -7,7 +7,7 @@
 #include "pch_hdr.h"
 #include "matrix3x3.h"
 
-const gfx::matrix3X3 gfx::matrix3X3::null(
+const gfx::matrix3X3 gfx::matrix3X3::zero(
     0.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 0.0f,
     0.0f, 0.0f, 0.0f
@@ -70,10 +70,8 @@ gfx::matrix3X3::operator/=(
 {
   assert(!is_zero(k));
 
-  a11_ /= k; a12_ /= k; a13_ /= k;
-  a21_ /= k; a22_ /= k; a23_ /= k;
-  a31_ /= k; a32_ /= k; a33_ /= k;
-  return *this;
+  float inv = 1.0f / k;
+  return *this *= inv;
 }
 
 float 
@@ -83,6 +81,54 @@ gfx::matrix3X3::determinant() const {
   float A13 = a21_ * a32_ - a22_ * a31_;
 
   return a11_ * A11 + a12_ * A12 + a13_ * A13;
+}
+
+gfx::matrix3X3&
+gfx::matrix3X3::ortho_normalize() {
+  //
+  // Let M = [v0, v1, v2]. This function will output a matrix M1 = [q0, q1, q2]
+  // such that q0, q1, q2 are orthonormal vectors.
+  //
+  // q0 = v0 / || v0 ||;
+  // q1 = (v1 - proj(v1, q0)) / || v1 - proj(v1, q0) ||;
+  // q2 = (v2 - proj(v2, q0) - proj(v2, q1)) / || (v2 - proj(v2, q0) - proj(v2, q1)) ||;
+
+  //
+  // q0
+  float inv_norm = 1.0f / std::sqrtf(a11_ * a11_ + a21_ * a21_ + a31_ * a31_);
+  a11_ *= inv_norm;
+  a21_ *= inv_norm;
+  a31_ *= inv_norm;
+
+  //
+  // q1
+  float sum = a11_ * a12_ + a21_ * a22_ + a31_ * a32_;
+
+  a12_ -= a11_ * sum;
+  a22_ -= a21_ * sum;
+  a32_ -= a31_ * sum;
+
+  inv_norm = 1.0f / std::sqrtf(a12_ * a12_ + a22_ * a22_ + a32_ * a32_);
+  a12_ *= inv_norm;
+  a22_ *= inv_norm;
+  a32_ *= inv_norm;
+
+  //
+  // q2
+  sum = a11_ * a13_ + a21_ * a23_ + a31_ * a33_;
+  float sum2 = a12_ * a13_ + a22_ * a23_ + a32_ * a33_;
+
+  a13_ -= (a11_ * sum + a12_ * sum2);
+  a23_ -= (a21_ * sum + a22_ * sum2);
+  a33_ -= (a31_ * sum + a32_ * sum2);
+
+  inv_norm = 1.0f / std::sqrtf(a13_ * a13_ + a23_ * a23_ + a33_ * a33_);
+
+  a13_ *= inv_norm;
+  a23_ *= inv_norm;
+  a33_ *= inv_norm;
+
+  return *this;
 }
 
 gfx::matrix3X3 

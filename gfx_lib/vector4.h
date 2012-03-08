@@ -3,48 +3,66 @@
  *
  * \brief   Declares the vector 4 class and related functions.
  */
-#ifndef GFX_LIB_VECTOR4_H__
-#define GFX_LIB_VECTOR4_H__
+#pragma once
 
 #include <cassert>
 #include <cmath>
 #include <cstring>
 #include <algorithm>
 #include <vector>
+#include "details.h"
 #include "vector3.h"
 #include "gfx_misc.h"
+#include "math.h"
 
 namespace gfx {
 
 /**
  * \class   vector4
  *
- * \brief   A four component vector.
- *
+ * \brief   A four component tuple in the form (x, y, z, w),
+ * 			that is used to represent an affine vector/affine point/ 
+ * 			homogeneous point.
+ * 			It is up to the user of the class to make the distinction 
+ * 			in code. An affine vector has the w component set to 0. An affine
+ * 			point has the w component set to 1. And finally, a homogeneous point
+ * 			has a w component with a value different than 1.
  */
+template<typename real_t>
 class vector4 {
+private :
+    enum { 
+        is_floating_point = implementation_details::types_eq<real_t, float>::result 
+                            || implementation_details::types_eq<real_t, double>::result 
+                            || implementation_details::types_eq<real_t, long double>::result
+    };
 public :
+    /**
+      * \typedef real_t element_type
+      *
+      * \brief   Defines an alias representing type of the element.
+      */
+    typedef real_t          element_type;
+    typedef real_t&         reference;
+    typedef const real_t&   const_reference;
+    typedef vector4<real_t> vector4_t;
   union {
     struct {
-      float x_;
-      float y_;
-      float z_;
-      float w_;
+      real_t x_;
+      real_t y_;
+      real_t z_;
+      real_t w_;
     };
-    float   elements_[4];   ///< Array like access to the vector's elements */
+    real_t elements_[4];   ///< Array like access to the vector's elements */
   };
 
-  static const vector4	null;
+  static const vector4_t	zero;
 
-  static const vector4	unit;
+  static const vector4_t	unit_x;
 
-  static const vector4	unit_x;
+  static const vector4_t	unit_y;
 
-  static const vector4	unit_y;
-
-  static const vector4	unit_z;
-
-  static const vector4  unit_w;
+  static const vector4_t	unit_z;
 
   /**
    * \fn    vector4::vector4()
@@ -52,195 +70,315 @@ public :
    * \brief Default constructor. Leaves elements uninitialized.
    *
    */
-  vector4() {}
+    vector4() {}
 
-  static inline vector4 from_point(const gfx::vector3& pt) {
-      return vector4(pt.x_, pt.y_, pt.z_, 1.0f);
-  }
+    /**
+     * \fn  vector4::vector4(float x, float y, float z, float w)
+     *
+     * \brief   Constructs a vector4 with the specified values.
+     */
+    vector4(real_t x, real_t y, real_t z, real_t w) 
+        : x_(x), y_(y), z_(z), w_(w) {}
 
-  static inline vector4 from_vector(const gfx::vector3& v) {
-      return vector4(v.x_, v.y_, v.z_, 0.0f);
-  }
+    /**
+     * \fn  inline vector4::vector4(const real_t* inputs, size_t count);
+     *
+     * \brief   Constructs a vector4 from an array of existing values.
+     * \param   inputs  Pointer to an array of elements.
+     * \param   count   Number of elements in the array
+     */
+    inline
+    vector4(
+        const real_t* inputs, 
+        size_t count
+        );
 
-  vector4(float x, float y, float z, float w)
-    : x_(x), y_(y), z_(z), w_(w) {}
+    /**
+     * \fn    static inline vector4 vector4::as_affine_point(const gfx::vector3& pt)
+     *
+     * \brief Constructs a vector4 representing an affine point (w = 1).
+     */
+    static 
+    inline 
+    vector4<real_t> 
+    as_affine_point(
+        const gfx::vector3<real_t>& pt
+        );
 
-  vector4(const float* input, size_t count) {
-    std::memcpy(elements_, input, std::min(_countof(elements_), count));
-  }
+    /**
+     * \fn  static inline vector4<real_t> vector4::as_affine_vector( const gfx::vector3<real_t>& v );
+     *
+     * \brief   Constructs a vector4 representing an affine vector (w = 0).
+     */
+    static 
+    inline 
+    vector4<real_t> 
+    as_affine_vector(
+        const gfx::vector3<real_t>& v
+        );
 
-  vector4& operator+=(const vector4& rhs) {
-    x_ += rhs.x_; y_ += rhs.y_; z_ += rhs.z_;
-    return *this;
-  }
+    /**
+     * \fn  static inline vector4<real_t> vector4::as_homogeneous_point( const gfx::vector3<real_t>& pt,
+     * real_t w );
+     *
+     * \brief   Constructs a vector4 representing a homogeneous point 
+     * 			(w <> 0 and generally not 1).
+     * \param   w   Value for the w component.
+     */
+    static
+    inline
+    vector4<real_t>
+    as_homogeneous_point(
+        const gfx::vector3<real_t>& pt,
+        real_t w
+        );
 
-  vector4& operator-=(const vector4& rhs) {
-    x_ -= rhs.x_; y_ -= rhs.y_; z_ -= rhs.z_;
-    return *this;
-  }
+    /**
+     * \fn  inline vector4<real_t>& vector4::operator+=( const vector4<real_t>& rhs );
+     *
+     * \brief   Addition assignment operator.
+     * 			
+     * \remarks This operation applies to affine vectors. It can be applied
+     * 			to affine points, if the following holds :
+     * 			Let P, P0, .. Pn be affine points in R4. Then
+     * 			P can be written as P = P0 * a0 + P1 * a1 + ... + Pn * an,
+     * 			only if (a0 + a1 + ... + an) = 1. So if you know that the right
+     * 			hand operand is one of the members in the set 
+     * 			{ Pi * ai | 0 <= i <= n and sum(i = 0..n) ai = 1 }
+     * 			then it can be applied to vector4 objects representing affine
+     * 			points.
+     */
+    inline
+    vector4<real_t>& 
+    operator+=(
+        const vector4<real_t>& rhs
+        );
 
-  vector4& operator*=(float k) {
-    x_ *= k; y_ *= k; z_ *= k;
-    return *this;
-  }
+    /**
+     * \fn  inline vector4<real_t>& vector4::operator-=( const vector4<real_t>& rhs );
+     *
+     * \brief   Subtraction assignment operator.
+     *
+     * \remarks This operation is valid for vectors and affine points. 
+     * 			Substracting two affine points result in an affine vector.
+     */
+    inline
+    vector4<real_t>& 
+    operator-=(
+        const vector4<real_t>& rhs
+        );
 
-  vector4& operator/=(float k) {
-    x_ /= k; y_ /= k; z_ /= k;
-    return *this;
-  }
+    /**
+     * \fn  inline vector4<real_t>& vector4::operator*=( real_t k );
+     *
+     * \brief   Multiplication assignment operator.
+     */
+    inline
+    vector4<real_t>& 
+    operator*=(
+        real_t k
+        );
 
-  float sum_components_squared() const {
-    return x_ * x_ + y_ * y_ + z_ * z_;
-  }
+    /**
+     * \fn  inline vector4<real_t>& vector4::operator/=( real_t k );
+     *
+     * \brief   Division assignment operator.
+     */
+    inline
+    vector4<real_t>&
+    operator/=(
+        real_t k
+        );
 
-  float magnitude() const {
-    return std::sqrt(sum_components_squared());
-  }
+    /**
+     * \fn  inline float vector4::sum_components_squared() const;
+     *
+     * \brief   Returns the sumation of the squares of the components.
+     *
+     * \remarks This function is valid only if the vector4 object represents
+     * 			an affine vector. It return value is equal to
+     * 			x ^ 2 + y ^ 2 + z ^ 2.
+     */
+    inline
+    real_t
+    sum_components_squared() const;
 
-  vector4& normalize() {
-    float mag(magnitude());
-    if (is_zero(mag)) {
-      x_ = y_ = z_ = 0.0f;
-    } else {
-      x_ /= mag;
-      y_ /= mag;
-      z_ /= mag;
-    }
-    return *this;
-  }
+    /**
+     * \fn  inline float vector4::magnitude() const;
+     *
+     * \brief   Gets the magnitude(length) of the vector.
+     *
+     * \remarks This function is valid only if the vector4 object represents
+     * 			an affine vector.
+     */
+    inline
+    real_t
+    magnitude() const;
+
+    /**
+     * \fn  inline vector4<real_t>& vector4::normalize();
+     *
+     * \brief   Normalizes the vector, that is v = v / ||v||.
+     *
+     * \remarks Only valid if the object represents a vector.
+     */
+    inline
+    vector4<real_t>& 
+    normalize();
 };
 
+template<typename real_t>
+const vector4<real_t> vector4<real_t>::zero(real_t(0), real_t(0), real_t(0), real_t(0));
+
+template<typename real_t>
+const vector4<real_t> vector4<real_t>::unit_x(real_t(1), real_t(0), real_t(0), real_t(0));
+
+template<typename real_t>
+const vector4<real_t> vector4<real_t>::unit_y(real_t(0), real_t(1), real_t(0), real_t(0));
+
+template<typename real_t>
+const vector4<real_t> vector4<real_t>::unit_z(real_t(0), real_t(0), real_t(1), real_t(0));
+
+/**
+ * \fn  template<typename real_t> inline bool operator==( const gfx::vector4<real_t>& lhs,
+ * const gfx::vector4<real_t>& rhs );
+ *
+ * \brief   Equality operator.
+ */
+template<typename real_t>
 inline
 bool
 operator==(
-    const vector4& lhs,
-    const vector4& rhs
-    ) {
-  return is_zero(lhs.x_ - rhs.x_) && is_zero(lhs.y_ - rhs.y_) &&
-         is_zero(lhs.z_ - rhs.z_);
-}
+    const gfx::vector4<real_t>& lhs,
+    const gfx::vector4<real_t>& rhs
+    );
 
+/**
+ * \fn  template<typename real_t> inline bool operator!=( const gfx::vector4<real_t>& lhs,
+ * const gfx::vector4<real_t>& rhs );
+ *
+ * \brief   Inequality operator.
+ */
+template<typename real_t>
 inline
 bool
 operator!=(
-    const vector4& lhs,
-    const vector4& rhs
-    ) {
-  return !(lhs == rhs);
-}
+    const gfx::vector4<real_t>& lhs,
+    const gfx::vector4<real_t>& rhs
+    );
 
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> operator-( const gfx::vector4<real_t>& vec );
+ *
+ * \brief   Negation operator.
+ */
+template<typename real_t>
 inline
-vector4
-operator-(const vector4& vec) {
-  return vector4(-vec.x_, -vec.y_, -vec.z_, -vec.w_);
-}
+gfx::vector4<real_t>
+operator-(
+    const gfx::vector4<real_t>& vec
+    );
 
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> operator+( const gfx::vector4<real_t>& lhs,
+ * const gfx::vector4<real_t>& rhs )
+ *
+ * \brief   Addition operator.
+ *
+ * \see     vector4<real_t>::operator+=(const gfx::vector4<real_t>&)
+ */
+template<typename real_t>
 inline
-vector4
-operator+(const vector4& lhs, const vector4& rhs) {
-  return vector4(lhs.x_ + rhs.x_, lhs.y_ + rhs.y_, lhs.z_ + rhs.z_, 0.0f);
-}
+gfx::vector4<real_t>
+operator+(
+    const gfx::vector4<real_t>& lhs,
+    const gfx::vector4<real_t>& rhs
+    );
 
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> operator-( const gfx::vector4<real_t>& lhs,
+ * const gfx::vector4<real_t>& rhs );
+ *
+ * \brief   Subtraction operator.
+ */
+template<typename real_t>
 inline
-vector4
-operator-(const vector4& lhs, const vector4& rhs) {
-  return vector4(lhs.x_ - rhs.x_, lhs.y_ - rhs.y_, lhs.z_ - rhs.z_, lhs.w_ - rhs.z_);
-}
+gfx::vector4<real_t>
+operator-(
+    const gfx::vector4<real_t>& lhs,
+    const gfx::vector4<real_t>& rhs
+    );
 
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> operator*( float k,
+ * const gfx::vector4<real_t>& vec, );
+ *
+ * \brief   Scalar multiplication operator.
+ */
+template<typename real_t>
 inline
-vector4
+gfx::vector4<real_t>
 operator*(
     float k,
-    const vector4& vec
-    ) {
-  vector4 res(vec);
-  res *= k;
-  return res;
-}
-
-inline
-vector4
-operator*(
-    const vector4& vec,
-    float k
-    ) {
-  return k * vec;
-}
-
-inline
-vector4
-operator/(
-    const vector4& vec,
-    float k
-    ) {
-  vector4 res(vec);
-  res /= k;
-  return res;
-}
-
-inline
-float
-dot_product(
-    const vector4& v1,
-    const vector4& v2
-    )
-{
-  return v1.x_ * v2.x_ + v1.y_ * v2.y_ + v1.z_ * v2.z_;
-}
-
-/*!
- * @brief Project vecP onto vecQ.
- */
-inline
-vector4
-projection(
-    const vector4& vecP,
-    const vector4& vecQ
-    ) {
-  return (dot_product(vecP, vecQ) / vecQ.sum_components_squared()) * vecQ;
-}
-
-inline
-bool
-ortho_test(
-    const vector4& v1,
-    const vector4& v2
-    )
-{
-  return is_zero(dot_product(v1, v2));
-}
-
-inline
-float
-angle_of(
-    const vector4& lhs,
-    const vector4& rhs
-    )
-{
-  return std::acos(dot_product(lhs, rhs) / (lhs.magnitude() * rhs.magnitude()));
-}
-
-inline
-vector4
-normalized_from(const vector4& vec) {
-  vector4 res(vec);
-  res.normalize();
-  return res;
-}
-
-/*!
- * @brief Given a set of input vectors, produce a set of ortho normal vectors.
- * @param in Set of input vectors.
- * @param out Set of output vectors.
- * @remarks Running time is O(2nk^2), n = number of elements in the input vector.
- * 			Uses the modified Gram-Schmidt algorithm.
- */
-void
-mgs_ortho_normalize(
-    const std::vector<vector4>& in,
-    std::vector<vector4>& out
+    const gfx::vector4<real_t>& vec,
     );
+
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> operator*( const gfx::vector4<real_t>& vec,
+ * float k );
+ *
+ * \brief   Scalar multiplication operator.
+ */
+template<typename real_t>
+inline
+gfx::vector4<real_t>
+operator*(
+    const gfx::vector4<real_t>& vec,
+    float k
+    );
+
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> operator/( const gfx::vector4<real_t>& vec,
+ * float k );
+ *
+ * \brief   Scalar division operator.
+ */
+template<typename real_t>
+inline
+gfx::vector4<real_t>
+operator/(
+    const gfx::vector4<real_t>& vec,
+    float k
+    );
+
+/**
+ * \fn  template<typename real_t> inline gfx::vector4<real_t> normalized_from( const gfx::vector4<real_t>& vec );
+ *
+ * \brief   Return the normalized form of a vector.
+ */
+template<typename real_t>
+inline
+gfx::vector4<real_t>
+normalized_from(
+    const gfx::vector4<real_t>& vec
+    );
+
+/**
+ * \typedef vector4<float> vector4F
+ *
+ * \brief   Defines an alias representing a vector4 having simple precision
+ * 			floating point components.
+ */
+typedef vector4<float>      vector4F;
+
+/**
+ * \typedef vector4<double> vector4D
+ *
+ * \brief   Defines an alias representing a vector4 having double precision
+ * 			floating point components.
+ */
+typedef vector4<double>     vector4D;
 
 } // namespace gfx
 
-#endif /* GFX_LIB_VECTOR4_H__ */
+#include "vector4.inl"

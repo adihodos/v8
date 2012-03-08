@@ -1,10 +1,3 @@
-/*
- * vector2.h
- *
- *  Created on: Oct 11, 2011
- *      Author: adi.hodos
- */
-
 #ifndef GFX_LIB_VECTOR2_H__
 #define GFX_LIB_VECTOR2_H__
 
@@ -12,240 +5,434 @@
 #include <cstring>
 #include <cmath>
 #include <algorithm>
-
-#if defined(D2D_SUPPORT__)
-#include <d2d1.h>
-#endif
-
+#include "details.h"
 #include "gfx_misc.h"
+#include "math.h"
 
 namespace gfx {
 
+/**
+ * \class   vector2
+ *
+ * \brief   A two component vector.
+ */
+template<typename real_t>
 class vector2 {
 public:
-  union {
-    struct {
-      float x_;
-      float y_;
+    enum { 
+        is_floating_point = implementation_details::types_eq<real_t, float>::result 
+                            || implementation_details::types_eq<real_t, double>::result 
+                            || implementation_details::types_eq<real_t, long double>::result
     };
-    float elements_[2];
-  };
 
-  static const vector2 null;
+    union {
+        struct {
+            real_t x_;  ///< Component along the x axis */
+            real_t y_;  ///< Component along the y axis */
+        };
+        real_t elements_[2];	///< Used for array like access to elements */
+    };
 
-  static const vector2 unit;
+   /**
+    * \typedef real_t element_type
+    *
+    * \brief   Defines an alias representing type of the element.
+    */
+    typedef real_t          element_type;
+    typedef real_t&         reference;
+    typedef const real_t&   const_reference;
+    typedef vector2<real_t> vector2_t;
 
-  static const vector2 unit_x;
+    static const vector2_t zero;	///< The zero vector (0, 0)*/
 
-  static const vector2 unit_y;
+    static const vector2 unit_x;	///< The unit x vector (1, 0) */
 
-  vector2() {}
+    static const vector2 unit_y;	///< The unit y vector (0, 1) */
 
-  vector2(float x, float y) : x_(x), y_(y) {}
+    /**
+     * \fn  vector2::vector2()
+     *
+     * \brief   Default constructor. Leaves components uninitialized.
+     */
+    vector2() {}
 
-  vector2(const float* input_val, size_t count) {
-    std::memcpy(elements_, input_val, std::min(_countof(elements_), count));
-  }
+    /**
+     * \fn  vector2::vector2(real_t x, real_t y)
+     *
+     * \brief   Construct a vector 2 with two given values.
+     */
+    vector2(real_t x, real_t y) : x_(x), y_(y) {}
 
-#if defined(D2D_SUPPORT__)
-
-  vector2(const D2D1_POINT_2F& d2p) : x_(d2p.x), y_(d2p.y) {}
-
-  vector2(const D2D1_POINT_2U& d2p) 
-    : x_(static_cast<float>(d2p.x)), 
-      y_(static_cast<float>(d2p.y)) {}
-
-  vector2(const D2D1_SIZE_F& d2s) : x_(d2s.width), y_(d2s.height) {}
-
-  vector2(const D2D1_SIZE_U& d2s) 
-    : x_(static_cast<float>(d2s.width)), 
-      y_(static_cast<float>(d2s.height)) {}
-
-  operator D2D1_POINT_2F() const {
-    return D2D1::Point2F(x_, y_);
-  }
-
-  operator D2D1_SIZE_F() const {
-    return D2D1::SizeF(x_, y_);
-  }
-
-#endif // D2D_SUPPORT__
-
-  vector2& operator+=(const vector2& rhs) {
-    x_ += rhs.x_;
-    y_ += rhs.y_;
-    return *this;
-  }
-
-  vector2& operator-=(const vector2& rhs) {
-    x_ -= rhs.x_;
-    y_ -= rhs.y_;
-    return *this;
-  }
-
-  vector2& operator*=(float k) {
-    x_ *= k;
-    y_ *= k;
-    return *this;
-  }
-
-  vector2& operator/=(float k) {
-    assert(!is_zero(k));
-    x_ /= k;
-    y_ /= k;
-    return *this;
-  }
-
-  float sum_components_squared() const {
-    return x_ * x_ + y_ * y_;
-  }
-
-  float magnitude() const {
-    return std::sqrt(sum_components_squared());
-  }
-
-  vector2& normalize() {
-    float magn(magnitude());
-    if (is_zero(magn)) {
-      x_ = y_ = 0.0f;
-    } else {
-      x_ /= magn; y_ /= magn;
+    /**
+     * \fn  vector2::vector2(const real_t* input_val, size_t count)
+     *
+     * \brief   Construct from an array of values.
+     * \param   input_val   Pointer to an array of values. Must not be null.
+     * \param   count       Number of elements in the array.
+     */
+    vector2(const real_t* input_val, size_t count) {
+        std::memcpy(elements_, input_val, 
+            std::min(_countof(elements_), count) * sizeof(real_t));
     }
-    return *this;
-  }
 
-  float* get_elements() {
-    return elements_;
-  }
+    /**
+     * \fn  vector2<real_t>& vector2::operator+=(const vector2<real_t>& rhs)
+     *
+     * \brief   Addition assignment operator.
+     */
+    vector2<real_t>& operator+=(const vector2<real_t>& rhs) {
+        x_ += rhs.x_;
+        y_ += rhs.y_;
+        return *this;
+      }
 
-  const float* get_elements() const {
-    return elements_;
-  }
+    /**
+     * \fn  vector2<real_t>& vector2::operator-=(const vector2<real_t>& rhs)
+     *
+     * \brief   Subtraction assignment operator.
+     */
+    vector2<real_t>& operator-=(const vector2<real_t>& rhs) {
+        x_ -= rhs.x_;
+        y_ -= rhs.y_;
+        return *this;
+    }
+
+    /**
+     * \fn  vector2<real_t>& vector2::operator*=(real_t k)
+     *
+     * \brief   Multiplication assignment operator.
+     */
+    vector2<real_t>& operator*=(real_t k) {
+        x_ *= k;
+        y_ *= k;
+        return *this;
+    }
+
+    /**
+     * \fn  vector2<real_t>& vector2::operator/=(real_t k)
+     *
+     * \brief   Division assignment operator.
+     */
+    vector2<real_t>& operator/=(real_t k) {
+        using namespace implementation_details;
+        const real_t kDividend = transform_dividend_for_division<
+            real_t, 
+            is_floating_point
+        >::transform(k);
+
+        divide_helper<real_t, is_floating_point> div_helper;
+
+        x_ = div_helper::divide(x_, kDividend);
+        y_ = div_helper::divide(y_, kDividend);
+        return *this;
+    }
+
+    /**
+     * \fn  real_t vector2::sum_components_squared() const
+     *
+     * \brief   Gets the sum of the components squared (x ^ 2 + y ^ 2).
+     */
+    real_t sum_components_squared() const {
+        return x_ * x_ + y_ * y_;
+    }
+
+    /**
+     * \fn  real_t vector2::magnitude() const
+     *
+     * \brief   Gets the magnitude (length) of the vector.
+     */
+    real_t magnitude() const {
+        return std::sqrt(sum_components_squared());
+    }
+
+    /**
+     * \fn  vector2<real_t>& vector2::normalize()
+     *
+     * \brief   Normalizes the vector (v = v / ||v||).
+     */
+    vector2<real_t>& normalize() {
+        using namespace math;
+        typedef zero_test<real_t, is_floating_point> zero_test_t;
+
+        real_t magn(magnitude());
+        if (zero_test_t::result(magn)) {
+            x_ = y_ = real_t(0);
+        } else {
+            *this /= magn;
+        }
+        return *this;
+    }
 };
 
+template<typename real_t>
+const vector2<real_t> vector2<real_t>::zero(real_t(0), real_t(0));
+
+template<typename real_t>
+const vector2<real_t> vector2<real_t>::unit_x(real_t(1), real_t(0));
+
+template<typename real_t>
+const vector2<real_t> vector2<real_t>::unit_y(real_t(0), real_t(1));
+
+/**
+ * \fn  template<typename real_t> inline bool operator==(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Equality operator.
+ */
+template<typename real_t>
 inline
 bool
-operator==(const vector2& lhs, const vector2& rhs) {
-  return is_zero(lhs.x_ - rhs.x_) && is_zero(lhs.y_ - rhs.y_);
+operator==(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    using namespace math;
+    typedef zero_test<real_t, is_floating_point> zero_test_t;
+    return zero_test_t::result(lhs.x_ - rhs.x_) 
+           && zero_test_t::result(lhs.y_ - rhs.y_);
 }
 
+/**
+ * \fn  template<typename real_t> inline bool operator!=(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Inequality operator.
+ */
+template<typename real_t>
 inline
 bool
-operator!=(const vector2& lhs, const vector2& rhs) {
-  return !(lhs == rhs);
+operator!=(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    return !(lhs == rhs);
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> operator+(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Addition operator.
+ */
+template<typename real_t>
 inline
-vector2
-operator+(const vector2& lhs, const vector2& rhs) {
-  vector2 res(lhs);
-  res += rhs;
-  return res;
+vector2<real_t>
+operator+(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    vector2_t res(lhs);
+    res += rhs;
+    return res;
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> operator-(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Subtraction operator.
+ */
+template<typename real_t>
 inline
-vector2
-operator-(const vector2& lhs, const vector2& rhs) {
-  vector2 res(lhs);
-  res -= rhs;
-  return res;
+vector2<real_t>
+operator-(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    vector2_t res(lhs);
+    res -= rhs;
+    return res;
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> operator-(const vector2<real_t>& vec)
+ *
+ * \brief   Negation operator.
+ */
+template<typename real_t>
 inline
-vector2
-operator-(const vector2& vec) {
-  return vector2(-vec.x_, -vec.y_);
+vector2<real_t>
+operator-(const vector2<real_t>& vec) {
+    return vector2_t(-vec.x_, -vec.y_);
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> operator*(const vector2<real_t>& vec,
+ * real_t k)
+ *
+ * \brief   Multiplication operator.
+ */
+template<typename real_t>
 inline
-vector2
-operator*(const vector2& vec, float k) {
-  vector2 result(vec);
+vector2<real_t>
+operator*(const vector2<real_t>& vec, real_t k) {
+  vector2_t result(vec);
   result *= k;
   return result;
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> operator*(real_t k,
+ * const vector2<real_t>& vec)
+ *
+ * \brief   Multiplication operator.
+ */
+template<typename real_t>
 inline
-vector2
-operator*(float k, const vector2& vec) {
+vector2<real_t>
+operator*(real_t k, const vector2<real_t>& vec) {
   return vec * k;
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> operator/(const vector2<real_t>& vec,
+ * real_t k)
+ *
+ * \brief   Division operator.
+ */
+template<typename real_t>
 inline
-vector2
-operator/(const vector2& vec, float k) {
-  vector2 result(vec);
+vector2<real_t>
+operator/(const vector2<real_t>& vec, real_t k) {
+  vector2_t result(vec);
   result /= k;
   return result;
 }
 
+/**
+ * \fn  template<typename real_t> inline real_t dot_product(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Dot product.
+ */
+template<typename real_t>
 inline
-float
-dot_product(const vector2& lhs, const vector2& rhs) {
+real_t
+dot_product(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
   return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_;
 }
 
+/**
+ * \fn  template<typename real_t> inline bool ortho_test(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Tests is two vectors are orthogonal (v1 dot v2 = 0).
+ */
+template<typename real_t>
 inline
 bool
-ortho_test(const vector2& lhs, const vector2& rhs) {
-  return is_zero(dot_product(lhs, rhs));
+ortho_test(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    return math::zero_test<real_t, is_floating_point>::result(dot_product(lhs, rhs));
 }
 
+/**
+ * \fn  template<typename real_t> inline real_t angle_of(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Returns the angle of two vectors.
+ */
+template<typename real_t>
 inline
-float
-angle_of(const vector2& lhs, const vector2& rhs) {
-  return std::acos(dot_product(lhs, rhs) / (lhs.magnitude() * rhs.magnitude()));
+real_t
+angle_of(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    return std::acos(dot_product(lhs, rhs) / (lhs.magnitude() * rhs.magnitude()));
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> project_vector_on_vector(const vector2<real_t>& lhs,
+ * const vector2<real_t>& rhs)
+ *
+ * \brief   Projects a vector on another vector. Let P, Q be two vectors.
+ * 			The projection of P on Q = [dot(P, Q) / ||Q|| ^ 2] * Q.
+ */
+template<typename real_t>
 inline
-vector2
-projection_of(const vector2& lhs, const vector2& rhs) {
-  return (dot_product(lhs, rhs) / rhs.sum_components_squared()) * rhs;
+vector2<real_t>
+project_vector_on_vector(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
+    return (dot_product(lhs, rhs) / rhs.sum_components_squared()) * rhs;
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> normal_of(const vector2<real_t>& vec)
+ *
+ * \brief   Normal of the given vector.
+ */
+template<typename real_t>
 inline
-vector2
-normal_of(const vector2& vec) {
-  vector2 res(vec);
-  res.normalize();
-  return res;
+vector2<real_t>
+normal_of(const vector2<real_t>& vec) {
+    vector2 res(vec);
+    res.normalize();
+    return res;
 }
 
+/**
+ * \fn  template<typename real_t> inline vector2<real_t> orthogonal_vector_from_vector(const vector2<real_t>& vec,
+ * bool counter_clockwise = true)
+ *
+ * \brief   Return a vector that is orthogonal to the input vector.
+ * 			
+ * \param   vec                 The input vector.
+ * \param   counter_clockwise   (optional) True if the vector is computed using
+ * 								a counter clockwise rotation, false if using
+ * 								a clockwise rotation.
+ *
+ */
+template<typename real_t>
 inline
-vector2
-ortho_from(const vector2& vec, bool counter_clockwise = true) {
-  vector2 result;
-  if (counter_clockwise) {
-    result.x_ = -vec.y_;
-    result.y_ = vec.x_;
-  } else {
-    result.x_ = vec.y_;
-    result.y_ = -vec.x_;
-  }
-  return result;
+vector2<real_t>
+orthogonal_vector_from_vector(const vector2<real_t>& vec, bool counter_clockwise = true) {
+    vector2 result;
+    if (counter_clockwise) {
+        result.x_ = -vec.y_;
+        result.y_ = vec.x_;
+    } else {
+        result.x_ = vec.y_;
+        result.y_ = -vec.x_;
+    }
+    return result;
 }
 
+/**
+ * \fn  template<typename real_t> inline real_t distance_squared( const vector2<real_t>& point1,
+ * const vector2<real_t>& point2 )
+ *
+ * \brief   Returns the square of the distance between two points.
+ */
+template<typename real_t>
 inline
-float
+real_t
 distance_squared(
-    const vector2& point1,
-    const vector2& point2
+    const vector2<real_t>& point1,
+    const vector2<real_t>& point2
     )
 {
-  float px = point2.x_ - point1.x_;
-  float py = point2.y_ - point1.y_;
-  return px * px + py * py;
+    real_t px = point2.x_ - point1.x_;
+    real_t py = point2.y_ - point1.y_;
+    return px * px + py * py;
 }
 
+/**
+ * \fn  template<typename real_t> inline real_t distance( const vector2<real_t>& point1,
+ * const vector2<real_t>& point2 )
+ *
+ * \brief   Returns the distance between two points.
+ */
+template<typename real_t>
 inline
-float
+real_t
 distance(
-    const vector2& point1,
-    const vector2& point2
+    const vector2<real_t>& point1,
+    const vector2<real_t>& point2
     )
 {
-  return std::sqrt(distance_squared(point1, point2));
+    return std::sqrt(distance_squared(point1, point2));
 }
+
+/**
+ * \typedef vector2<float> vector2F
+ *
+ * \brief   Defines an alias for a vector2 objects using simple precision 
+ * 			components.
+ */
+typedef vector2<float>      vector2F;
+
+/**
+ * \typedef vector2<double> vector2D
+ *
+ * \brief   Defines an alias for a vector2 objects using double precision
+ * 			components.
+ */
+typedef vector2<double>     vector2D;
 
 } /* namespace gfx */
+
 #endif /* VECTOR2_H_ */
