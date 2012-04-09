@@ -8,13 +8,13 @@ class circle {
 public :
   circle() {}
   
-  circle(const vector2& centre, float radius) 
+  circle(const vector2F& centre, float radius) 
     : centre_(centre), radius_(radius) {}
     
   circle(float cx, float cy, float radius)
     : centre_(cx, cy), radius_(radius) {}
   
-  const vector2& get_centre_point() const {
+  const vector2F& get_centre_point() const {
     return centre_;
   }
   
@@ -27,7 +27,7 @@ public :
     centre_.y_ = y;
   }
   
-  void set_centre_point(const vector2& pt) {
+  void set_centre_point(const vector2F& pt) {
     set_centre_point(pt.x_, pt.y_);
   }
   
@@ -35,7 +35,7 @@ public :
     radius_ = r;
   }
 private :
-  vector2   centre_;
+  vector2F   centre_;
   float     radius_;
 };
 
@@ -53,7 +53,7 @@ intersect_test(
 inline
 bool
 point_in_circle(
-  const vector2& pt,
+  const vector2F& pt,
   const circle& c
   )
 {

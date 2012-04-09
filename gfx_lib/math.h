@@ -20,31 +20,22 @@ const float kPiOver180 = kPi / 180.0f;
 
 const float k180OverPi = 180.0f / kPi;
 
-/**
- * \class   zero_test 
- *
- * \brief   Test if a value is equal to zero. This is needed since the test
- * 			for an integer value is different from the test for a floating
- * 			point value.
- */
-template<typename real_t, bool is_floating_point = false>
-struct zero_test {
-    static bool result(real_t value) {
-        return value == real_t(0);
-    }
+template<typename T>
+struct fp_test {
+    static const bool result = false;
 };
 
-/**
- * \class   zero_test
- *
- * \brief   Template specialization, used to test floating point values for zero.
- */
-template<typename real_t>
-struct zero_test<real_t, true> {
-    static bool result(real_t value) {
-        return std::fabs(value) <= kEpsilon;
-    }
+template<>
+struct fp_test<double> {
+    static const bool result = true;
 };
+
+template<>
+struct fp_test<long double> {
+    static const bool result = true;
+};
+
+namespace details {
 
 template<typename ty, bool is_floating_point = false>
 struct op_eq {
@@ -59,6 +50,22 @@ struct op_eq<ty, true> {
         return std::fabs(left - right) <= kEpsilon;
     }
 };
+
+} // namespace details
+
+template<typename T>
+inline
+bool
+operands_eq(T left, T right) {
+    return details::op_eq<T, fp_test<T>::result>::result(left, right);
+}
+
+template<typename real_t>
+inline
+bool
+is_zero(real_t value) {
+    return operands_eq(real_t(0), value);
+}
 
 /**
  * \fn  template<typename real_t> inline real_t to_degrees( real_t radians )
@@ -89,6 +96,59 @@ to_radians(
 {
     return degrees * kPiOver180;
 }
+
+template<typename real_t>
+inline 
+real_t
+inv_sqrt(real_t val) {
+    return real_t(1) / std::sqrt(val);
+}
+
+template<typename real_t>
+struct type_traits;
+
+template<>
+struct type_traits<float> {
+    static float fabs(float val) {
+        return std::fabsf(val);
+    }
+
+    static float sqrt(float val) {
+        return std::sqrtf(val);
+    }
+
+    static float inv_sqrt(float val) {
+        return 1.0f / sqrt(val);
+    }
+};
+
+template<>
+struct type_traits<double> {
+    static double fabs(double val) {
+        return std::fabs(val);
+    }
+
+    static double sqrt(double val) {
+        return std::sqrt(val);
+    }
+
+    static double inv_sqrt(double val) {
+        return 1.0f / sqrt(val);
+    }
+
+    static double sin(double val) {
+        return std::sin(val);
+    }
+
+    static double cos(double val) {
+        return std::cos(val);
+    }
+
+    static double tan(double val) {
+        return std::tan(val);
+    }
+};
+
 
 } // namespace math
 

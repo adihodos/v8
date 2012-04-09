@@ -24,7 +24,7 @@ gfx::vector3<real_t>::vector3(const real_t* input, size_t count) {
 template<typename real_t>
 inline
 gfx::vector3<real_t>& gfx::vector3<real_t>::operator+=(
-    const vector3<real_type>& rhs
+    const vector3<real_t>& rhs
     ) 
 {
     x_ += rhs.x_;
@@ -37,7 +37,7 @@ template<typename real_t>
 inline
 gfx::vector3<real_t>&
 gfx::vector3<real_t>::operator-=(
-    const vector3<real_type>& rhs
+    const vector3<real_t>& rhs
     ) 
 {
     x_ -= rhs.x_;
@@ -77,14 +77,14 @@ gfx::vector3<real_t>::operator /=(real_t k) {
     return *this;
 }
 
-template<type_t>
+template<typename real_t>
 inline
 real_t
 gfx::vector3<real_t>::sum_components_squared() const {
     return x_ * x_ + y_ * y_ + z_ * z_;
 }
 
-template<type_t>
+template<typename real_t>
 inline
 real_t
 gfx::vector3<real_t>::magnitude() const {
@@ -96,7 +96,7 @@ inline
 gfx::vector3<real_t>&
 gfx::vector3<real_t>::normalize() {
     float magn(magnitude());
-    if (math::zero_test<real_t, is_floating_point>::result(magn)) {
+    if (math::is_zero(magn)) {
         x_ = y_ = z_ = real_t(0);
     } else {
         *this /= magn;
@@ -107,18 +107,19 @@ gfx::vector3<real_t>::normalize() {
 template<typename real_t>
 inline
 bool
-gfx::operator==(const gfx::vector3<real_t>& lhs, const gfx::vector3<real_t>& rhs) {
-    typedef math::op_eq<real_t, is_floating_point> op_eq_t;
-
-    return op_eq_t::result(lhs.x_, rhs.x_) 
-           op_eq_t::result(lhs.y_, rhs.y_) 
-           op_eq_t::result(lhs.z_, rhs.z_);
+gfx::operator==(
+    const gfx::vector3<real_t>& lhs, 
+    const gfx::vector3<real_t>& rhs
+    ) {
+    return  math::operands_eq(lhs.x_, rhs.x_) &&
+            math::operands_eq(lhs.y_, rhs.y_) &&
+            math::operands_eq(lhs.z_, rhs.z_);
 }
 
 template<typename real_t>
 inline
 bool
-gfx::operator==(const gfx::vector3<real_t>& lhs, const gfx::vector3<real_t>& rhs) {
+gfx::operator!=(const gfx::vector3<real_t>& lhs, const gfx::vector3<real_t>& rhs) {
     return !(lhs == rhs);
 }
 
@@ -198,12 +199,12 @@ gfx::ortho_test(
     const gfx::vector3<real_t>& rhs
     )
 {
-    return math::zero_test<real_t, is_floating_point>::result(dot_product(lhs, rhs));
+    return math::is_zero(dot_product(lhs, rhs));
 }
 
 template<typename real_t>
 inline
-real_t
+float
 gfx::angle_of(
     const gfx::vector3<real_t>& lhs, 
     const gfx::vector3<real_t>& rhs

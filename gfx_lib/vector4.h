@@ -319,8 +319,8 @@ template<typename real_t>
 inline
 gfx::vector4<real_t>
 operator*(
-    float k,
-    const gfx::vector4<real_t>& vec,
+    real_t k,
+    const gfx::vector4<real_t>& vec
     );
 
 /**
@@ -334,7 +334,7 @@ inline
 gfx::vector4<real_t>
 operator*(
     const gfx::vector4<real_t>& vec,
-    float k
+    real_t k
     );
 
 /**
@@ -348,7 +348,7 @@ inline
 gfx::vector4<real_t>
 operator/(
     const gfx::vector4<real_t>& vec,
-    float k
+    real_t k
     );
 
 /**
@@ -361,6 +361,20 @@ inline
 gfx::vector4<real_t>
 normalized_from(
     const gfx::vector4<real_t>& vec
+    );
+
+/**
+ * \fn  template<typename real_t> inline real_t dot_product( const gfx::vector4<real_t>& lhs,
+ * const gfx::vector4<real_t>& rhs );
+ *
+ * \brief   Computes the dot product of two vectors.
+ */
+template<typename real_t>
+inline
+real_t
+dot_product(
+    const gfx::vector4<real_t>& lhs, 
+    const gfx::vector4<real_t>& rhs
     );
 
 /**

@@ -151,11 +151,8 @@ public:
      * \brief   Normalizes the vector (v = v / ||v||).
      */
     vector2<real_t>& normalize() {
-        using namespace math;
-        typedef zero_test<real_t, is_floating_point> zero_test_t;
-
         real_t magn(magnitude());
-        if (zero_test_t::result(magn)) {
+        if (math::is_zero(magn)) {
             x_ = y_ = real_t(0);
         } else {
             *this /= magn;
@@ -183,10 +180,8 @@ template<typename real_t>
 inline
 bool
 operator==(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
-    using namespace math;
-    typedef zero_test<real_t, is_floating_point> zero_test_t;
-    return zero_test_t::result(lhs.x_ - rhs.x_) 
-           && zero_test_t::result(lhs.y_ - rhs.y_);
+    return math::operands_eq(lhs.x_, rhs.x_) && 
+           math::operands_eq(lhs.y_, rhs.y_);
 }
 
 /**
@@ -310,7 +305,7 @@ template<typename real_t>
 inline
 bool
 ortho_test(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
-    return math::zero_test<real_t, is_floating_point>::result(dot_product(lhs, rhs));
+    return math::is_zero(dot_product(lhs, rhs));
 }
 
 /**

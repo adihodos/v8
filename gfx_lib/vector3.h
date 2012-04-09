@@ -91,28 +91,28 @@ public:
      *
      * \brief   Addition assignment operator.
      */
-    inline vector3<real_type>& operator+=(const vector3<real_type>& rhs);
+    inline vector3<real_t>& operator+=(const vector3<real_t>& rhs);
 
     /**
-     * \fn  inline vector3<real_type>& vector3::operator-=(const vector3<real_type>& rhs);
+     * \fn  inline vector3<real_t>& vector3::operator-=(const vector3<real_t>& rhs);
      *
      * \brief   Subtraction assignment operator.
      */
-    inline vector3<real_type>& operator-=(const vector3<real_type>& rhs);
+    inline vector3<real_t>& operator-=(const vector3<real_t>& rhs);
 
     /**
-     * \fn  inline vector3<real_type>& vector3::operator*=(float k);
+     * \fn  inline vector3<real_t>& vector3::operator*=(float k);
      *
      * \brief   Scalar multiplication assignment operator.
      */
-    inline vector3<real_type>& operator*=(real_t k);
+    inline vector3<real_t>& operator*=(real_t k);
 
     /**
-     * \fn  inline vector3<real_type>& vector3::operator/=(float k);
+     * \fn  inline vector3<real_t>& vector3::operator/=(float k);
      *
      * \brief   Scalar division assignment operator.
      */
-    inline vector3<real_type>& operator/=(real_t k);
+    inline vector3<real_t>& operator/=(real_t k);
 
     /**
      * \fn  inline float vector3::sum_components_squared() const;

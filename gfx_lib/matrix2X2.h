@@ -110,7 +110,7 @@ public :
      * 			u * v ^ T.
      *
      */
-    matrix_2X2<real_t> make_tensor_product(
+    matrix_2X2<real_t>& make_tensor_product(
         const gfx::vector2<real_t>& u, 
         const gfx::vector2<real_t>& v
         );
@@ -144,7 +144,7 @@ public :
     }
 
     bool is_invertible() const {
-        return !math::op_eq<real_t, is_floating_point>::result(determinant(), real_t(0));
+        return !math::is_zero(determinant());
     }
 
     /**
@@ -330,3 +330,5 @@ typedef matrix_2X2<float>       matrix_2X2F;
 typedef matrix_2X2<double>      matrix_2X2D;
 
 } // namespace gfx
+
+#include "matrix2X2.inl"

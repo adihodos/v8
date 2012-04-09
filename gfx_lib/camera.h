@@ -8,7 +8,6 @@
 
 #include "vector3.h"
 #include "vector4.h"
-#include "matrix3X3.h"
 #include "matrix4X4.h"
 #include "gfx_misc.h"
 
@@ -27,20 +26,20 @@ public :
         ptype_othographic
     };
 private :
-    vector4                 view_pos_; ///< The view frame origin, in world coordinates */
-    vector4                 view_side_;	///< The side direction vector (x axis) */
-    vector4                 view_up_;  ///< The up direction vector (y axis) */
-    vector4                 view_dir_; ///< The look direction vector (z axis) */
+    vector4F                 view_pos_; ///< The view frame origin, in world coordinates */
+    vector4F                 view_side_;	///< The side direction vector (x axis) */
+    vector4F                 view_up_;  ///< The up direction vector (y axis) */
+    vector4F                 view_dir_; ///< The look direction vector (z axis) */
 
-    mutable bool            viewmatrix_cache_valid_;
-    mutable matrix4X4       view_matrix_;
-    matrix4X4               projection_matrix_;
-    projection_type         projection_type_;
+    mutable bool                viewmatrix_cache_valid_;
+    mutable matrix_4X4F         view_matrix_;
+    matrix_4X4F                 projection_matrix_;
+    projection_type             projection_type_;
 
     /**
      * \fn  void camera::update_view_matrix() const;
      *
-     * \brief   Costructs the world space to view space transformation matrix.
+     * \brief   Constructs the world space to view space transformation matrix.
      * 			Given the view frame vectors, we can derive the world to view 
      * 			matrix in the following way :
      * 			Let M = [v, u, w, t] be the view to world matrix (its columns
@@ -84,9 +83,9 @@ public :
     camera();
 
     /**
-     * \fn  camera& camera::set_view_frame( const gfx::vector4& origin,
-     * const gfx::vector4& dir_vector, const gfx::vector4& up_vector,
-     * const gfx::vector4& right_vector );
+     * \fn  camera& camera::set_view_frame( const gfx::vector4F& origin,
+     * const gfx::vector4F& dir_vector, const gfx::vector4F& up_vector,
+     * const gfx::vector4F& right_vector );
      *
      * \brief   Sets the four elements of the view frame.
      *
@@ -99,22 +98,22 @@ public :
      * 			are three orthonormal vectors.
      */
     camera& set_view_frame(
-        const gfx::vector4& origin, 
-        const gfx::vector4& dir_vector, 
-        const gfx::vector4& up_vector, 
-        const gfx::vector4& right_vector
+        const gfx::vector4F& origin, 
+        const gfx::vector4F& dir_vector, 
+        const gfx::vector4F& up_vector, 
+        const gfx::vector4F& right_vector
         );
 
     /**
-     * \fn  camera& camera::set_origin(const gfx::vector4& origin);
+     * \fn  camera& camera::set_origin(const gfx::vector4F& origin);
      *
      * \brief   Sets the origin point.
      */
-    inline camera& set_origin(const gfx::vector4& origin);
+    inline camera& set_origin(const gfx::vector4F& origin);
 
     /**
-     * \fn  camera& camera::set_axes( const gfx::vector4& dir_vector, const gfx::vector4& up_vector,
-     * const gfx::vector4& right_vector );
+     * \fn  camera& camera::set_axes( const gfx::vector4F& dir_vector, const gfx::vector4F& up_vector,
+     * const gfx::vector4F& right_vector );
      *
      * \brief   Sets the vectors that give the directions of the view frame axes.
      *
@@ -126,9 +125,9 @@ public :
      * 			are three orthonormal vectors.
      */
     camera& set_axes(
-        const gfx::vector4& dir_vector, 
-        const gfx::vector4& up_vector,
-        const gfx::vector4& right_vector
+        const gfx::vector4F& dir_vector, 
+        const gfx::vector4F& up_vector,
+        const gfx::vector4F& right_vector
         );
 
     /**
@@ -143,9 +142,9 @@ public :
      * 						
      */
     camera& look_at(
-        const gfx::vector3& origin, 
-        const gfx::vector3& world_up, 
-        const gfx::vector3& target
+        const gfx::vector3F& origin, 
+        const gfx::vector3F& world_up, 
+        const gfx::vector3F& target
         );
 
     /**
@@ -156,54 +155,54 @@ public :
     inline projection_type get_projection_type() const;
 
     /**
-     * \fn  inline const gfx::vector4& camera::get_origin() const;
+     * \fn  inline const gfx::vector4F& camera::get_origin() const;
      *
      * \brief   Gets the origin point of the view frame.
      *
      */
-    inline const gfx::vector4& get_origin() const;
+    inline const gfx::vector4F& get_origin() const;
 
     /**
-     * \fn  inline const gfx::vector4& camera::get_direction_vector() const;
+     * \fn  inline const gfx::vector4F& camera::get_direction_vector() const;
      *
      * \brief   Gets the direction vector of the camera.
      *
      */
-    inline const gfx::vector4& get_direction_vector() const;
+    inline const gfx::vector4F& get_direction_vector() const;
 
     /**
-     * \fn  inline const gfx::vector4& camera::get_up_vector() const;
+     * \fn  inline const gfx::vector4F& camera::get_up_vector() const;
      *
      * \brief   Gets the up direction vector of the camera.
      */
-    inline const gfx::vector4& get_up_vector() const;
+    inline const gfx::vector4F& get_up_vector() const;
 
     /**
-     * \fn  inline const gfx::vector4& camera::get_right_vector() const;
+     * \fn  inline const gfx::vector4F& camera::get_right_vector() const;
      *
      * \brief   Gets the right direction vector.
      *
      */
-    inline const gfx::vector4& get_right_vector() const;
+    inline const gfx::vector4F& get_right_vector() const;
 
     /**
-     * \fn  inline const gfx::matrix4X4& camera::get_view_transform() const;
+     * \fn  inline const gfx::matrix4X4F& camera::get_view_transform() const;
      *
      * \brief   Gets the view transform matrix.
      *
      */
-    inline const gfx::matrix4X4& get_view_transform() const;
+    inline const gfx::matrix_4X4F& get_view_transform() const;
 
     /**
-     * \fn  inline const gfx::matrix4X4& camera::get_projection_transform() const;
+     * \fn  inline const gfx::matrix4X4F& camera::get_projection_transform() const;
      *
      * \brief   Gets the projection transform matrix.
      *
      */
-    inline const gfx::matrix4X4& get_projection_transform() const;
+    inline const gfx::matrix_4X4F& get_projection_transform() const;
 
     /**
-     * \fn  void camera::set_projection_matrix( const gfx::matrix4X4& proj, projection_type ptype );
+     * \fn  void camera::set_projection_matrix( const gfx::matrix4X4F& proj, projection_type ptype );
      *
      * \brief   Sets the projection matrix.
      *
@@ -211,7 +210,7 @@ public :
      * \param   ptype   The projection type (orthographic/perspective)
      */
     void set_projection_matrix(
-        const gfx::matrix4X4& proj, 
+        const gfx::matrix_4X4F& proj, 
         projection_type ptype
         );
 };

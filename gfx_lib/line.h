@@ -1,6 +1,3 @@
-#ifndef GFX_LIB_LINE_H__
-#define GFX_LIB_LINE_H__
-
 #include "gfx_misc.h"
 #include "vector3.h"
 
@@ -8,28 +5,28 @@ namespace gfx {
   
 class line {
 private :
-  vector3 origin_;
-  vector3 direction_;
+  vector3F origin_;
+  vector3F direction_;
   
 public :  
   line() {}
   
-  line(const vector3& origin, const vector3& direction)
+  line(const vector3F& origin, const vector3F& direction)
     : origin_(origin), direction_(direction) {}
     
-  const vector3& get_origin() const { return origin_; }
+  const vector3F& get_origin() const { return origin_; }
   
-  void set_origin(const vector3& origin) { origin_ = origin; }
+  void set_origin(const vector3F& origin) { origin_ = origin; }
   
-  const vector3& get_direction() const { return direction_; }
+  const vector3F& get_direction() const { return direction_; }
   
-  void set_direction(const vector3& direction) { direction_ = direction; }
+  void set_direction(const vector3F& direction) { direction_ = direction; }
 };
 
 inline
 float
 distance_from_point_to_line(
-  const vector3& pt, 
+  const vector3F& pt, 
   const line& ln
 ) 
 {
@@ -48,5 +45,3 @@ angle_of(
 }
   
 } // namespace gfx
-
-#endif // !GFX_LIB_LINE_H__

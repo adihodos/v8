@@ -126,7 +126,7 @@ inline
 gfx::vector4<real_t>&
 gfx::vector4<real_t>::normalize() {
     real_t mag(magnitude());
-    if (math::zero_test<real_t, is_floating_point>::result(mag)) {
+    if (math::is_zero(mag)) {
         x_ = y_ = z_ = real_t(0);
     } else {
         *this /= mag;
@@ -142,12 +142,10 @@ gfx::operator==(
     const gfx::vector4<real_t>& rhs
     ) 
 {    
-    typedef math::zero_test<real_t, is_floating_point> zero_test_t;
-    typedef math::op_eq<real_t, is_floating_point> op_eq_t;
-    return op_eq_t::result(lhs.x_, rhs.x_) 
-           && op_eq_t::result(lhs.y_, rhs.y_)
-           && op_eq_t::result(lhs.z_, rhs.z_)
-           && op_eq_t::result(lhs.w_, rhs.w_);
+    return  math::operands_eq(lhs.x_, rhs.x_) &&
+            math::operands_eq(lhs.y_, rhs.y_) &&
+            math::operands_eq(lhs.z_, rhs.z_) &&
+            math::operands_eq(lhs.w_, rhs.w_);
 }
 
 template<typename real_t>
@@ -200,8 +198,8 @@ template<typename real_t>
 inline
 gfx::vector4<real_t>
 operator*(
-    float k,
-    const gfx::vector4<real_t>& vec,
+    real_t k,
+    const gfx::vector4<real_t>& vec
     )
 {
     vector4_t res(vec);
@@ -214,7 +212,7 @@ inline
 gfx::vector4<real_t>
 operator*(
     const gfx::vector4<real_t>& vec,
-    float k
+    real_t k
     )
 {
     return k * vec;
@@ -225,7 +223,7 @@ inline
 gfx::vector4<real_t>
 operator/(
     const gfx::vector4<real_t>& vec,
-    float k
+    real_t k
     )
 {
     vector4 res(vec);
@@ -243,4 +241,15 @@ normalized_from(
     vector4 res(vec);
     res.normalize();
     return res;
+}
+
+template<typename real_t>
+inline
+real_t
+gfx::dot_product(
+    const gfx::vector4<real_t>& lhs, 
+    const gfx::vector4<real_t>& rhs
+    )
+{
+    return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_ + lhs.w_ * rhs.w_;
 }

@@ -163,6 +163,9 @@
   <ItemGroup>
     <None Include="camera.inl" />
     <None Include="matrix2X2.inl" />
+    <None Include="matrix3X3.inl" />
+    <None Include="matrix4X4.inl" />
+    <None Include="quaternion.inl" />
     <None Include="ReadMe.txt" />
     <None Include="vector3.inl" />
     <None Include="vector4.inl" />
@@ -181,6 +184,7 @@
     <ClInclude Include="matrix4X4.h" />
     <ClInclude Include="pch_hdr.h" />
     <ClInclude Include="plane.h" />
+    <ClInclude Include="quaternion.h" />
     <ClInclude Include="rectangle.h" />
     <ClInclude Include="vector2.h" />
     <ClInclude Include="vector3.h" />
@@ -188,15 +192,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cc" />
-    <ClCompile Include="matrix3X3.cc" />
-    <ClCompile Include="matrix4X4.cc" />
     <ClCompile Include="pch_hdr.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="vector2.cc" />
-    <ClCompile Include="vector3.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
