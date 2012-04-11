@@ -307,7 +307,7 @@ public:
      *          q2 = (v2 - proj(v2, q0) - proj(v2, q1)) / 
      *              || (v2 - proj(v2, q0) - proj(v2, q1)) ||;
      */
-    matrix_3X3& ortho_normalize();
+    matrix_3X3<real_t>& ortho_normalize();
 
     /**
      * \fn  matrix3X3<real_t>& matrix3X3::set_row(int row, const real_t* data_ptr);
@@ -426,14 +426,16 @@ public:
 };
 
 template<typename real_t>
-const matrix_3X3<real_t> matrix_3X3<real_t>::zero(
+const matrix_3X3<real_t> 
+matrix_3X3<real_t>::zero(
     real_t(0), real_t(0), real_t(0),
     real_t(0), real_t(0), real_t(0),
     real_t(0), real_t(0), real_t(0)
     );
 
 template<typename real_t>
-const matrix_3X3<real_t> matrix_3X3<real_t>::identity(
+const matrix_3X3<real_t> 
+matrix_3X3<real_t>::identity(
     real_t(1), real_t(0), real_t(0),
     real_t(0), real_t(1), real_t(0),
     real_t(0), real_t(0), real_t(1)

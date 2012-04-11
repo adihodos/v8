@@ -176,13 +176,15 @@ public :
 };
 
 template<typename real_t>
-const matrix_2X2<real_t> matrix_2X2<real_t>::zero(
+const matrix_2X2<real_t> 
+matrix_2X2<real_t>::zero(
     real_t(0), real_t(0),
     real_t(0), real_t(0)
     );
 
 template<typename real_t>
-const matrix_2X2<real_t> matrix_2X2<real_t>::identity(
+const matrix_2X2<real_t> 
+matrix_2X2<real_t>::identity(
     real_t(1), real_t(0),
     real_t(0), real_t(1)
     );

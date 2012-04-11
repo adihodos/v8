@@ -2,6 +2,7 @@ import fnmatch
 import os
 import stat
 import shutil
+import re
 
 destinationDirectories = [ ('C:\\opt\\dev\\libs\\gfx_lib', 
                             ['include', 'gfx'], ['lib', 'X86', 'X64']) ]
@@ -38,9 +39,11 @@ def makeDirs(dirPathList) :
         print 'Failed to create directory'
 
 def copyHeaderFiles(srcPath, destPath) :
+    print 'La la la'
     fileList = os.listdir(srcPath)
+    prog = re.compile(r"\.h$|\.inl$")
     for fe in fileList :
-        if fnmatch.fnmatch(fe, '*.h') :
+        if prog.search(fe) :
             fullPathSrc = os.path.join(srcPath, fe)
             fullPathDst = os.path.join(destPath, fe)
             print '{:s} -> {:s}'.format(fullPathSrc, fullPathDst)

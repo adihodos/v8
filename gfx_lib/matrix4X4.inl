@@ -630,7 +630,7 @@ template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>&
 gfx::matrix_4X4<real_t>::make_zero() {
-    *this = matrix4X4<real_t>::null;
+    *this = matrix_4X4<real_t>::null;
     return *this;
 }
 
@@ -638,6 +638,6 @@ template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>&
 gfx::matrix_4X4<real_t>::make_identity() {
-    *this = matrix4X4<real_t>::identity;
+    *this = matrix_4X4<real_t>::identity;
     return *this;
 }

@@ -4,6 +4,8 @@
  * \brief   4x4 matrix class and associated functions.
  */
 
+#pragma once
+
 #include <cassert>
 #include <cmath>
 #include <cstring>
@@ -57,9 +59,9 @@ public :
         real_t elements_[16];	///< Access to elements using an array */
     };
 
-    static const matrix_4X4	null;   ///< The null matrix */
+    static const matrix_4X4<real_t>	null;   ///< The null matrix */
 
-    static const matrix_4X4	identity;   ///< The identity 4x4 matrix*/
+    static const matrix_4X4<real_t>	identity;   ///< The identity 4x4 matrix*/
 
     /**
      * \fn    matrix4X4::matrix4X4()
@@ -151,7 +153,7 @@ public :
      *
      * \return    The result of the operation.
      */
-    matrix_4X4& operator+=(const matrix_4X4& rhs);
+    matrix_4X4<real_t>& operator+=(const matrix_4X4<real_t>& rhs);
 
     /**
      * \fn    matrix4X4& matrix4X4::operator-=(const matrix4X4& rhs);
@@ -161,7 +163,7 @@ public :
      * \param rhs The right hand side.
      *
      */
-    matrix_4X4& operator-=(const matrix_4X4& rhs);
+    matrix_4X4<real_t>& operator-=(const matrix_4X4<real_t>& rhs);
 
     /**
      * \fn    matrix4X4& matrix4X4::operator*=(real_t k);
@@ -171,7 +173,7 @@ public :
      * \param k   Scalar to multiply with.
      *
      */
-    matrix_4X4& operator*=(real_t k);
+    matrix_4X4<real_t>& operator*=(real_t k);
 
     /**
      * \fn    matrix4X4& matrix4X4::operator/=(real_t k);
@@ -181,7 +183,7 @@ public :
      * \param k   The scalar to divide with. Ensure k <> 0.
      *
      */
-    matrix_4X4& operator/=(real_t k);
+    matrix_4X4<real_t>& operator/=(real_t k);
 
     /**
      * \fn    real_t matrix4X4::determinant() const;
