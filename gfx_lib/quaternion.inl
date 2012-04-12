@@ -11,12 +11,17 @@ gfx::quaternion<real_t>::quaternion(const real_t* init_data) {
 }
 
 template<typename real_t>
-gfx::quaternion<real_t>::quaternion(float angle, const gfx::vector3<real_t>& axis) {
+gfx::quaternion<real_t>::quaternion(
+    float angle,
+    const gfx::vector3<real_t>& axis
+        ) {
     make_from_axis_angle(angle, axis);
 }
 
 template<typename real_t>
-gfx::quaternion<real_t>::quaternion(const gfx::vector3<real_t> vec, real_t w /* = real_t */)
+gfx::quaternion<real_t>::quaternion(
+    const gfx::vector3<real_t> vec, real_t w /* = real_t */
+    )
     : w_(w), x_(vec.x_), y_(vec.y_), z_(vec.z_) {}
 
 template<typename real_t>
@@ -439,7 +444,7 @@ gfx::operator-(
 template<typename real_t>
 inline
 gfx::quaternion<real_t>
-operator-(
+gfx::operator-(
     const gfx::quaternion<real_t>& quat
     )
 {
@@ -448,7 +453,7 @@ operator-(
 
 template<typename real_t>
 gfx::quaternion<real_t>
-operator*(
+gfx::operator*(
     const gfx::quaternion<real_t>& lhs, 
     const gfx::quaternion<real_t>& rhs
     )

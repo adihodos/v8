@@ -1,10 +1,12 @@
 #include <iostream>
+#include <gtest/gtest.h>
 #include <gfx_lib/matrix4X4.h>
 
-int main(int, char**) {
-  gfx::matrix_4X4F m1(gfx::matrix_4X4F::identity);
-  gfx::matrix_4X4F m2;
-  gfx::matrix_4X4F m3;
+TEST(simple_tests, suite1) {
+    EXPECT_EQ(2, 2);
+}
 
-  return 0;
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

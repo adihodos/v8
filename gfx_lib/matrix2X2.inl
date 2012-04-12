@@ -25,7 +25,7 @@ gfx::matrix_2X2<real_t>::matrix_2X2(
         a11_ = v1.x_;
         a21_ = v1.y_;
         a12_ = v2.x_;
-        a22_ = v2.y_
+        a22_ = v2.y_;
     } else {
         a11_ = v1.x_;
         a12_ = v1.y_;
@@ -144,7 +144,7 @@ gfx::matrix_2X2<real_t>& gfx::matrix_2X2<real_t>::invert() {
 template<typename real_t>
 gfx::matrix_2X2<real_t>
 adjoint_of(const gfx::matrix_2X2<real_t>& mtx) {
-    return matrix_2X2<real_t(
+    return matrix_2X2<real_t>(
         mtx.a11_ * mtx.a22_, -mtx.a12_ * mtx.a21,
         -mtx.a11_ * mtx.a21_, mtx.a11_ * mtx.a22_
         );
@@ -198,7 +198,7 @@ gfx::transpose_multiply(
 
 template<typename real_t>
 gfx::matrix_2X2<real_t>
-    transpose_multiply_transpose(
+gfx::transpose_multiply_transpose(
     const gfx::matrix_2X2<real_t>& lhs, 
     const gfx::matrix_2X2<real_t>& rhs
     )
@@ -226,7 +226,7 @@ gfx::operator+(
 template<typename real_t>
 inline
 gfx::matrix_2X2<real_t>
-    gfx::operator-(
+gfx::operator-(
     const gfx::matrix_2X2<real_t>& lhs,
     const gfx::matrix_2X2<real_t>& rhs
     )
@@ -237,7 +237,7 @@ gfx::matrix_2X2<real_t>
 
 template<typename real_t>
 gfx::matrix_2X2<real_t>
-    gfx::operator*(
+gfx::operator*(
     const gfx::matrix_2X2<real_t>& lhs,
     const gfx::matrix_2X2<real_t>& rhs
     )

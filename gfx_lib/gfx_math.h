@@ -47,7 +47,7 @@ struct op_eq {
 template<typename ty>
 struct op_eq<ty, true> {
     static bool result(const ty left, const ty right) {
-        return std::fabs(left - right) <= kEpsilon;
+        return fabs(left - right) <= kEpsilon;
     }
 };
 
@@ -101,7 +101,7 @@ template<typename real_t>
 inline 
 real_t
 inv_sqrt(real_t val) {
-    return real_t(1) / std::sqrt(val);
+    return real_t(1) / sqrt(val);
 }
 
 template<typename real_t>
@@ -110,11 +110,11 @@ struct type_traits;
 template<>
 struct type_traits<float> {
     static float fabs(float val) {
-        return std::fabsf(val);
+        return fabs(val);
     }
 
     static float sqrt(float val) {
-        return std::sqrtf(val);
+        return sqrt(val);
     }
 
     static float inv_sqrt(float val) {
@@ -125,11 +125,11 @@ struct type_traits<float> {
 template<>
 struct type_traits<double> {
     static double fabs(double val) {
-        return std::fabs(val);
+        return fabs(val);
     }
 
     static double sqrt(double val) {
-        return std::sqrt(val);
+        return sqrt(val);
     }
 
     static double inv_sqrt(double val) {
@@ -137,15 +137,15 @@ struct type_traits<double> {
     }
 
     static double sin(double val) {
-        return std::sin(val);
+        return sin(val);
     }
 
     static double cos(double val) {
-        return std::cos(val);
+        return cos(val);
     }
 
     static double tan(double val) {
-        return std::tan(val);
+        return tan(val);
     }
 };
 

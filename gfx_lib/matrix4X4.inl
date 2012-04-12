@@ -44,7 +44,7 @@ gfx::matrix_4X4<real_t>::matrix_4X4(
         a21_ = v1.y_;
         a22_ = v2.y_;
         a23_ = v3.y_;
-        a24_ = v4.y;
+        a24_ = v4.y_;
 
         a31_ = v1.z_;
         a32_ = v2.z_;
@@ -112,7 +112,7 @@ gfx::matrix_4X4<real_t>::operator/=(real_t k) {
         is_floating_point
     >::transform(k);
     
-    divide_helper<real_t, is_floating_point> div;
+    typedef divide_helper<real_t, is_floating_point> div;
     
     for (size_t i = 0; i < _countof(elements_); ++i)
         elements_[i] = div::divide(elements_[i], kDivident);
@@ -197,6 +197,7 @@ gfx::matrix_4X4<real_t>::set_upper3x3(const real_t* data) {
     }
     return *this;
 }
+
 template<typename real_t>
 void
 gfx::matrix_4X4<real_t>::get_upper3x3(real_t* data) const {
@@ -283,12 +284,12 @@ gfx::matrix_4X4<real_t>::transform_homogeneous_point(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-operator+(
+gfx::operator+(
     const gfx::matrix_4X4<real_t>& lhs,
     const gfx::matrix_4X4<real_t>& rhs
     )
 {
-    matrix_4X4<real_t> result(lhs);
+    gfx::matrix_4X4<real_t> result(lhs);
     result += rhs;
     return result;
 }
@@ -296,12 +297,12 @@ operator+(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-operator-(
+gfx::operator-(
     const gfx::matrix_4X4<real_t>& lhs,
     const gfx::matrix_4X4<real_t>& rhs
     )
 {
-    matrix_4X4<real_t> result(lhs);
+    gfx::matrix_4X4<real_t> result(lhs);
     result -= rhs;
     return result;
 }
@@ -309,11 +310,11 @@ operator-(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-operator-(
+gfx::operator-(
     const gfx::matrix_4X4<real_t>& mtx
     )
 {
-    return matrix_4X4<real_t>(
+    return gfx::matrix_4X4<real_t>(
         -mtx.a11_, -mtx.a12_, -mtx.a13_, -mtx.a14_,
         -mtx.a21_, -mtx.a22_, -mtx.a23_, -mtx.a24_,
         -mtx.a31_, -mtx.a32_, -mtx.a33_, -mtx.a34_,
@@ -323,12 +324,12 @@ operator-(
 
 template<typename real_t>
 gfx::matrix_4X4<real_t>
-operator*(
+gfx::operator*(
     const gfx::matrix_4X4<real_t>& lhs,
     const gfx::matrix_4X4<real_t>& rhs
     )
 {
-    matrix_4X4<real_t> res;
+    gfx::matrix_4X4<real_t> res;
     res.a11_ = lhs.a11_ * rhs.a11_ + lhs.a12_ * rhs.a21_ 
         + lhs.a13_ * rhs.a31_ + lhs.a14_ * rhs.a41_;
     res.a12_ = lhs.a11_ * rhs.a12_ + lhs.a12_ * rhs.a22_ 
@@ -371,12 +372,12 @@ operator*(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-operator*(
+gfx::operator*(
     float k,
     const gfx::matrix_4X4<real_t>& mtx
     )
 {
-    matrix_4X4<real_t> result(mtx);
+    gfx::matrix_4X4<real_t> result(mtx);
     result *= k;
     return result;
 }
@@ -384,7 +385,7 @@ operator*(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-operator*(
+gfx::operator*(
     const gfx::matrix_4X4<real_t>& mtx,
     real_t k
     )
@@ -395,12 +396,12 @@ operator*(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-operator/(
+gfx::operator/(
     const gfx::matrix_4X4<real_t>& mtx,
     real_t k
     )
 {
-    matrix_4X4<real_t> result(mtx);
+    gfx::matrix_4X4<real_t> result(mtx);
     result /= k;
     return result; 
 }
@@ -408,11 +409,11 @@ operator/(
 template<typename real_t>
 inline
 gfx::matrix_4X4<real_t>
-transpose_of(
+gfx::transpose_of(
     const gfx::matrix_4X4<real_t>& mtx
     )
 {
-    return matrix_4X4<real_t>(
+    return gfx::matrix_4X4<real_t>(
         mtx.a11_, mtx.a21_, mtx.a31_, mtx.a41_,
         mtx.a12_, mtx.a22_, mtx.a32_, mtx.a42_,
         mtx.a13_, mtx.a23_, mtx.a33_, mtx.a43_,

@@ -29,7 +29,7 @@ struct transform_dividend_for_division {
 template<typename real_t>
 struct transform_dividend_for_division<real_t, true> {
     static real_t transform(real_t dividend) {
-        return return real_t(1) / dividend;
+        return real_t(1) / dividend;
     }
 };
 

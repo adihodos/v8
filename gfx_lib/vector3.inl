@@ -15,7 +15,6 @@ const gfx::vector3<real_t>
 gfx::vector3<real_t>::unit_z(real_t(0), real_t(0), real_t(1));
 
 template<typename real_t>
-inline 
 gfx::vector3<real_t>::vector3(const real_t* input, size_t count) {
     std::memcpy(elements_, input, std::min(_countof(elements_), 
                 count * sizeof(real_t)));
@@ -23,7 +22,8 @@ gfx::vector3<real_t>::vector3(const real_t* input, size_t count) {
 
 template<typename real_t>
 inline
-gfx::vector3<real_t>& gfx::vector3<real_t>::operator+=(
+gfx::vector3<real_t>&
+gfx::vector3<real_t>::operator+=(
     const vector3<real_t>& rhs
     ) 
 {
@@ -152,7 +152,7 @@ template<typename real_t>
 inline
 gfx::vector3<real_t>
 gfx::operator*(const gfx::vector3<real_t>& vec, real_t k) {
-    vector3 result(vec);
+    vector3<real_t> result = vec;
     result *= k;
     return result;
 }
@@ -168,7 +168,7 @@ template<typename real_t>
 inline
 gfx::vector3<real_t>
 gfx::operator/(const gfx::vector3<real_t>& vec, real_t k) {
-    vector3_t result(vec);
+    gfx::vector3<real_t> result(vec);
     result /= k;
     return result;
 }

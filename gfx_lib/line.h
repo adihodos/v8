@@ -1,3 +1,5 @@
+#pragma once
+
 #include "gfx_misc.h"
 #include "vector3.h"
 

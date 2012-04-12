@@ -1,5 +1,4 @@
-#ifndef GFX_LIB_PCH_HDR_H__
-#define GFX_LIB_PCH_HDR_H__
+#pragma once
 
 #include <cassert>
 #include <cmath>
@@ -9,5 +8,3 @@
 #include <functional>
 #include <iterator>
 #include <vector>
-
-#endif // GFX_LIB_PCH_HDR_H__

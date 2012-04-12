@@ -1,13 +1,12 @@
-#ifndef GFX_LIB_VECTOR2_H__
-#define GFX_LIB_VECTOR2_H__
+#pragma once
 
 #include <cassert>
 #include <cstring>
 #include <cmath>
 #include <algorithm>
 #include "details.h"
+#include "gfx_math.h"
 #include "gfx_misc.h"
-#include "math.h"
 
 namespace gfx {
 
@@ -120,10 +119,10 @@ public:
             is_floating_point
         >::transform(k);
 
-        divide_helper<real_t, is_floating_point> div_helper;
+        typedef divide_helper<real_t, is_floating_point> div_helper_t;
 
-        x_ = div_helper::divide(x_, kDividend);
-        y_ = div_helper::divide(y_, kDividend);
+        x_ = div_helper_t::divide(x_, kDividend);
+        y_ = div_helper_t::divide(y_, kDividend);
         return *this;
     }
 
@@ -207,7 +206,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 operator+(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
-    vector2_t res(lhs);
+    gfx::vector2<real_t> res(lhs);
     res += rhs;
     return res;
 }
@@ -222,7 +221,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 operator-(const vector2<real_t>& lhs, const vector2<real_t>& rhs) {
-    vector2_t res(lhs);
+    vector2<real_t> res(lhs);
     res -= rhs;
     return res;
 }
@@ -236,7 +235,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 operator-(const vector2<real_t>& vec) {
-    return vector2_t(-vec.x_, -vec.y_);
+    return vector2<real_t>(-vec.x_, -vec.y_);
 }
 
 /**
@@ -249,7 +248,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 operator*(const vector2<real_t>& vec, real_t k) {
-  vector2_t result(vec);
+  vector2<real_t> result(vec);
   result *= k;
   return result;
 }
@@ -277,7 +276,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 operator/(const vector2<real_t>& vec, real_t k) {
-  vector2_t result(vec);
+  vector2<real_t> result(vec);
   result /= k;
   return result;
 }
@@ -344,7 +343,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 normal_of(const vector2<real_t>& vec) {
-    vector2 res(vec);
+    vector2<real_t> res(vec);
     res.normalize();
     return res;
 }
@@ -365,7 +364,7 @@ template<typename real_t>
 inline
 vector2<real_t>
 orthogonal_vector_from_vector(const vector2<real_t>& vec, bool counter_clockwise = true) {
-    vector2 result;
+    vector2<real_t> result;
     if (counter_clockwise) {
         result.x_ = -vec.y_;
         result.y_ = vec.x_;
@@ -429,5 +428,3 @@ typedef vector2<float>      vector2F;
 typedef vector2<double>     vector2D;
 
 } /* namespace gfx */
-
-#endif /* VECTOR2_H_ */

@@ -5,8 +5,7 @@
  *      Author: adi.hodos
  */
 
-#ifndef GFX_LIB_MISC_H_
-#define GFX_LIB_MISC_H_
+#pragma once
 
 #include <cassert>
 #include <cmath>
@@ -73,5 +72,3 @@ struct gfx_countof_helper {
 #endif
 
 } // ns gfx
-
-#endif /* GFX_MISC_H_ */

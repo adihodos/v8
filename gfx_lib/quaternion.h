@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cmath>
+//#include <cmath>
 #include "details.h"
-#include "math.h"
+#include "gfx_math.h"
 #include "matrix3X3.h"
 #include "vector3.h"
 

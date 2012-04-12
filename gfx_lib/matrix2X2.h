@@ -3,7 +3,7 @@
 #include <cmath>
 #include <memory.h>
 #include "details.h"
-#include "math.h"
+#include "gfx_math.h"
 #include "vector2.h"
 
 namespace gfx {

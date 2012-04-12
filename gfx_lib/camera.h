@@ -5,11 +5,10 @@
  */
 #pragma once
 
-
+#include "gfx_misc.h"
 #include "vector3.h"
 #include "vector4.h"
 #include "matrix4X4.h"
-#include "gfx_misc.h"
 
 namespace gfx {
 

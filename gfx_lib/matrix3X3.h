@@ -16,7 +16,7 @@ namespace gfx {
  * 			representing multiple transformations, the order must be from 
  * 			right to left, eg : if we have a rotation R, followed by a scaling S
  * 			and a reflection RF (R, S, RF) then the matrices need to be concatenated
- * 			like this : RF * S * R.
+ * 			like this : FinalTransform = RF * S * R.
  */
 template<typename real_t>
 class matrix_3X3 {
@@ -41,7 +41,7 @@ public:
     typedef real_t              element_type;
     typedef real_t&             reference;
     typedef const real_t&       const_reference;
-    typedef matrix_3X3<real_t>   matrix3X3_t;
+    typedef matrix_3X3<real_t>  matrix3X3_t;
 
     union {
         struct {
@@ -407,7 +407,7 @@ public:
      *
      * \param [in,out]  p   Pointer to the point. Must not be null.
      */
-    gfx::vector2<real_t>* transform_point(gfx::vector2* p) const {
+    gfx::vector2<real_t>* transform_point(gfx::vector2<real_t>* p) const {
         p->x_ = a11_ * p->x_ + a12_ * p->y_ + a13_;
         p->y_ = a21_ * p->x_ + a22_ * p->y_ + a23_;
         return p;
@@ -418,7 +418,7 @@ public:
      *
      * \brief   Transforms a 2d vector.
      */
-    gfx::vector2* transform_vector(gfx::vector2* p) const {
+    gfx::vector2<real_t>* transform_vector(gfx::vector2<real_t>* p) const {
         p->x_ = a11_ * p->x_ + a12_ * p->y_;
         p->y_ = a21_ * p->x_ + a12_ * p->y_;
         return p;

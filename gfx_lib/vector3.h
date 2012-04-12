@@ -10,7 +10,7 @@
 #include <algorithm>
 #include "details.h"
 #include "gfx_misc.h"
-#include "math.h"
+#include "gfx_math.h"
 
 namespace gfx {
 
@@ -84,7 +84,7 @@ public:
      * \param   input   Pointer to an array of values.
      * \param   count   Number of elements in the array.
      */
-    inline vector3(const real_t* input, size_t count);
+    vector3(const real_t* input, size_t count);
 
     /**
      * \fn  inline vector3<real_type>& vector3::operator+=(const vector3<real_type>& rhs);

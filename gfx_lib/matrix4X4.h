@@ -10,9 +10,10 @@
 #include <cmath>
 #include <cstring>
 #include <algorithm>
+#include "gfx_misc.h"
 #include "matrix3X3.h"
 #include "vector4.h"
-#include "gfx_misc.h"
+
 
 namespace gfx {
 

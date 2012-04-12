@@ -36,7 +36,6 @@ gfx::vector4<real_t>::as_homogeneous_point(
 }
 
 template<typename real_t>
-inline 
 gfx::vector4<real_t>::vector4(
     const real_t* inputs, 
     size_t count
@@ -89,16 +88,16 @@ gfx::vector4<real_t>::operator/=(
     using namespace implementation_details;
     const real_t dividend = transform_dividend_for_division<
         real_t, 
-        types_eq<real_t, float> ||
-        types_eq<real_t, double> ||
-        types_eq<real_t, long double>
+        types_eq<real_t, float>::result ||
+        types_eq<real_t, double>::result ||
+        types_eq<real_t, long double>::result
     >::transform(k);
 
     divide_helper<
         real_t,
-        types_eq<real_t, float> ||
-        types_eq<real_t, double> ||
-        types_eq<real_t, long double>
+        types_eq<real_t, float>::result ||
+        types_eq<real_t, double>::result ||
+        types_eq<real_t, long double>::result
     > div_helper;
 
     x_ = div_helper(x_, dividend);
@@ -172,7 +171,7 @@ gfx::operator-(
 template<typename real_t>
 inline
 gfx::vector4<real_t>
-operator+(
+gfx::operator+(
     const gfx::vector4<real_t>& lhs,
     const gfx::vector4<real_t>& rhs
     ) 
@@ -183,7 +182,7 @@ operator+(
 template<typename real_t>
 inline
 gfx::vector4<real_t>
-operator-(
+gfx::operator-(
     const gfx::vector4<real_t>& lhs,
     const gfx::vector4<real_t>& rhs
     )
@@ -197,12 +196,12 @@ operator-(
 template<typename real_t>
 inline
 gfx::vector4<real_t>
-operator*(
+gfx::operator*(
     real_t k,
     const gfx::vector4<real_t>& vec
     )
 {
-    vector4_t res(vec);
+    gfx::vector4<real_t> res(vec);
     res *= k;
     return res;
 }
@@ -210,7 +209,7 @@ operator*(
 template<typename real_t>
 inline
 gfx::vector4<real_t>
-operator*(
+gfx::operator*(
     const gfx::vector4<real_t>& vec,
     real_t k
     )
@@ -221,12 +220,12 @@ operator*(
 template<typename real_t>
 inline
 gfx::vector4<real_t>
-operator/(
+gfx::operator/(
     const gfx::vector4<real_t>& vec,
     real_t k
     )
 {
-    vector4 res(vec);
+    gfx::vector4<real_t> res(vec);
     res /= k;
     return res;
 }
@@ -234,11 +233,11 @@ operator/(
 template<typename real_t>
 inline
 gfx::vector4<real_t>
-normalized_from(
+gfx::normalized_from(
     const gfx::vector4<real_t>& vec
     ) 
 {
-    vector4 res(vec);
+    gfx::vector4<real_t> res(vec);
     res.normalize();
     return res;
 }

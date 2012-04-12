@@ -19,7 +19,7 @@ gfx::matrix_3X3<real_t>::matrix_3X3(const real_t* input, size_t count) {
 template<typename real_t>
 gfx::matrix_3X3<real_t>::matrix_3X3(real_t a11, real_t a22, real_t a33) 
     : a11_(a11), a22_(a22), a33_(a33) {
-        a12_ = a13_ = a21_ = a23_ = a31_ = a32_ = real_t(0);
+    a12_ = a13_ = a21_ = a23_ = a31_ = a32_ = real_t(0);
 }
 
 template<typename real_t>
@@ -89,7 +89,7 @@ gfx::matrix_3X3<real_t>::operator/=(real_t k) {
         is_floating_point
     >::transform(k);
 
-    divide_helper<
+    typedef divide_helper<
         real_t,
         is_floating_point
     > div;
@@ -153,12 +153,9 @@ gfx::matrix_3X3<real_t>::ortho_normalize() {
     real_t norm = transform_dividend_for_division<
         real_t, 
         is_floating_point
-    >::transform(std::sqrtf(a11_ * a11_ + a21_ * a21_ + a31_ * a31_));
+    >::transform(sqrtf(a11_ * a11_ + a21_ * a21_ + a31_ * a31_));
 
-    divide_helper<
-        real_t,
-        is_floating_point
-    > div;
+    typedef divide_helper<real_t, is_floating_point> div;
     a11_ = div::divide(a11_, norm);
     a21_ = div::divide(a21_, norm);
     a31_ = div::divide(a31_, norm);
@@ -171,10 +168,10 @@ gfx::matrix_3X3<real_t>::ortho_normalize() {
     a22_ -= a21_ * sum;
     a32_ -= a31_ * sum;
 
-    inv_norm = transform_dividend_for_division<
+    real_t inv_norm = transform_dividend_for_division<
         real_t, 
         is_floating_point
-    >::transform(std::sqrtf(a12_ * a12_ + a22_ * a22_ + a32_ * a32_));
+    >::transform(sqrtf(a12_ * a12_ + a22_ * a22_ + a32_ * a32_));
 
     a12_ = div::divide(a12_, norm);
     a22_ = div::divide(a22_, norm);
@@ -192,7 +189,7 @@ gfx::matrix_3X3<real_t>::ortho_normalize() {
     norm = transform_dividend_for_division<
         real_t, 
         is_floating_point
-    >::transform(std::sqrtf(a13_ * a13_ + a23_ * a23_ + a33_ * a33_));
+    >::transform(sqrtf(a13_ * a13_ + a23_ * a23_ + a33_ * a33_));
 
     a13_ = div::divide(a13_, norm);
     a23_ = div::divide(a23_, norm);
@@ -212,7 +209,8 @@ gfx::matrix_3X3<real_t>::set_row(int row, const real_t* data_ptr) {
 }
 
 template<typename real_t>
-void gfx::matrix_3X3<real_t>::get_row(int row, real_t* ptr) const {
+void
+gfx::matrix_3X3<real_t>::get_row(int row, real_t* ptr) const {
     const int row_index = (row - 1) * 3;
     ptr[0] = elements_[row_index];
     ptr[1] = elements_[row_index + 1];
@@ -248,12 +246,12 @@ gfx::matrix_3X3<real_t>::make_translation(real_t tx, real_t ty) {
 template<typename real_t>
 inline
 gfx::matrix_3X3<real_t>
-operator+(
+gfx::operator+(
     const gfx::matrix_3X3<real_t>& lhs, 
     const gfx::matrix_3X3<real_t>& rhs
     ) 
 {
-    matrix_3X3<real_t> result(lhs);
+    gfx::matrix_3X3<real_t> result(lhs);
     result += rhs;
     return result;
 }
@@ -261,36 +259,35 @@ operator+(
 template<typename real_t>
 inline
 gfx::matrix_3X3<real_t>
-operator-(
+gfx::operator-(
     const gfx::matrix_3X3<real_t>& lhs, 
     const gfx::matrix_3X3<real_t>& rhs
   ) 
 {
-    matrix_3X3<real_t> result(lhs);
+    gfx::matrix_3X3<real_t> result(lhs);
     result -= rhs;
     return result;
 }
 
 template<typename real_t>
 gfx::matrix_3X3<real_t>
-operator-(
+gfx::operator-(
     const gfx::matrix_3X3<real_t>& mtx
     ) 
 {
-    return matrix_3X3<real_t>(-mtx.a11_, -mtx.a12_, -mtx.a13_,
-                             -mtx.a21_, -mtx.a22_, -mtx.a23_,
-                             -mtx.a31_, -mtx.a32_, -mtx.a33_
-                             );
+    return gfx::matrix_3X3<real_t>(-mtx.a11_, -mtx.a12_, -mtx.a13_,
+                                   -mtx.a21_, -mtx.a22_, -mtx.a23_,
+                                   -mtx.a31_, -mtx.a32_, -mtx.a33_);
 }
 
 template<typename real_t>
 gfx::matrix_3X3<real_t>
-operator*(
+gfx::operator*(
     const gfx::matrix_3X3<real_t>& lhs, 
     const gfx::matrix_3X3<real_t>& rhs
     )
 {
-    matrix_3X3 res;
+    gfx::matrix_3X3<real_t> res;
     res.a11_ = lhs.a11_ * rhs.a11_ + lhs.a12_ * rhs.a21_ + lhs.a13_ * rhs.a31_;
     res.a12_ = lhs.a11_ * rhs.a12_ + lhs.a12_ * rhs.a22_ + lhs.a13_ * rhs.a32_;
     res.a13_ = lhs.a11_ * rhs.a13_ + lhs.a12_ * rhs.a23_ + lhs.a13_ * rhs.a33_;
@@ -309,12 +306,12 @@ operator*(
 template<typename real_t>
 inline
 gfx::matrix_3X3<real_t>
-operator*(
+gfx::operator*(
     real_t k, 
     const gfx::matrix_3X3<real_t>& mtx
   ) 
 {
-    matrix_3X3 result(mtx);
+    gfx::matrix_3X3<real_t> result(mtx);
     result *= k;
     return result;
 }
@@ -322,7 +319,7 @@ operator*(
 template<typename real_t>
 inline
 gfx::matrix_3X3<real_t>
-operator*(
+gfx::operator*(
     const gfx::matrix_3X3<real_t>& mtx, 
     real_t k
     )
@@ -333,12 +330,12 @@ operator*(
 template<typename real_t>
 inline
 gfx::vector3<real_t>
-operator*(
+gfx::operator*(
     const gfx::matrix_3X3<real_t>& mtx,
     const gfx::vector3<real_t>& vec
   )
 {
-    return vector3<real_t>(
+    return gfx::vector3<real_t>(
         mtx.a11_ * vec.x_ + mtx.a12_ * vec.y_ + mtx.a13_ * vec.z_,
         mtx.a21_ * vec.x_ + mtx.a22_ * vec.y_ + mtx.a23_ * vec.z_,
         mtx.a31_ * vec.x_ + mtx.a32_ * vec.y_ + mtx.a33_ * vec.z_
@@ -348,8 +345,8 @@ operator*(
 template<typename real_t>
 inline
 gfx::matrix_3X3<real_t>
-transpose_of(const gfx::matrix_3X3<real_t>& mtx) {
-    return matrix3X3_t(
+gfx::transpose_of(const gfx::matrix_3X3<real_t>& mtx) {
+    return gfx::matrix_3X3<real_t>(
         mtx.a11_, mtx.a21_, mtx.a31_,
         mtx.a12_, mtx.a22_, mtx.a32_,
         mtx.a13_, mtx.a23_, mtx.a33_
@@ -358,8 +355,8 @@ transpose_of(const gfx::matrix_3X3<real_t>& mtx) {
 
 template<typename real_t>
 gfx::matrix_3X3<real_t>
-adjoint_of(
-    const gfx::matrix_3X3<real_t>&
+gfx::adjoint_of(
+    const gfx::matrix_3X3<real_t>& mtx
   )
 {
     real_t A11 = mtx.a22_ * mtx.a33_ - mtx.a23_ * mtx.a32_;
@@ -372,7 +369,7 @@ adjoint_of(
     real_t A32 = mtx.a13_ * mtx.a21_ - mtx.a11_ * mtx.a23_;
     real_t A33 = mtx.a11_ * mtx.a12_ - mtx.a12_ * mtx.a21_;
 
-    return matrix3X3_t(A11, A21, A31, A12, A22, A32, A13, A23, A33);
+    return gfx::matrix_3X3<real_t>(A11, A21, A31, A12, A22, A32, A13, A23, A33);
 }
 
 template<typename real_t>
@@ -405,12 +402,12 @@ gfx::matrix_3X3<real_t>::make_scale(real_t sx, real_t sy, real_t sz) {
 template<typename real_t>
 gfx::matrix_3X3<real_t>&
 gfx::matrix_3X3<real_t>::make_euler_xyz(real_t rx, real_t ry, real_t rz) {
-    const real_t sx = std::sinf(rx);
-    const real_t cx = std::cosf(rx);
-    const real_t sy = std::sinf(ry);
-    const real_t cy = std::cosf(ry);
-    const real_t sz = std::sinf(rz);
-    const real_t cz = std::cosf(rz);
+    const real_t sx = sinf(rx);
+    const real_t cx = cosf(rx);
+    const real_t sy = sinf(ry);
+    const real_t cy = cosf(ry);
+    const real_t sz = sinf(rz);
+    const real_t cz = cosf(rz);
 
     a11_ = cy * cz; 
     a12_ = -cy * sz; 
@@ -430,8 +427,8 @@ gfx::matrix_3X3<real_t>::make_euler_xyz(real_t rx, real_t ry, real_t rz) {
 template<typename real_t>
 gfx::matrix_3X3<real_t>&
 gfx::matrix_3X3<real_t>::make_rotation_x(real_t theta) {
-    real_t sin_theta = std::sinf(theta);
-    real_t cos_theta = std::cosf(theta);
+    real_t sin_theta = sinf(theta);
+    real_t cos_theta = cosf(theta);
 
     a11_ = real_t(1); a12_ = real_t(0); a13_ = real_t(0);
     a21_ = real_t(0); a22_ = cos_theta; a23_ = -sin_theta;
@@ -443,8 +440,8 @@ gfx::matrix_3X3<real_t>::make_rotation_x(real_t theta) {
 template<typename real_t>
 gfx::matrix_3X3<real_t>&
 gfx::matrix_3X3<real_t>::rotation_y(real_t theta) {
-    real_t sin_theta = std::sinf(theta);
-    real_t cos_theta = std::cosf(theta);
+    real_t sin_theta = sinf(theta);
+    real_t cos_theta = cosf(theta);
 
     a11_ = cos_theta; a12_ = real_t(0); a13_ = sin_theta;
     a21_ = real_t(0); a22_ = real_t(1); a23_ = real_t(0);
@@ -456,8 +453,8 @@ gfx::matrix_3X3<real_t>::rotation_y(real_t theta) {
 template<typename real_t>
 gfx::matrix_3X3<real_t>&
 gfx::matrix_3X3<real_t>::rotation_z(real_t theta) {
-    real_t sin_theta = std::sinf(theta);
-    real_t cos_theta = std::cosf(theta);
+    real_t sin_theta = sinf(theta);
+    real_t cos_theta = cosf(theta);
 
     a11_ = cos_theta; a12_ = -sin_theta; a13_ = real_t(0);
     a21_ = sin_theta; a22_ = cos_theta; a23_ = real_t(0);
@@ -473,8 +470,8 @@ gfx::matrix_3X3<real_t>::axis_angle(
     real_t theta
     ) 
 {
-    const real_t sin_theta = std::sinf(theta);
-    const real_t cos_theta = std::cosf(theta);
+    const real_t sin_theta = sinf(theta);
+    const real_t cos_theta = cosf(theta);
     const real_t tval = real_t(1) - cos_theta;
 
     a11_ = tval * axisv.x_ * axisv.x_ + cos_theta;
@@ -586,7 +583,7 @@ gfx::transpose_multiply(
     const gfx::matrix_3X3<real_t>& rhs 
     )
 {
-    matrix_3X3<real_t> result;
+    gfx::matrix_3X3<real_t> result;
 
     result.a11_ = lhs.a11_ * rhs.a11_ + lhs.a21_ * rhs.a21_ + lhs.a31_ * rhs.a31_;
     result.a12_ = lhs.a11_ * rhs.a12_ + lhs.a21_ * rhs.a22_ + lhs.a31_ * rhs.a32_;
@@ -610,7 +607,7 @@ gfx::transpose_multiply_transpose(
     const matrix_3X3<real_t>& rhs
     )
 {
-    matrix_3X3<real_t> result;
+    gfx::matrix_3X3<real_t> result;
 
     result.a11_ = lhs.a11_ * rhs.a11_ + lhs.a21_ * rhs.a12_ + lhs.a31_ * rhs.a13_;
     result.a12_ = lhs.a11_ * rhs.a21_ + lhs.a21_ * rhs.a22_ + lhs.a31_ * rhs.a23_;

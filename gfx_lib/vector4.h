@@ -11,9 +11,9 @@
 #include <algorithm>
 #include <vector>
 #include "details.h"
-#include "vector3.h"
 #include "gfx_misc.h"
-#include "math.h"
+#include "gfx_math.h"
+#include "vector3.h"
 
 namespace gfx {
 
@@ -87,7 +87,6 @@ public :
      * \param   inputs  Pointer to an array of elements.
      * \param   count   Number of elements in the array
      */
-    inline
     vector4(
         const real_t* inputs, 
         size_t count
