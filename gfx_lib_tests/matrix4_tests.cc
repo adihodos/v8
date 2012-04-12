@@ -69,3 +69,43 @@ TEST(matrix4tests, self_add_assign) {
         EXPECT_EQ(initVal[i] * 2, m3.elements_[i]);
     }
 }
+
+TEST(matrix4tests, scalar_mul_divide) {
+    int initVal[16];
+    gen_arithmetic_progression(initVal, 16, 1, 0);
+    matrix_4X4I m1(initVal, 16);
+
+    m1 *= 4;
+
+    for (int i = 0; i < 16; ++i)
+        EXPECT_EQ(4, m1.elements_[i]);
+
+    m1 /= 4;
+
+    for (int i = 0; i < 16; ++i)
+        EXPECT_EQ(1, m1.elements_[i]);
+}
+
+TEST(matrix4tests, transpose) {
+    matrix_4X4I mtx(0, 1, 2, 3,
+                    -1, 0, 3, 4,
+                    -2, -3, 0, 5,
+                    -3, -4, -5, 0);
+    mtx.transpose();
+
+    const matrix_4X4I transposed(0, -1, -2, -3,
+                                 1, 0, -3, -4,
+                                 2, 3, 0, -5,
+                                 3, 4, 5, 0);
+    EXPECT_TRUE((mtx == transposed));
+}
+
+TEST(matrix4tests, determinant) {
+    matrix_4X4I m1(1, 2, 3, 4,
+                   2, 3, 4, 1,
+                   3, 4, 1, 2,
+                   4, 1, 2, 3);
+
+    EXPECT_EQ(160, m1.determinant());
+    EXPECT_TRUE(m1.is_invertible());
+}

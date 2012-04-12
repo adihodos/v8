@@ -26,6 +26,11 @@ struct fp_test {
 };
 
 template<>
+struct fp_test<float> {
+    static const bool result = true;
+};
+
+template<>
 struct fp_test<double> {
     static const bool result = true;
 };
@@ -34,6 +39,25 @@ template<>
 struct fp_test<long double> {
     static const bool result = true;
 };
+
+template<typename real_type, bool is_floating_point = false>
+struct op_eq_helper {
+    static bool result(real_type left, real_type right) {
+        return left == right;
+    }
+};
+
+template<typename real_type>
+struct op_eq_helper<real_type, true> {
+    static bool result(real_type left, real_type right) {
+        return fabs(left - right) <= kEpsilon;
+    }
+};
+
+template<typename real_type>
+inline bool equality_test(real_type left, real_type right) {
+    return op_eq_helper<real_type, fp_test<real_type>::result>::result(left, right);
+}
 
 namespace details {
 

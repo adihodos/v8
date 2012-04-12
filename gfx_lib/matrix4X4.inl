@@ -122,41 +122,30 @@ gfx::matrix_4X4<real_t>::operator/=(real_t k) {
 template<typename real_t>
 real_t
 gfx::matrix_4X4<real_t>::determinant() const {
-    return a11_ * (
-      a22_ * a33_ * a44_	+
-      a32_ * a43_ * a24_	+
-      a42_ * a23_ * a34_	-
-      a24_ * a33_ * a42_	-
-      a34_ * a43_ * a22_	-
-      a44_ * a23_ * a32_
-      )
-      +
-    a12_ * (
-      a21_ * a33_ * a44_ 	+
-      a31_ * a43_ * a24_	+
-      a41_ * a23_ * a34_	-
-      a24_ * a33_ * a41_	-
-      a34_ * a43_ * a21_	-
-      a44_ * a23_ * a31_
-      )
-      -
-    a13_ * (
-      a21_ * a32_ * a44_ 	+
-      a31_ * a42_ * a24_	+
-      a41_ * a22_ * a34_	-
-      a24_ * a32_ * a41_ 	-
-      a34_ * a42_ * a21_	-
-      a44_ * a22_ * a31_
-      )
-      +
-    a14_ * (
-      a21_ * a32_ * a43_	+
-      a31_ * a42_ * a23_	+
-      a41_ * a22_ * a33_	-
-      a23_ * a32_ * a41_	-
-      a33_ * a42_ * a21_	-
-      a43_ * a22_ * a31_
-      );
+    //
+    // This computation is based on Laplace's theorem
+    // which states that the value of a determinant is equal to the product of
+    // the minor determinants formed with the elements of p rows/columns and
+    // their algebraic complements.
+    const real_t k1 = a11_ * a22_ - a12_ * a21_;
+    const real_t l1 = a33_ * a44_ - a34_ * a43_;
+
+    const real_t k2 = a11_ * a23_ - a13_ * a21_;
+    const real_t l2 = a32_ * a44_ - a34_ * a42_;
+
+    const real_t k3 = a11_ * a24_ - a14_ * a21_;
+    const real_t l3 = a32_ * a43_ - a33_ * a42_;
+
+    const real_t k4 = a12_ * a23_ - a13_ * a22_;
+    const real_t l4 = a31_ * a44_ - a43_ * a41_;
+
+    const real_t k5 = a12_ * a24_ - a14_ * a22_;
+    const real_t l5 = a31_ * a43_ - a33_ * a41_;
+
+    const real_t k6 = a13_ * a24_ - a14_ * a23_;
+    const real_t l6 = a31_ * a42_ - a32_ * a41_;
+
+    return k1 * l1 - k2 * l2 + k3 * l3 + k4 * l4 - k5 * l5 + k6 * l6;
 }
 
 template<typename real_t>
@@ -280,6 +269,33 @@ gfx::matrix_4X4<real_t>::transform_homogeneous_point(
 
     return *this;
 }
+
+template<typename real_t>
+bool
+gfx::operator==(
+    const gfx::matrix_4X4<real_t>& lhs,
+    const gfx::matrix_4X4<real_t>& rhs
+        )
+{
+    using namespace gfx::math;
+    for (size_t i = 0; i < _countof(lhs.elements_); ++i) {
+        if (!equality_test(lhs.elements_[i], rhs.elements_[i]))
+            return false;
+    }
+    return true;
+}
+
+template<typename real_t>
+inline
+bool
+gfx::operator!=(
+    const gfx::matrix_4X4<real_t>& lhs,
+    const gfx::matrix_4X4<real_t>& rhs
+        )
+{
+    return !(lhs == rhs);
+}
+
 
 template<typename real_t>
 inline

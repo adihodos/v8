@@ -520,6 +520,21 @@ const gfx::matrix_4X4<real_t>
     real_t(0), real_t(0), real_t(0), real_t(1)
     );
 
+template<typename real_t>
+bool
+operator==(
+    const gfx::matrix_4X4<real_t>& lhs,
+    const gfx::matrix_4X4<real_t>& rhs
+        );
+
+template<typename real_t>
+inline
+bool
+operator!=(
+    const gfx::matrix_4X4<real_t>& lhs,
+    const gfx::matrix_4X4<real_t>& rhs
+        );
+
 /**
  * \fn  inline matrix4X4 operator+( const matrix4X4& lhs, const matrix4X4& rhs )
  *

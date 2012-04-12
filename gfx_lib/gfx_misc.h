@@ -50,14 +50,14 @@ is_zero(
 
 struct gfx_countof_helper {
   template<typename T, std::size_t size>
-  static std::size_t array_size(T (&)[size], std::size_t) {
+  static std::size_t array_size(T (&)[size]) {
     return size;
   }
 };
 
 #ifndef _countof
 #define _countof(array) \
-  gfx_countof_helper::array_size(array, (sizeof((array)) / sizeof((array[0]))))
+  gfx_countof_helper::array_size(array)
 #endif
 
 #ifndef DISABLE_WARNING_BLOCK_BEGIN

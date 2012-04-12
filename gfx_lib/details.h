@@ -48,7 +48,7 @@ struct divide_helper<real_t, true> {
 };
 
 template<typename ty>
-inline void swap(const ty& left, const ty& right) {
+inline void swap(ty& left, ty& right) {
     ty temp = left;
     left = right;
     right = temp;
