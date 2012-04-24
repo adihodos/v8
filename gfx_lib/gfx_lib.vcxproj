@@ -177,6 +177,7 @@
     <ClInclude Include="details.h" />
     <ClInclude Include="ellipse.h" />
     <ClInclude Include="gfx_misc.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="matrix2X2.h" />
@@ -192,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cc" />
+    <ClCompile Include="light.cc" />
     <ClCompile Include="pch_hdr.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -93,12 +93,18 @@
     <ClInclude Include="quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch_hdr.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="camera.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
