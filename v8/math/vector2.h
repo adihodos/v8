@@ -26,10 +26,12 @@
 
 #pragma once
 
+#include <memory.h>
 #include <cassert>
 #include <cmath>
-#include "v8/math/math_utils.h"
 #include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
+#include "v8/math/math_utils.h"
 
 namespace v8 { namespace math {
 
@@ -45,6 +47,7 @@ public:
         is_floating_point = base::is_floating_point_type<real_t>::Yes
     };
 
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201) // Nameless struct or union
     union {
         struct {
             real_t x_;  ///< Component along the x axis */
@@ -52,6 +55,7 @@ public:
         };
         real_t elements_[2];	///< Used for array like access to elements */
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
    /**
     * \typedef real_t element_type
@@ -91,8 +95,8 @@ public:
      * \param   count       Number of elements in the array.
      */
     vector2(const real_t* input_val, size_t count) {
-        std::memcpy(elements_, input_val, 
-            std::min(_countof(elements_), count) * sizeof(real_t));
+        memcpy(elements_, input_val, 
+               min(_countof(elements_), count) * sizeof(real_t));
     }
 
     /**

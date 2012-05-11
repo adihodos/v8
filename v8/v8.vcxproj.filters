@@ -152,5 +152,8 @@
     <ClInclude Include="math\math_utils.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="base\compiler_warnings.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

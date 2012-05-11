@@ -26,13 +26,14 @@
 
 #pragma once
 
+#include <memory.h>
 #include <cassert>
 #include <cmath>
-#include <cstring>
 #include <vector>
+#include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
 #include "v8/math/math_utils.h"
 #include "v8/math/vector3.h"
-#include "v8/base/fundamental_types.h"
 
 namespace v8 { namespace math {
 
@@ -63,6 +64,8 @@ public :
     typedef real_t&         reference;
     typedef const real_t&   const_reference;
     typedef vector4<real_t> vector4_t;
+
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             real_t x_;
@@ -71,22 +74,23 @@ public :
             real_t w_;
         };
         real_t elements_[4];   ///< Array like access to the vector's elements */
-  };
+    };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
-  static const vector4_t	zero;
+    static const vector4_t	zero;
 
-  static const vector4_t	unit_x;
+    static const vector4_t	unit_x;
 
-  static const vector4_t	unit_y;
+    static const vector4_t	unit_y;
 
-  static const vector4_t	unit_z;
+    static const vector4_t	unit_z;
 
-  /**
-   * \fn    vector4::vector4()
-   *
-   * \brief Default constructor. Leaves elements uninitialized.
-   *
-   */
+   /**
+    * \fn    vector4::vector4()
+    *
+    * \brief Default constructor. Leaves elements uninitialized.
+    *
+    */
     vector4() {}
 
     /**

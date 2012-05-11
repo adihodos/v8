@@ -28,9 +28,10 @@
 
 #include <cmath>
 #include <memory.h>
+#include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
 #include "v8/math/math_utils.h"
 #include "v8/math/vector2.h"
-#include "v8/base/fundamental_types.h"
 
 namespace v8 { namespace math {
 
@@ -49,6 +50,7 @@ public :
         is_floating_point = base::is_floating_point_type<real_t>::Yes
     };
 
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             //
@@ -62,6 +64,7 @@ public :
         };
         real_t elements_[4];	///< Used for array like access to the elements */
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
     /**
      * \typedef real_t element_type

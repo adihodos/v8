@@ -110,7 +110,7 @@ private :
     }
 
     /**
-     * \brief Take ownership of a resource from a rvalue (temporary).
+     * \brief Take ownership of a resource from an rvalue (temporary).
      */
     void steal_from_rvalue(self_t&& rval) {
         //

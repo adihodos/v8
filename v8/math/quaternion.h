@@ -26,10 +26,13 @@
 
 #pragma once
 
+#include <memory.h>
+#include <cmath>
+#include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
 #include "v8/math/math_utils.h"
 #include "v8/math/matrix3X3.h"
 #include "v8/math/vector3.h"
-#include "v8/base/fundamental_types.h"
 
 namespace v8 { namespace math {
 
@@ -50,6 +53,7 @@ public :
     typedef const real_t&       const_reference;
     typedef quaternion<real_t>  quaternion_t;
 
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             real_t w_;
@@ -59,6 +63,7 @@ public :
         };
         real_t elements_[4];
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
     static const quaternion<real_t>     null;
 

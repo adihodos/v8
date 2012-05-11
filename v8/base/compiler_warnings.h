@@ -26,65 +26,22 @@
 
 #pragma once
 
-#include "v8/math/vector2.h"
+#if defined(_MSC_VER)
 
-namespace v8 { namespace math {
+#ifndef MSVC_DISABLE_WARNING_BLOCK_BEGIN
+#define MSVC_DISABLE_WARNING_BLOCK_BEGIN(warning_id)  \
+  __pragma(warning(push)) \
+  __pragma(warning(disable : warning_id))
+#endif
 
-class circle {
-public :
-  circle() {}
-  
-  circle(const vector2F& centre, float radius) 
-    : centre_(centre), radius_(radius) {}
-    
-  circle(float cx, float cy, float radius)
-    : centre_(cx, cy), radius_(radius) {}
-  
-  const vector2F& get_centre_point() const {
-    return centre_;
-  }
-  
-  float get_radius() const {
-    return radius_;
-  }
-    
-  void set_centre_point(float x, float y) {
-    centre_.x_ = x;
-    centre_.y_ = y;
-  }
-  
-  void set_centre_point(const vector2F& pt) {
-    set_centre_point(pt.x_, pt.y_);
-  }
-  
-  void set_radius(float r) {
-    radius_ = r;
-  }
-private :
-  vector2F   centre_;
-  float     radius_;
-};
+#ifndef MSVC_DISABLE_WARNING_BLOCK_END
+#define MSVC_DISABLE_WARNING_BLOCK_END(warning_id) \
+  __pragma(warning(pop))
+#endif
 
-inline
-bool
-intersect_test(
-  const circle& c1,
-  const circle& c2
-  )
-{
-  return distance(c1.get_centre_point(), c2.get_centre_point()) <= 
-         c1.get_radius() + c2.get_radius();
-}
+#else // !defined(_MSC_VER)
 
-inline
-bool
-point_in_circle(
-  const vector2F& pt,
-  const circle& c
-  )
-{
-  return distance(pt, c.get_centre_point()) <= c.get_radius();
-}
+#define MSVC_DISABLE_WARNING_BLOCK_BEGIN(warnid)
+#define MSVC_DISABLE_WARNING_BLOCK_END(warnid)
 
-} // namespace math
-} // namespace v8
+#endif

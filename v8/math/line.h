@@ -74,4 +74,3 @@ angle_of(
   
 } // namespace math
 } // namespace v8
-

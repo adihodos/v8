@@ -26,6 +26,8 @@
 
 #pragma once
 
+#include "v8/base/compiler_warnings.h"
+
 namespace v8 { namespace math {
 
 /*!
@@ -38,6 +40,8 @@ namespace v8 { namespace math {
  */
 class color {
 public :
+
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             float r_; /*!<< Red component intensity */
@@ -45,9 +49,9 @@ public :
             float b_; /*!<< Blue component intensity */
             float a_; /*!<< Alpha component (opacity) */
         };
-
         float components_[4];
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
     color(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f) 
         : r_(r), g_(g), b_(b), a_(a) {}

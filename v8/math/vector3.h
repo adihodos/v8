@@ -5,10 +5,12 @@
  */
 #pragma once
 
+#include <memory.h>
 #include <cassert>
-#include <cstring>
-#include "v8/math/math_utils.h"
+#include <cmath>
 #include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
+#include "v8/math/math_utils.h"
 
 namespace v8 { namespace math {
 
@@ -41,6 +43,7 @@ public:
     typedef const real_t&   const_reference;
     typedef vector3<real_t> vector3_t;
 
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             real_t x_;
@@ -49,6 +52,7 @@ public:
         };
         real_t elements_[3];	///< Allows array like access to the elements */
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
     static const vector3_t zero;  ///< The null vector (0, 0, 0) of corresponding type */
 

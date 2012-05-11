@@ -26,13 +26,14 @@
 
 #pragma once
 
+#include <memory.h>
 #include <cassert>
 #include <cmath>
-#include <cstring>
+#include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
 #include "v8/math/math_utils.h"
 #include "v8/math/matrix3X3.h"
 #include "v8/math/vector4.h"
-#include "v8/base/fundamental_types.h"
 
 namespace v8 { namespace math {
 
@@ -67,6 +68,7 @@ public :
     typedef const real_t&       const_reference;
     typedef matrix_4X4<real_t>   matrix4X4_t;
 
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             real_t a11_, a12_, a13_, a14_; ///< The first row */
@@ -76,6 +78,7 @@ public :
         };
         real_t elements_[16];	///< Access to elements using an array */
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
     static const matrix_4X4<real_t>	null;   ///< The null matrix */
 

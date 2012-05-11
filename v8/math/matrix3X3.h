@@ -26,11 +26,14 @@
 
 #pragma once
 
+#include <cmath>
+#include <memory.h>
 #include <cassert>
+#include "v8/base/fundamental_types.h"
+#include "v8/base/compiler_warnings.h"
 #include "v8/math/math_utils.h"
 #include "v8/math/vector2.h"
 #include "v8/math/vector3.h"
-#include "v8/base/fundamental_types.h"
 
 namespace v8 { namespace math {
 
@@ -68,6 +71,7 @@ public:
     typedef const real_t&       const_reference;
     typedef matrix_3X3<real_t>  matrix3X3_t;
 
+    MSVC_DISABLE_WARNING_BLOCK_BEGIN(4201)
     union {
         struct {
             //
@@ -82,6 +86,7 @@ public:
         };
         real_t elements_[9];
     };
+    MSVC_DISABLE_WARNING_BLOCK_END(4201)
 
     static const matrix3X3_t zero;  ///< The zero matrix. */
 
