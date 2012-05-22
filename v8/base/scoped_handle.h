@@ -40,9 +40,7 @@ class scoped_handle {
 public :
     typedef management_policy                           mpolicy_t;
     typedef typename mpolicy_t::handle_t                handle_t;
-    typedef typename mpolicy_t::handle_ptr_t            handle_ptr_t;
-    typedef typename mpolicy_t::handle_ref_t            handle_ref_t;
-    typedef typename mpolicy_t::handle_const_ref_t      handle_const_ref_t;
+    typedef handle_t*                                   handle_ptr_t;
     typedef scoped_handle<management_policy>            self_t;
 
 private :

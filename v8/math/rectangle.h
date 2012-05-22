@@ -30,70 +30,116 @@
 
 namespace v8 { namespace math {
 
+template<typename real_t>
 class rectangle {
 public :
-  rectangle() {}
-  
-  rectangle(float left, float top, float right, float bottom)
-    : top_left_(left, top), bot_right_(right, bottom) {}
-    
-  rectangle(const vector2F& tl, const vector2F& br)
-    : top_left_(tl), bot_right_(br) {}
+    typedef rectangle<real_t>   self_t;
 
-  float width() const {
-    return bot_right_.x_ - top_left_.x_;
-  }
-  
-  float height() const {
-    return bot_right_.y_ - top_left_.y_;
-  }
-  
-  const vector2F& get_top_left_point() const {
-    return top_left_;
-  }
-  
-  const vector2F& get_bottom_right_point() const {
-    return bot_right_;
-  }
-  
-  void set_top_left_point(float x, float y) {
-    top_left_.x_ = x;
-    top_left_.y_ = y;
-  }
-  
-  void set_top_left_point(const vector2F& pt) {
-    set_top_left_point(pt.x_, pt.y_);
-  }
-  
-  void set_bottom_right_point(float x, float y) {
-    bot_right_.x_ = x;
-    bot_right_.y_ = y;
-  }
-  
-  void set_bottom_right_point(vector2F& pt) {
-    set_bottom_right_point(pt.x_, pt.y_);
-  }
-  
-  vector2F get_centre_point() const {
-    return (bot_right_ + top_left_) / 2;
-  }
+    rectangle() {}
+
+    rectangle(real_t left, real_t top, real_t right, real_t bottom)
+        : top_left_(left, top), bot_right_(right, bottom) {}
+
+    template<typename real_u>
+    rectangle(real_u left, real_u top, real_u right, real_u bottom)
+        : top_left_(left, top), bot_right_(right, bottom) {}
+
+    template<typename real_u>
+    rectangle(const rectangle<real_u>& right)
+        : top_left_(right.get_top_left()),
+          bot_right_(right.get_bottom_right()) {}
+
+    rectangle(const vector2<real_t>& tl, const vector2<real_t>& br)
+        : top_left_(tl), bot_right_(br) {}
+
+    template<typename real_u>
+    rectangle(const vector2<real_u>& tl, const vector2<real_u>& br)
+        : top_left_(tl), bot_right_(br) {}
+
+    real_t width() const {
+        return bot_right_.x_ - top_left_.x_;
+    }
+
+    real_t height() const {
+        return bot_right_.y_ - top_left_.y_;
+    }
+
+    const vector2<real_t>& get_top_left() const {
+        return top_left_;
+    }
+
+    const vector2<real_t>& get_bottom_right() const {
+        return bot_right_;
+    }
+
+    void set_top_left(real_t x, real_t y) {
+        top_left_.x_ = x;
+        top_left_.y_ = y;
+    }
+
+    void set_top_left(const vector2<real_t>& pt) {
+        set_top_left_point(pt.x_, pt.y_);
+    }
+
+    void set_bottom_right(real_t x, real_t y) {
+        bot_right_.x_ = x;
+        bot_right_.y_ = y;
+    }
+
+    void set_bottom_right(vector2<real_t>& pt) {
+        set_bottom_right_point(pt.x_, pt.y_);
+    }
+
+    vector2<real_t> get_centre() const {
+        return (bot_right_ + top_left_) / 2;
+    }
+
+    template<typename real_u>
+    self_t& operator=(const rectangle<real_u>& right) {
+        top_left_ = right.get_top_left();
+        bot_right_ = right.get_bottom_right();
+        return *this;
+    }
+
 private :
-  vector2F top_left_;
-  vector2F bot_right_;
+    vector2<real_t> top_left_;
+    vector2<real_t> bot_right_;
 };
 
+template<typename R1, typename R2>
+inline bool operator==(const rectangle<R1>& left, const rectangle<R2>& right) {
+    return left.get_top_left() == right.get_top_left() &&
+           left.get_bottom_right() == right.get_bottom_right();
+}
+
+template<typename R1, typename R2>
+inline bool operator!=(const rectangle<R1>& left, const rectangle<R2>& right) {
+    return !(left == right);
+}
+
+template<typename real1, typename real2>
 inline
 bool
 point_in_rectangle(
-  const vector2F& point,
-  const rectangle& rc
+  const vector2<real1>& point,
+  const rectangle<real2>& rc
   )
 {
-  return point.x_ >= rc.get_top_left_point().x_ &&
-         point.x_ <= rc.get_bottom_right_point().x_ &&
-         point.y_ >= rc.get_top_left_point().y_ &&
-         point.y_ <= rc.get_bottom_right_point().y_;
+  return point.x_ >= rc.get_top_left().x_ &&
+         point.x_ <= rc.get_bottom_right().x_ &&
+         point.y_ >= rc.get_top_left().y_ &&
+         point.y_ <= rc.get_bottom_right().y_;
 }
+
+typedef rectangle<float>    rectF;
+
+typedef rectangle<double>   rectD;
+
+typedef rectangle<int>      rectI;
+
+typedef rectangle<short>    rectS;
+
+typedef rectangle<long>     rectL;
 
 } // namespace math
 } // namespace v8

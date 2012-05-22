@@ -19,6 +19,15 @@
     <Filter Include="math">
       <UniqueIdentifier>{68074211-9fa7-4e30-bc4e-b488164ebdf8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rendering">
+      <UniqueIdentifier>{478f7c2f-8eb8-4bc0-b0a0-dff27d85086e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rendering\opengl">
+      <UniqueIdentifier>{3fcdaafb-7970-477b-b6b3-05e8b2c97fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rendering\directx">
+      <UniqueIdentifier>{559f0c40-006f-43a4-b976-1aa639db857f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -56,6 +65,12 @@
     </ClCompile>
     <ClCompile Include="math\light.cc">
       <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="base\debug_helpers.cc">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\win32_utils.cc">
+      <Filter>base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +168,24 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="base\compiler_warnings.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\misc.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\debug_helpers.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\crt_handle_policies.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\win32_handle_policies.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\win32_utils.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\timers.h">
       <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>

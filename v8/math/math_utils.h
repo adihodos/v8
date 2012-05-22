@@ -29,9 +29,7 @@
 #include "v8/base/fundamental_types.h"
 #include "v8/math/math_constants.h"
 
-namespace v8 { namespace math {
-
-namespace internals {
+namespace v8 { namespace math { namespace internals {
 
 template<typename real_type, bool is_floating_point = false>
 struct op_eq_helper {
@@ -109,8 +107,6 @@ to_degrees(
 }
 
 /**
- * \fn  template<typename real_t> inline real_t to_radians( real_t degrees )
- *
  * \brief   Converts from degrees to radians.
  */
 template<typename real_t>
@@ -132,11 +128,11 @@ inv_sqrt(real_t val) {
 
 template<typename T>
 inline T clamp(const T& val, const T& min, const T& max) {
-  return val <= min ? min : (val >= max ? max : val);
+  return (val <= min ? min : (val >= max ? max : val));
 }
 
-template<typename T>
-inline T min(const T& left, const T& right) {
+template<typename Ty>
+inline Ty min(const Ty& left, const Ty& right) {
     return left < right ? left : right;
 }
 

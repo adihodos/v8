@@ -28,6 +28,10 @@
 
 namespace v8 { namespace base {
 
+/**
+ * Storage policy for pointers to objects allocated with operator new.
+ *\see scoped_ptr class.
+ */
 template<typename T>
 struct default_storage {
     static void dispose(T* ptr) {
@@ -39,6 +43,10 @@ struct default_storage {
     };
 };
 
+/**
+ * Storage policy for arrays allocated with operator new[].
+ *\see scoped_ptr class.
+ */
 template<typename T>
 struct default_array_storage {
     static void dispose(T* ptr) {
@@ -50,6 +58,26 @@ struct default_array_storage {
     };
 };
 
+/**
+ *\brief Storage policy for a pointer to a COM interface.
+ *\see scoped_ptr class.
+ */
+template<typename T>
+struct com_storage {
+    static void dispose(T* ptr) {
+        if (ptr)
+            ptr->Release();
+    }
+
+    enum {
+        is_array_ptr = 0
+    };
+};
+
+/**
+ * Intrusive reference count policy.
+ * \see shared_pointer class.
+ */
 template<typename T>
 struct intrusive_refcount {
     static void add_ref(const T* obj) {
@@ -59,10 +87,15 @@ struct intrusive_refcount {
 
     static bool dec_ref(const T* obj) {
         if (obj)
-            obj->dec_ref();
+            return obj->dec_ref();
+        return false;
     }
 };
 
+/**
+ * Reference count policy for pointers to COM interfaces.
+ * \see shared_pointer class.
+ */
 template<typename T>
 struct com_refcount {
     static void add_ref(const T* obj) {
@@ -72,10 +105,14 @@ struct com_refcount {
 
     static bool dec_ref(const T* obj) {
         if (obj)
-            obj->Release();
+            return obj->Release() == 0;
     }
 };
 
+/**
+ * Assert checking policy for smart pointer classes.
+ * \see shared_pointer, scoped_ptr classes.
+ */
 template<typename T>
 struct assert_check {
     static void check_ptr(const T* ptr) {
@@ -83,6 +120,10 @@ struct assert_check {
     }
 };
 
+/**
+ * No checking policy for smart pointer classes.
+ * \see shared_pointer, scoped_ptr classes.
+ */
 template<typename T>
 struct no_checking {
     static void check_ptr(const T*) {}

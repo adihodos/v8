@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include "v8/base/misc.h"
 #include "v8/base/pointer_policies.h"
 
 namespace v8 { namespace base {
@@ -59,6 +60,7 @@ public :
     typedef const T&                                            const_ref_t;
 
 private :
+    NO_CC_ASSIGN(scoped_ptr);
     /*!< Pointer to the allocated memory. */
     T*  pointee_;
 
@@ -112,13 +114,13 @@ public :
      * \brief Construct from an rvalue object with a convertible pointer type.
      */
     template<typename U>
-    scoped_ptr(scoped_ptr<U, management_policy, checking_policy>&& right)
+    scoped_ptr(scoped_ptr<U, storage_policy, checking_policy>&& right)
         : pointee_(right.pointee_) {
         right.pointee_ = nullptr;
     }
 
-    scoped_ptr(const self_t&) = delete;
-    self_t& operator=(const self_t&) = delete;
+//    scoped_ptr(const self_t&) = delete;
+//    self_t& operator=(const self_t&) = delete;
 
     self_t& operator=(self_t&& right) {
         if (this != &right) {
@@ -131,7 +133,7 @@ public :
 
     template<typename U>
     self_t& operator=(
-            scoped_ptr<U, management_policy, checking_policy>&& right
+            scoped_ptr<U, storage_policy, checking_policy>&& right
             )
     {
         spolicy_t::dispose(pointee_);
@@ -176,7 +178,7 @@ public :
         static_assert(spolicy_t::is_array_ptr,
                       "Subscripting only applies to pointer to array!");
         checkpolicy_t::check_ptr(pointee_);
-        return ptr_[index];
+        return pointee_[index];
     }
 
     /**
@@ -186,7 +188,7 @@ public :
         static_assert(spolicy_t::is_array_ptr,
                       "Subscripting only applies to pointer to array!");
         checkpolicy_t::check_ptr(pointee_);
-        return ptr_[index];
+        return pointee_[index];
     }
 
     /**
@@ -194,9 +196,8 @@ public :
      * \param Reference to a scoped_ptr object.
      * \return The raw pointer that the scoped_ptr owns.
      */
-    friend inline T* scoped_pointer_get(const self_t& sp) {
-        return sp.get();
-    }
+    template<typename U, template<typename> class V, template<typename> class W> 
+    friend U* scoped_pointer_get(const scoped_ptr<U, V, W>& sp);
 
     /**
      * \brief Releases ownerhip of the raw pointer to the caller, who now has the
@@ -204,9 +205,8 @@ public :
      * \param sp Reference to a scoped_ptr object.
      * \return The raw pointer.
      */
-    friend inline T* scoped_pointer_release(self_t& sp) {
-        return sp.release();
-    }
+    template<typename U, template<typename> class V, template<typename> class W>
+    friend U* scoped_pointer_release(scoped_ptr<U, V, W>& sp);
 
     /**
      * \brief Reset the owned pointer of a scoped_ptr to the new value.
@@ -216,9 +216,8 @@ public :
      *        original owned pointer.
      * \remarks The old raw pointer owned by the scoped_ptr will be destroyed.
      */
-    friend inline void scoped_pointer_reset(self_t& sp, T* other = nullptr) {
-        sp.reset(other);
-    }
+    template<typename U, template<typename> class V, template<typename> class W>
+    friend void scoped_pointer_reset(scoped_ptr<U, V, W>& sp, U* other /* = nullptr */);
 
     /**
      * \brief Convenience function to get a pointer to the raw pointer
@@ -229,36 +228,60 @@ public :
      *          if you are going to use the return value to reset the owned
      *          pointer of the scoped_ptr object.
      */
-    friend inline T** scoped_pointer_get_impl(self_t& sp) {
-        return sp.get_impl();
-    }
+    template<typename U, template<typename> class V, template<typename> class W>
+    friend U** scoped_pointer_get_impl(scoped_ptr<U, V, W>& sp);
 
     /**
      * \brief Swap contents with another scoped_ptr object.
      */
-    friend inline void swap(self_t& left, self_t& right) {
-        return left.swap(right);
-    }
+    template<typename U, template<typename> class V, template<typename> class W> 
+    friend void swap(scoped_ptr<U, V, W>& left, scoped_ptr<U, V, W>& right);
 };
 
-template<typename T, typename U, typename W>
+template<typename T, template<typename> class U, template<typename> class W>
 inline bool operator==(const T* left, scoped_ptr<T, U, W>& right) {
     return left == scoped_pointer_get(right);
 }
 
-template<typename T, typename U, typename W>
+template<typename T, template<typename> class U, template<typename> class W>
 inline bool operator!=(const T* left, scoped_ptr<T, U, W>& right) {
     return !(left == right);
 }
 
-template<typename T, typename U, typename W>
+template<typename T, template<typename> class U, template<typename> class W>
 inline bool operator==(scoped_ptr<T, U, W>& left, const T* right) {
     return right == left;
 }
 
-template<typename T, typename U, typename W>
+template<typename T, template<typename> class U, template<typename> class W>
 inline bool operator!=(scoped_ptr<T, U, W>& left, const T* right) {
     return !(right == left);
+}
+
+template<typename U, template<typename> class V, template<typename> class W> 
+inline U* scoped_pointer_get(const scoped_ptr<U, V, W>& sp) {
+    return sp.get();
+}
+
+    
+template<typename U, template<typename> class V, template<typename> class W>
+inline U* scoped_pointer_release(scoped_ptr<U, V, W>& sp) {
+    return sp.release();
+}
+
+template<typename U, template<typename> class V, template<typename> class W>
+inline void scoped_pointer_reset(scoped_ptr<U, V, W>& sp, U* other = nullptr) {
+    sp.reset(other);
+}
+
+template<typename U, template<typename> class V, template<typename> class W>
+inline U** scoped_pointer_get_impl(scoped_ptr<U, V, W>& sp) {
+    return sp.get_impl();
+}
+
+template<typename U, template<typename> class V, template<typename> class W> 
+inline void swap(scoped_ptr<U, V, W>& left, scoped_ptr<U, V, W>& right) {
+    return left.swap(right);
 }
 
 } // namespace base 

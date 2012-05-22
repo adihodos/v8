@@ -97,7 +97,7 @@ def copy_header_files(src_path, dst_path) :
 
 def copy_library_files(src_path, dst_path) :
     dir_mappings = [('x86', 'X86'), 
-                    ('x64', 'X64')]
+                    ('amd64', 'X64')]
 
     for mapping in dir_mappings :
         src_dir_path = os.path.join(src_path, mapping[0])

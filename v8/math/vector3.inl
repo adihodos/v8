@@ -60,20 +60,16 @@ template<typename real_t>
 inline
 v8::math::vector3<real_t>&
 v8::math::vector3<real_t>::operator /=(real_t k) {
-    using namespace internals;
+    using namespace v8::math::internals;
     const real_t dividend = transform_dividend_for_division<
-        real_t, 
-        is_floating_point
+        real_t, is_floating_point
     >::transform(k);
 
-    divide_helper<
-        real_t,
-        is_floating_point
-    > div_helper;
+    typedef divide_helper<real_t, is_floating_point> div_t;
 
-    x_ = div_helper(x_, dividend);
-    y_ = div_helper(y_, dividend);
-    z_ = div_helper(z_, dividend);
+    x_ = div_t::divide(x_, dividend);
+    y_ = div_t::divide(y_, dividend);
+    z_ = div_t::divide(z_, dividend);
     return *this;
 }
 

@@ -29,8 +29,38 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cstdarg>
 
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <string>
 #include <vector>
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#ifndef UNICODE
+#define UNICODE
+#endif
+
+#ifndef _UNICODE
+#define _UNICODE
+#endif
+
+#include <Windows.h>
+
+#if defined(RENDER_SYSTEM_DIRECTX10) || defined(RENDER_SYSTEM_DIRECTX11)
+#include <d3d10.h>
+#include <D3DX10.h>
+#include <d3d11.h>
+#include <D3DX11.h>
+#include <D3Dcompiler.h>
+#endif // defined(RENDER_SYSTEM_DIRECTX10) || defined(RENDER_SYSTEM_DIRECTX11)

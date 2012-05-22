@@ -36,14 +36,18 @@ namespace v8 { namespace math {
  * \class   camera
  *
  * \brief   Represents the point of view for an entity, in a 3D scene. 
- * 			The vectors for the camera's frame are always in world space coordinates.
+ * 			The vectors for the camera's frame are always expressed in world 
+ * 			space coordinates. The camera uses a left handed coordinate
+ * 			system.
  */
 class camera {
 public :
+
     enum projection_type {
         ptype_perspective,
         ptype_othographic
     };
+
 private :
     vector4F                 view_pos_; ///< The view frame origin, in world coordinates */
     vector4F                 view_side_;	///< The side direction vector (x axis) */
@@ -56,8 +60,6 @@ private :
     projection_type             projection_type_;
 
     /**
-     * \fn  void camera::update_view_matrix() const;
-     *
      * \brief   Constructs the world space to view space transformation matrix.
      * 			Given the view frame vectors, we can derive the world to view 
      * 			matrix in the following way :
@@ -84,8 +86,6 @@ private :
 public :
 
     /**
-     * \fn  camera::camera()
-     *
      * \brief   Default constructor.
      *
      * \remarks The camera is initialized with the following settings :
@@ -102,10 +102,6 @@ public :
     camera();
 
     /**
-     * \fn  camera& camera::set_view_frame( const math::vector4F& origin,
-     * const math::vector4F& dir_vector, const math::vector4F& up_vector,
-     * const math::vector4F& right_vector );
-     *
      * \brief   Sets the four elements of the view frame.
      *
      * \param   origin          The origin point.
@@ -124,16 +120,11 @@ public :
         );
 
     /**
-     * \fn  camera& camera::set_origin(const math::vector4F& origin);
-     *
-     * \brief   Sets the origin point.
+     * \brief   Sets the origin point for the camera's coordinate system.
      */
     inline camera& set_origin(const math::vector4F& origin);
 
     /**
-     * \fn  camera& camera::set_axes( const math::vector4F& dir_vector, const math::vector4F& up_vector,
-     * const math::vector4F& right_vector );
-     *
      * \brief   Sets the vectors that give the directions of the view frame axes.
      *
      * \param   dir_vector      The look direction vector.
@@ -141,7 +132,8 @@ public :
      * \param   right_vector    The right direction vector.
      *
      * \remarks This function assumes that dir_vector, up_vector, right_vector
-     * 			are three orthonormal vectors.
+     * 			are three orthonormal vectors. If they are not, the behaviour
+     * 			of the function is undefined.
      */
     camera& set_axes(
         const math::vector4F& dir_vector, 
@@ -150,15 +142,19 @@ public :
         );
 
     /**
-     * \fn  camera& camera::look_at( const math::vector3& origin, const math::vector3& world_up,
-     * const math::vector3& target );
-     *
-     * \brief   Derive the view frame, given the three parameters.
+     * \brief   Derive the view frame, given the three parameters. This function
+     * 			is similar to OpenGL's gluLookAt() and Direct3D's 
+     * 			D3DXMatrixLookAtLH().
      *
      * \param   origin      The camera's origin point (world space coords).
      * \param   world_up    The world up direction vector (world space coords).
      * \param   target      The point the camera looks at (world space coords).
-     * 						
+     * \remarks Since the camera uses a left handle coodinate system, 
+     * 			the vectors representing the axes of the camera's coordinate 
+     * 			system are derived with the following method :
+     * 			D = (target - origin) / || target - origin ||
+     * 			R = (world_up x D) / || world_up x D ||
+     * 			U = D x R
      */
     camera& look_at(
         const math::vector3F& origin, 
@@ -167,62 +163,43 @@ public :
         );
 
     /**
-     * \fn  inline projection_type camera::get_projection_type() const;
-     *
      * \brief   Gets the projection type (orthographic/projection).
      */
     inline projection_type get_projection_type() const;
 
     /**
-     * \fn  inline const math::vector4F& camera::get_origin() const;
-     *
      * \brief   Gets the origin point of the view frame.
      *
      */
     inline const math::vector4F& get_origin() const;
 
     /**
-     * \fn  inline const math::vector4F& camera::get_direction_vector() const;
-     *
      * \brief   Gets the direction vector of the camera.
      *
      */
     inline const math::vector4F& get_direction_vector() const;
 
     /**
-     * \fn  inline const math::vector4F& camera::get_up_vector() const;
-     *
      * \brief   Gets the up direction vector of the camera.
      */
     inline const math::vector4F& get_up_vector() const;
 
     /**
-     * \fn  inline const math::vector4F& camera::get_right_vector() const;
-     *
-     * \brief   Gets the right direction vector.
-     *
+     * \brief   Gets the direction vector.
      */
     inline const math::vector4F& get_right_vector() const;
 
     /**
-     * \fn  inline const math::matrix4X4F& camera::get_view_transform() const;
-     *
      * \brief   Gets the view transform matrix.
-     *
      */
     inline const math::matrix_4X4F& get_view_transform() const;
 
     /**
-     * \fn  inline const math::matrix4X4F& camera::get_projection_transform() const;
-     *
      * \brief   Gets the projection transform matrix.
-     *
      */
     inline const math::matrix_4X4F& get_projection_transform() const;
 
     /**
-     * \fn  void camera::set_projection_matrix( const math::matrix4X4F& proj, projection_type ptype );
-     *
      * \brief   Sets the projection matrix.
      *
      * \param   proj    A 4x4 matrix representing a projection.

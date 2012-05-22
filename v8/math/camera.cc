@@ -71,3 +71,21 @@ v8::math::camera::set_projection_matrix(
     projection_matrix_ = proj;
     projection_type_ = ptype;
 }
+
+v8::math::camera& v8::math::camera::look_at( 
+    const math::vector3F& origin, 
+    const math::vector3F& world_up, 
+    const math::vector3F& target
+    )
+{
+    const vector3F D = (target - origin).normalize();
+    const vector3F R = cross_product(world_up, D).normalize();
+    const vector3F U = cross_product(D, R);
+
+    return set_view_frame(
+        vector4F::as_affine_vector(origin),
+        vector4F::as_affine_vector(D),
+        vector4F::as_affine_vector(U),
+        vector4F::as_affine_vector(R)
+        );
+}

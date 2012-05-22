@@ -27,5 +27,8 @@
     <ClCompile Include="transform_tests.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scoped_ptr_unit_tests.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
