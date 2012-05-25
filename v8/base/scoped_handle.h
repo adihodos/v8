@@ -27,6 +27,7 @@
 #pragma once
 
 #include "v8/base/handle_traits.h"
+#include "v8/base/misc.h"
 
 namespace v8 { namespace base {
 
@@ -40,10 +41,13 @@ class scoped_handle {
 public :
     typedef management_policy                           mpolicy_t;
     typedef typename mpolicy_t::handle_t                handle_t;
-    typedef handle_t*                                   handle_ptr_t;
+    typedef typename mpolicy_t::handle_ptr_t            handle_ptr_t;
+    typedef typename mpolicy_t::handle_ref_t            handle_ref_t;
+    typedef typename mpolicy_t::handle_const_ref_t      handle_const_ref_t;
     typedef scoped_handle<management_policy>            self_t;
 
 private :
+    NO_CC_ASSIGN(scoped_handle);
     /*!< Owned handle */
     handle_t    handle_;
 
@@ -65,7 +69,7 @@ private :
         return tmpHandle;
     }
 
-    void release(handle_t newValue) {
+    void reset(handle_t newValue) {
         if (handle_ != newValue) {
             mpolicy_t::dispose(handle_);
             handle_ = newValue;
@@ -93,8 +97,6 @@ public :
         handle_ = right.release();
     }
 
-    scoped_handle(const self_t&) = delete;
-
     ~scoped_handle() {
         mpolicy_t::dispose(handle_);
     }
@@ -108,41 +110,41 @@ public :
         return handle_ == mpolicy_t::null_handle();
     }
 
-    friend inline handle_t scoped_handle_get(const self_t& sh) {
-        return sh.get();
-    }
+    /**
+     * \brief Explicit access to the raw handle owned by this object.
+     */
+    template<typename M>
+    friend typename scoped_handle<M>::handle_t scoped_handle_get(
+        const scoped_handle<M>& sh);
 
     /**
-     * \brief Release ownership of the handle to the caller.
+     * \brief Release ownership of the native handle to the caller.
      */
-    friend inline handle_t scoped_handle_release(self_t& sh) {
-        return sh.release();
-    }
-
-    friend inline void scoped_handle_reset(
-        self_t& sh, 
-        typename self_t::handle_t newValue = self_t::mpolicy_t::null_handle()
-        )
-    {
-        sh.release(newValue);
-    }
+    template<typename M> 
+    friend typename scoped_handle<M>::handle_t scoped_handle_release(
+        scoped_handle<M>& sh);
 
     /**
-     * \brief Returns a pointer to the owned handle.
+     * \brief Reset the owned handle to a new value.
+     * \remarks The old handle is destroyed before the assignment.
      */
-    friend inline handle_ptr_t scoped_handle_get_impl(self_t& sh) {
-        return sh.get_impl();
-    }
+    template<typename M>
+    friend void scoped_handle_reset(
+        scoped_handle<M>& sh, 
+        typename scoped_handle<M>::handle_t newValue);
+
+    /**
+     * \brief Returns a pointer to the raw handle.
+     */
+    template<typename M>
+    friend typename scoped_handle<M>::handle_ptr_t scoped_handle_get_impl(scoped_handle<M>& sh);
 
     /**
      * \brief Swaps contents with another object of this type.
      */
-    friend inline void swap(self_t& left, self_t& right) {
-        return left.swap(right);
-    }
-
-    self_t& operator=(const self_t&) = delete;
-
+    template<typename M> 
+    friend void swap(scoped_handle<M>& left, scoped_handle<M>& right);
+    
     self_t& operator=(self_t&& right) {
         if (this != &right) {
             mpolicy_t::dispose(handle_);
@@ -151,6 +153,36 @@ public :
         return *this;
     }
 };
+
+template<typename M>
+inline typename scoped_handle<M>::handle_t scoped_handle_get(
+    const scoped_handle<M>& sh) {
+    return sh.get();
+}
+
+template<typename M> 
+inline typename scoped_handle<M>::handle_t scoped_handle_release(
+    scoped_handle<M>& sh) {
+    return sh.release();
+}
+
+template<typename M>
+void scoped_handle_reset(
+    scoped_handle<M>& sh, 
+    typename scoped_handle<M>::handle_t newValue = typename scoped_handle<M>::mpolicy_t::null_handle()) {
+    sh.reset(newValue);
+}
+
+template<typename M>
+typename scoped_handle<M>::handle_ptr_t scoped_handle_get_impl(
+    scoped_handle<M>& sh) {
+    return sh.get_impl_ptr();
+}
+
+template<typename M> 
+void swap(scoped_handle<M>& left, scoped_handle<M>& right) {
+    left.swap(right);
+}
 
 template<typename T>
 inline bool operator==(const typename T::handle_t& left,

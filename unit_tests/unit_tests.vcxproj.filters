@@ -30,5 +30,8 @@
     <ClCompile Include="scoped_ptr_unit_tests.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scoped_handle_unittests.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

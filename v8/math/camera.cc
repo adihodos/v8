@@ -7,8 +7,7 @@ v8::math::camera::camera()
         view_up_(vector4F::unit_y),
         view_dir_(vector4F::unit_z),
         viewmatrix_cache_valid_(true),
-        view_matrix_(matrix_4X4F::identity),
-        projection_type_(ptype_perspective) 
+        view_matrix_(matrix_4X4F::identity)
 {
 }
 
@@ -60,16 +59,6 @@ v8::math::camera::set_axes(
     view_dir_ = dir_vector;
     viewmatrix_cache_valid_ = false;
     return *this;
-}
-
-void
-v8::math::camera::set_projection_matrix( 
-    const v8::math::matrix_4X4F& proj, 
-    projection_type ptype 
-    )
-{
-    projection_matrix_ = proj;
-    projection_type_ = ptype;
 }
 
 v8::math::camera& v8::math::camera::look_at( 

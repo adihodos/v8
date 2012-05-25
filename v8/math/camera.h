@@ -41,13 +41,6 @@ namespace v8 { namespace math {
  * 			system.
  */
 class camera {
-public :
-
-    enum projection_type {
-        ptype_perspective,
-        ptype_othographic
-    };
-
 private :
     vector4F                 view_pos_; ///< The view frame origin, in world coordinates */
     vector4F                 view_side_;	///< The side direction vector (x axis) */
@@ -56,8 +49,6 @@ private :
 
     mutable bool                viewmatrix_cache_valid_;
     mutable matrix_4X4F         view_matrix_;
-    matrix_4X4F                 projection_matrix_;
-    projection_type             projection_type_;
 
     /**
      * \brief   Constructs the world space to view space transformation matrix.
@@ -149,7 +140,7 @@ public :
      * \param   origin      The camera's origin point (world space coords).
      * \param   world_up    The world up direction vector (world space coords).
      * \param   target      The point the camera looks at (world space coords).
-     * \remarks Since the camera uses a left handle coodinate system, 
+     * \remarks Since the camera uses a left handed coodinate system, 
      * 			the vectors representing the axes of the camera's coordinate 
      * 			system are derived with the following method :
      * 			D = (target - origin) / || target - origin ||
@@ -161,11 +152,6 @@ public :
         const math::vector3F& world_up, 
         const math::vector3F& target
         );
-
-    /**
-     * \brief   Gets the projection type (orthographic/projection).
-     */
-    inline projection_type get_projection_type() const;
 
     /**
      * \brief   Gets the origin point of the view frame.
@@ -193,25 +179,9 @@ public :
      * \brief   Gets the view transform matrix.
      */
     inline const math::matrix_4X4F& get_view_transform() const;
-
-    /**
-     * \brief   Gets the projection transform matrix.
-     */
-    inline const math::matrix_4X4F& get_projection_transform() const;
-
-    /**
-     * \brief   Sets the projection matrix.
-     *
-     * \param   proj    A 4x4 matrix representing a projection.
-     * \param   ptype   The projection type (orthographic/perspective)
-     */
-    void set_projection_matrix(
-        const math::matrix_4X4F& proj, 
-        projection_type ptype
-        );
 };
 
-} // namespace gfx
+} // namespace math
 } // namespace v8
 
 #include "camera.inl"
