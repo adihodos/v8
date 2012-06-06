@@ -1,3 +1,11 @@
+template<typename real>
+template<typename real_u>
+v8::math::matrix_4X4<real>::matrix_4X4(const v8::math::matrix_3X3<real_u>& mtx) {
+    set_upper3x3(mtx);
+    set_row(4, vector4F::unit_w);
+    set_column(4, vector4F::unit_w);
+}
+
 template<typename real_t>
 v8::math::matrix_4X4<real_t>::matrix_4X4(
     real_t a11, real_t a12, real_t a13, real_t a14,
@@ -237,8 +245,9 @@ void v8::math::matrix_4X4<real_t>::get_inverse(v8::math::matrix_4X4<real_t>* mx)
 }
 
 template<typename real_t>
+template<typename real_u>
 v8::math::matrix_4X4<real_t>&
-v8::math::matrix_4X4<real_t>::set_upper3x3(const real_t* data) {
+v8::math::matrix_4X4<real_t>::set_upper3x3(const real_u* data) {
     for (size_t i = 0; i < 3; ++i) {
         size_t row = i * 4;
         for (size_t j = 0; j < 3; ++j) {
@@ -249,8 +258,9 @@ v8::math::matrix_4X4<real_t>::set_upper3x3(const real_t* data) {
 }
 
 template<typename real_t>
+template<typename real_u>
 void
-v8::math::matrix_4X4<real_t>::get_upper3x3(real_t* data) const {
+v8::math::matrix_4X4<real_t>::get_upper3x3(real_u* data) const {
     for (size_t i = 0; i < 3; ++i) {
         size_t row = i * 4;
         for (size_t j = 0; j < 3; ++j) {
@@ -520,10 +530,7 @@ v8::math::matrix_4X4<real_t>::make_perspective_projection_lh(
     )
 {
     const real_t kDistToProjWnd = real_t(1) / std::tan(vertical_fov / 2);
-    const real_t kNDmin = near_plane * depth_min;
-    const real_t kFDMax = far_plane * depth_max;
-    const real_t kNFDiff = far_plane - near_plane;
-    const real_t kFDMin = far_plane * depth_min;
+    const real_t kInvFarMinusNear = real_t(1) / (far_plane - near_plane);
 
     a11_ = kDistToProjWnd / aspect_ratio;
     a12_ = a13_ = a14_ = real_t(0);
@@ -532,8 +539,8 @@ v8::math::matrix_4X4<real_t>::make_perspective_projection_lh(
     a22_ = kDistToProjWnd;
 
     a31_ = a32_ = real_t(0);
-    a33_ = (kNDmin + kFDMax) / kNFDiff;
-    a34_ = near_plane * ((kFDMin - 2 * kNDmin - kFDMax) / kNFDiff);
+    a33_ = far_plane * kInvFarMinusNear;
+    a34_ = -(near_plane * a33_);
 
     a41_ = a42_ = a44_ = real_t(0);
     a43_ = real_t(1);
@@ -553,10 +560,7 @@ v8::math::matrix_4X4<real_t>::make_perspective_projection_rh(
     )
 {
     const real_t kDistToProjWnd = 1.0f / (std::tan(vertical_fov / 2));
-    const real_t kFDMax = far_plane * depth_max;
-    const real_t kFDMin = far_plane * depth_min;
-    const real_t kNDMin = near_plane * depth_min;
-    const real_t kNFDiff = near_plane - far_plane;
+    const real_t kInvNearMinusFar = real_t(1) / (near_plane - far_plane);
 
     a11_ = kDistToProjWnd / aspect_ratio;
     a12_ = a13_ = a14_ = real_t(0);
@@ -565,8 +569,8 @@ v8::math::matrix_4X4<real_t>::make_perspective_projection_rh(
     a21_ = a23_ = a24_ = real_t(0);
 
     a31_ = a32_ = real_t(0);
-    a33_ = (kFDMax - kNDMin) / kNFDiff;
-    a34_ = near_plane * ((kFDMax - kFDMin) / kNFDiff);
+    a33_ = (near_plane + far_plane) * kInvNearMinusFar;
+    a34_ = 2 * near_plane * far_plane * kInvNearMinusFar;
 
     a41_ = a42_ = real_t(0);
     a43_ = real_t(-1);

@@ -91,6 +91,9 @@ public :
      */
     matrix_4X4() {}
 
+    template<typename real_u>
+    matrix_4X4(const matrix_3X3<real_u>& mtx3x3);
+
     matrix_4X4(
         real_t a11, real_t a12, real_t a13, real_t a14,
         real_t a21, real_t a22, real_t a23, real_t a24,
@@ -258,7 +261,8 @@ public :
     * \param data    Pointer to an array of real_t values. Cannot be null.
     * 				Must contain at least 9 elements.
     */
-    matrix_4X4<real_t>& set_upper3x3(const real_t* data);
+    template<typename real_u>
+    matrix_4X4<real_t>& set_upper3x3(const real_u* data);
 
    /**
     * \fn    matrix4X4& matrix4X4::set_upper3x3(const matrix3X3& src)
@@ -267,7 +271,8 @@ public :
     *
     * \param src Source 3x3 matrix for the assignment
     */
-    matrix_4X4<real_t>& set_upper3x3(const matrix_3X3<real_t>& src) {
+    template<typename real_u>
+    matrix_4X4<real_t>& set_upper3x3(const matrix_3X3<real_u>& src) {
         return set_upper3x3(src.elements_);
     }
 
@@ -280,7 +285,8 @@ public :
     * 					data is to be copied. Cannot be null. 
     * 					Must have at least 9 elements.
     */
-    void get_upper3x3(real_t* data) const;
+    template<typename real_u>
+    void get_upper3x3(real_u* data) const;
 
    /**
     * \fn    void matrix4X4::get_upper3x3(matrix3X3* out_mtx) const
@@ -289,7 +295,8 @@ public :
     *
     * \param [in,out]    out_mtx Pointer to a 3x3 matrix that receives the data.
     */
-    void get_upper3x3(matrix_3X3<real_t>* out_mtx) const {
+    template<typename real_u>
+    void get_upper3x3(matrix_3X3<real_u>* out_mtx) const {
         get_upper3x3(out_mtx->elements_);
     }
 

@@ -2,6 +2,8 @@
 
 #include <DxErr.h>
 
+#include "compiler_warnings.h"
+
 #ifndef WIDEN2
 #define WIDEN2(x) L ## x
 #endif

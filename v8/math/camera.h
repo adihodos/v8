@@ -41,14 +41,25 @@ namespace v8 { namespace math {
  * 			system.
  */
 class camera {
-private :
-    vector4F                 view_pos_; ///< The view frame origin, in world coordinates */
-    vector4F                 view_side_;	///< The side direction vector (x axis) */
-    vector4F                 view_up_;  ///< The up direction vector (y axis) */
-    vector4F                 view_dir_; ///< The look direction vector (z axis) */
+public :
+    enum projection_type {
+        proj_type_perspective,
+        proj_type_ortho
+    };
 
-    mutable bool                viewmatrix_cache_valid_;
-    mutable matrix_4X4F         view_matrix_;
+private :
+    vector4F            view_pos_; ///< The view frame origin, in world coordinates */
+    vector4F            view_side_;	///< The side direction vector (x axis) */
+    vector4F            view_up_;  ///< The up direction vector (y axis) */
+    vector4F            view_dir_; ///< The look direction vector (z axis) */
+
+    matrix_4X4F         view_matrix_;   /*!< Stores the view space transform */
+    matrix_4X4F         projection_matrix_; /*!< Stores the projection matrix */
+    /*!
+     *\brief Stores the product of the projection and view matrices.
+     */
+    matrix_4X4F         projection_view_matrix_;
+    int                 projection_type_;   /*!< Type of the projection (orhthographic/perspective) */
 
     /**
      * \brief   Constructs the world space to view space transformation matrix.
@@ -72,7 +83,12 @@ private :
      *          [wx, wy, wz, -dot(w, t)]
      *          [0,  0,  0,  1         ].
      */
-    void update_view_matrix() const;
+    void update_cam_data();
+
+    /**
+     * Recompute projection * view matrix.
+     */
+    inline void update_projection_view_transform();
 
 public :
 
@@ -179,6 +195,49 @@ public :
      * \brief   Gets the view transform matrix.
      */
     inline const math::matrix_4X4F& get_view_transform() const;
+
+    /**
+     * Returns the projection transform matrix.
+     */
+    inline const math::matrix_4X4F& get_projection_transform() const;
+
+    /**
+     * Sets a new projection matrix.
+     *
+     * \param   mtx     The projection matrix.
+     * \param   type    The projection type(ortho/perspective).
+     */
+    inline void set_projection_matrix(
+        const matrix_4X4F& mtx, 
+        projection_type type
+        );
+
+    /**
+     * Sets a projection matrix using the four vectors as columns.
+     *
+     * \param   first_col   The first column vector.
+     * \param   second_col  The second column vector.
+     * \param   third_col   The third column vector.
+     * \param   fourth_col  The fourth column vector.
+     * \param   type        The projection type.
+     */
+    void set_projection_matrix(
+        const vector4F& first_col, 
+        const vector4F& second_col,
+        const vector4F& third_col,
+        const vector4F& fourth_col,
+        projection_type type
+        );
+
+    /**
+     * Return the type of the projection matrix.
+     */
+    inline int get_projection_type() const;
+
+    /**
+     * Return the product of P (projection matrix) * V (view matrix).
+     */
+    inline math::matrix_4X4F get_projection_wiew_transform() const;
 };
 
 } // namespace math

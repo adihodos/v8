@@ -102,7 +102,12 @@ private :
     /**
      \summary The spot power factor (intensity).
      */
-    float           spot_power_;   
+    float           spot_power_; 
+
+    /**
+     * \summary Padding field, to make class size a multiple of 16.
+     */
+    float           padding__[3];
 
 public :
 
@@ -265,6 +270,9 @@ public :
     return spot_cone_theta_;
   }
 };
+
+static_assert((sizeof(light) % 16) == 0, 
+              "light class size must be a multiple of 16");
 
 } // namespace math
 } // namespace v8

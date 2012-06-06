@@ -218,7 +218,7 @@ public:
      * 			
      * \param   theta   Angle of rotation, in radians.
      */
-    matrix_3X3<real_t>& rotation_y(real_t theta);
+    matrix_3X3<real_t>& make_rotation_y(real_t theta);
 
     /**
      * \fn  static const matrix3X3<real_t> matrix3X3::rotation_z(real_t theta)
@@ -228,7 +228,7 @@ public:
      * 			
      * \param   theta   Angle of rotation, in radians.
      */
-    matrix_3X3<real_t>& rotation_z(real_t theta);
+    matrix_3X3<real_t>& make_rotation_z(real_t theta);
 
     /**
      * \fn  static matrix3X3<real_t> matrix3X3::axis_angle(const vector3<real_t>& axisv,

@@ -500,7 +500,7 @@ v8::math::matrix_3X3<real_t>::make_rotation_x(real_t theta) {
 
 template<typename real_t>
 v8::math::matrix_3X3<real_t>&
-v8::math::matrix_3X3<real_t>::rotation_y(real_t theta) {
+v8::math::matrix_3X3<real_t>::make_rotation_y(real_t theta) {
     real_t sin_theta = sinf(theta);
     real_t cos_theta = cosf(theta);
 
@@ -513,7 +513,7 @@ v8::math::matrix_3X3<real_t>::rotation_y(real_t theta) {
 
 template<typename real_t>
 v8::math::matrix_3X3<real_t>&
-v8::math::matrix_3X3<real_t>::rotation_z(real_t theta) {
+v8::math::matrix_3X3<real_t>::make_rotation_z(real_t theta) {
     real_t sin_theta = sinf(theta);
     real_t cos_theta = cosf(theta);
 

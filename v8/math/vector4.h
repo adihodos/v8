@@ -85,6 +85,8 @@ public :
 
     static const vector4_t	unit_z;
 
+    static const vector4_t  unit_w;
+
    /**
     * \fn    vector4::vector4()
     *
@@ -258,6 +260,9 @@ const vector4<real_t> vector4<real_t>::unit_y(real_t(0), real_t(1), real_t(0), r
 
 template<typename real_t>
 const vector4<real_t> vector4<real_t>::unit_z(real_t(0), real_t(0), real_t(1), real_t(0));
+
+template<typename real_t>
+const vector4<real_t> vector4<real_t>::unit_w(real_t(0), real_t(0), real_t(0), real_t(1));
 
 /**
  * \fn  template<typename real_t> inline bool operator==( const math::vector4<real_t>& lhs,

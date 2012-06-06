@@ -34,6 +34,12 @@ public :
     real_t get_delta_ms() const {
         return (real_t(end_) - real_t(start_));
     }
+
+    real_t get_delta_ms_and_reset() {
+        const real_t delta = get_delta_ms();
+        reset();
+        return delta;
+    }
 };
 
 /**
@@ -48,16 +54,16 @@ private :
 
 public :
     high_resolution_timer() {
-        ::QueryPerformaceFrequency(&perf_frequency_);
+        ::QueryPerformanceFrequency(&perf_frequency_);
         reset();
     }
 
     void reset() {
-        ::QueryPerformaceCounter(&start_);
+        ::QueryPerformanceCounter(&start_);
     }
 
     void stop() {
-        ::QueryPerformaceCounter(&end_);
+        ::QueryPerformanceCounter(&end_);
     }
 
     /**
@@ -66,8 +72,16 @@ public :
      * \return  The time interval, in milliseconds.
      */
     real_t get_delta_ms() const {
-        return real_t(end_.QuadPart - start_.QuadPart) / (real_t(perf_frequency_.QuadPart * 1000));
+        return real_t(end_.QuadPart - start_.QuadPart) 
+                / (real_t(perf_frequency_.QuadPart * 1000));
     }
+
+    real_t get_delta_ms_and_reset() {
+        const real_t delta = get_delta_ms();
+        reset();
+        return delta;
+    }
+
 };
 
 /**
