@@ -190,6 +190,7 @@
     <ClCompile Include="base\debug_helpers.cc" />
     <ClCompile Include="base\win32_utils.cc" />
     <ClCompile Include="math\camera.cc" />
+    <ClCompile Include="math\color.cc" />
     <ClCompile Include="math\light.cc" />
     <ClCompile Include="pch_hdr.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

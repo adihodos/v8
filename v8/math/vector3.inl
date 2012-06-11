@@ -291,3 +291,39 @@ v8::math::distance(
 {
     return std::sqrt(distance_squared(point1, point2));
 }
+
+template<typename real_t>
+inline v8::math::vector3<real_t> 
+v8::math::point_from_spherical_coordinates( 
+    real_t delta, 
+    real_t phi, 
+    real_t theta
+    )
+{
+    const real_t phi_rads = to_radians(phi);
+    const real_t theta_rads = to_radians(theta);
+
+    const real_t sin_phi = std::sin(phi_rads);
+    const real_t sin_theta = std::sin(theta_rads);
+    const real_t cos_phi = std::cos(phi_rads);
+    const real_t cos_theta = std::cos(theta_rads);
+
+    return vector3<real_t>(
+        delta * sin_phi * sin_theta,
+        delta * cos_phi,
+        delta * sin_phi * cos_theta
+        );
+}
+
+template<typename real_t>
+inline v8::math::vector3<real_t>
+v8::math::point_to_spherical_coordinates(
+    const vector3<real_t>& pt
+    )
+{
+    const real_t delta = pt.magnitude();
+    const real_t phi = atan2(sqrt(pt.x_ * pt.x_ + pt.z_ * pt.z_), pt.y_);
+    const real_t theta = atan2(pt.x_, pt.z_);
+
+    return vector3<real_t>(delta, phi, theta);
+}

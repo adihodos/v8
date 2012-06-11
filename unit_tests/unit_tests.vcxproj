@@ -162,6 +162,7 @@
     <ClCompile Include="scoped_handle_unittests.cc" />
     <ClCompile Include="scoped_ptr_unit_tests.cc" />
     <ClCompile Include="transform_tests.cc" />
+    <ClCompile Include="vector3_unit_tests.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

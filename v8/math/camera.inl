@@ -3,26 +3,29 @@ inline void v8::math::camera::update_projection_view_transform() {
 }
 
 inline v8::math::camera& v8::math::camera::set_origin(
-    const math::vector4F& origin
+    const math::vector3F& origin
     ) {
     view_pos_ = origin;
-    update_cam_data();
+
+    update_view_matrix();
+    update_projection_view_transform();
+
     return *this;
 }
 
-inline const v8::math::vector4F& v8::math::camera::get_origin() const {
+inline const v8::math::vector3F& v8::math::camera::get_origin() const {
     return view_pos_;
 }
 
-inline const v8::math::vector4F& v8::math::camera::get_direction_vector() const {
+inline const v8::math::vector3F& v8::math::camera::get_direction_vector() const {
     return view_dir_;
 }
 
-inline const v8::math::vector4F& v8::math::camera::get_up_vector() const {
+inline const v8::math::vector3F& v8::math::camera::get_up_vector() const {
     return view_up_;
 }
 
-inline const v8::math::vector4F& v8::math::camera::get_right_vector() const {
+inline const v8::math::vector3F& v8::math::camera::get_right_vector() const {
     return view_side_;
 }
 
@@ -45,7 +48,7 @@ v8::math::camera::set_projection_matrix(
 {
     projection_matrix_ = mtx;
     projection_type_ = type;
-    update_cam_data();
+    update_projection_view_transform();
 }
 
 inline int v8::math::camera::get_projection_type() const {
@@ -53,7 +56,7 @@ inline int v8::math::camera::get_projection_type() const {
 }
 
 inline 
-v8::math::matrix_4X4F 
+const v8::math::matrix_4X4F&
 v8::math::camera::get_projection_wiew_transform() const {
     return projection_view_matrix_;
 }

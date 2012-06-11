@@ -48,10 +48,10 @@ public :
     };
 
 private :
-    vector4F            view_pos_; ///< The view frame origin, in world coordinates */
-    vector4F            view_side_;	///< The side direction vector (x axis) */
-    vector4F            view_up_;  ///< The up direction vector (y axis) */
-    vector4F            view_dir_; ///< The look direction vector (z axis) */
+    vector3F            view_pos_; ///< The view frame origin, in world coordinates */
+    vector3F            view_side_;	///< The side direction vector (x axis) */
+    vector3F            view_up_;  ///< The up direction vector (y axis) */
+    vector3F            view_dir_; ///< The look direction vector (z axis) */
 
     matrix_4X4F         view_matrix_;   /*!< Stores the view space transform */
     matrix_4X4F         projection_matrix_; /*!< Stores the projection matrix */
@@ -83,7 +83,7 @@ private :
      *          [wx, wy, wz, -dot(w, t)]
      *          [0,  0,  0,  1         ].
      */
-    void update_cam_data();
+    void update_view_matrix();
 
     /**
      * Recompute projection * view matrix.
@@ -120,16 +120,16 @@ public :
      * 			are three orthonormal vectors.
      */
     camera& set_view_frame(
-        const math::vector4F& origin, 
-        const math::vector4F& dir_vector, 
-        const math::vector4F& up_vector, 
-        const math::vector4F& right_vector
+        const math::vector3F& origin, 
+        const math::vector3F& dir_vector, 
+        const math::vector3F& up_vector, 
+        const math::vector3F& right_vector
         );
 
     /**
      * \brief   Sets the origin point for the camera's coordinate system.
      */
-    inline camera& set_origin(const math::vector4F& origin);
+    inline camera& set_origin(const math::vector3F& origin);
 
     /**
      * \brief   Sets the vectors that give the directions of the view frame axes.
@@ -143,9 +143,9 @@ public :
      * 			of the function is undefined.
      */
     camera& set_axes(
-        const math::vector4F& dir_vector, 
-        const math::vector4F& up_vector,
-        const math::vector4F& right_vector
+        const math::vector3F& dir_vector, 
+        const math::vector3F& up_vector,
+        const math::vector3F& right_vector
         );
 
     /**
@@ -173,23 +173,23 @@ public :
      * \brief   Gets the origin point of the view frame.
      *
      */
-    inline const math::vector4F& get_origin() const;
+    inline const math::vector3F& get_origin() const;
 
     /**
      * \brief   Gets the direction vector of the camera.
      *
      */
-    inline const math::vector4F& get_direction_vector() const;
+    inline const math::vector3F& get_direction_vector() const;
 
     /**
      * \brief   Gets the up direction vector of the camera.
      */
-    inline const math::vector4F& get_up_vector() const;
+    inline const math::vector3F& get_up_vector() const;
 
     /**
      * \brief   Gets the direction vector.
      */
-    inline const math::vector4F& get_right_vector() const;
+    inline const math::vector3F& get_right_vector() const;
 
     /**
      * \brief   Gets the view transform matrix.
@@ -237,7 +237,7 @@ public :
     /**
      * Return the product of P (projection matrix) * V (view matrix).
      */
-    inline math::matrix_4X4F get_projection_wiew_transform() const;
+    inline const math::matrix_4X4F& get_projection_wiew_transform() const;
 };
 
 } // namespace math

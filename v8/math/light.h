@@ -107,7 +107,7 @@ private :
     /**
      * \summary Padding field, to make class size a multiple of 16.
      */
-    float           padding__[3];
+    //float           padding__[3];
 
 public :
 
@@ -271,8 +271,8 @@ public :
   }
 };
 
-static_assert((sizeof(light) % 16) == 0, 
-              "light class size must be a multiple of 16");
+//static_assert((sizeof(light) % 16) == 0, 
+//              "light class size must be a multiple of 16");
 
 } // namespace math
 } // namespace v8

@@ -445,6 +445,46 @@ distance(
     );
 
 /**
+ * Convert from spherical coordinates to Cartesian coordinates, 
+ * using a left handed coordinate system.
+ *
+ * \param   delta   The radius of the sphere.
+ * \param   phi     Angle with the y axis (in degrees).
+ * \param   theta   Angle with the z axis (in degrees).
+ *
+ * \remarks The formula for conversion is :
+ * 			x = delta * sin(phi) * sin(theta)
+ * 			y = delta * cos(phi)
+ * 			z = -delta * sin(phi) * cos(theta)
+ */
+template<typename real_t>
+inline vector3<real_t> point_from_spherical_coordinates(
+    real_t delta,
+    real_t phi, 
+    real_t theta
+    );
+
+/**
+ * Convert from Cartesian coordinates to spherical coordinates.
+ *
+ * \param   pt  A point, in Cartesian coordinates.
+ *
+ * \return  A vector3 object, representing a tuple with the conversion result.
+ * 			The x_ member represents the sphere's radius, 
+ * 			y_ member is angle phi (angle with the y axis),
+ * 			z_ member is angle theta (angle with z axis).
+ * 			
+ * \remarks The formula for conversion is :
+ * 			delta = pt.magnitude()
+ * 			phi = atan2(sqrt(pt.x_ * pt.x_ + pt.z_ * pt.z_), pt.y_)
+ * 			theta = atan2(pt.x_, pt.z_)
+ */
+template<typename real_t>
+inline vector3<real_t> point_to_spherical_coordinates(
+    const vector3<real_t>& pt
+    );
+
+/**
  * \typedef vector3<float> vector3F
  *
  * \brief   Defines an alias representing a vector3 having simple precision 

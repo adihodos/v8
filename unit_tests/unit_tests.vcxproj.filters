@@ -36,5 +36,8 @@
     <ClCompile Include="matrix3_tests.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vector3_unit_tests.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

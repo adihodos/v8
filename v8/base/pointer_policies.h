@@ -26,6 +26,8 @@
 
 #pragma once
 
+#include <cstdlib>
+
 namespace v8 { namespace base {
 
 /**
@@ -51,6 +53,36 @@ template<typename T>
 struct default_array_storage {
     static void dispose(T* ptr) {
         delete[] ptr;
+    }
+
+    enum {
+        is_array_ptr = 1
+    };
+};
+
+/**
+ * Deallocation policy for single objects allocated with malloc.
+ * \see scoped_ptr class.
+ */
+template<typename T>
+struct malloc_storage {
+    static void dispose(T* ptr) {
+        ::free(ptr);
+    }
+
+    enum {
+        is_array_ptr = 0
+    };
+};
+
+/**
+ * Deallocation policy for arrays allocated with malloc.
+ * \see scoped_ptr class.
+ */
+template<typename T>
+struct malloc_array_storage {
+    static void dispose(T* ptr) {
+        ::free(ptr);
     }
 
     enum {

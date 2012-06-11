@@ -72,6 +72,9 @@
     <ClCompile Include="base\win32_utils.cc">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="math\color.cc">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch_hdr.h">

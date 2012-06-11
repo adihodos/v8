@@ -55,6 +55,22 @@ public :
     template<typename real_u>
     rectangle(const vector2<real_u>& tl, const vector2<real_u>& br)
         : top_left_(tl), bot_right_(br) {}
+        
+    real_t top() const {
+		return top_left_.y;
+    }
+    
+    real_t left() const {
+		return top_left_.x_;
+	}
+	
+	real_t bottom() const {
+		return bot_right_.y_;
+	}
+	
+	real_t right() const {
+		return bot_right_.x_;
+	}
 
     real_t width() const {
         return bot_right_.x_ - top_left_.x_;
