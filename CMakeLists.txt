@@ -71,4 +71,5 @@ install(
     FILES_MATCHING
     PATTERN "*.a"
     PATTERN "*.lib"
+    PATTERN "*.pdb"
     )
