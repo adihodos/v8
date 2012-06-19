@@ -1,0 +1,9 @@
+#pragma once
+
+#cmakedefine MSVC_BUILD_SYSTEM
+
+#cmakedefine MINGW_BUILD_SYSTEM
+
+#cmakedefine RENDER_SYSTEM_D3D11
+
+#cmakedefine RENDER_SYSTEM_OPENGL

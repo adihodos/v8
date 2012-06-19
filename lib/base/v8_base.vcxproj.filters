@@ -15,32 +15,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="color_tests.cc">
+    <None Include="ReadMe.txt" />
+    <None Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="debug_helpers.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cc">
+    <ClCompile Include="pch_hdr.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="matrix4_tests.cc">
+    <ClCompile Include="win32_utils.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="transform_tests.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="scoped_ptr_unit_tests.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="scoped_handle_unittests.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix3_tests.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vector3_unit_tests.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix2x2_unittests.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch_hdr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
