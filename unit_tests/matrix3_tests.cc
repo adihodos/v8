@@ -69,9 +69,9 @@ TEST(matrix3tests, constructors) {
 TEST(matrix3tests, make_fn) {
     matrix_3X3F testMtx;
     testMtx.make_skew_symmetric(1.0f, 2.0f, 3.0f);
-    const matrix_3X3F expectedSkewSym(0.0f, -3.0f, 1.0f, 
-                                      3.0f, 0.0f, -2.0f,
-                                      -1.0f, 2.0f, 0.0f);
+    const matrix_3X3F expectedSkewSym(0.0f, -3.0f, 2.0f, 
+                                      3.0f, 0.0f, -1.0f,
+                                      -2.0f, 1.0f, 0.0f);
 
     EXPECT_TRUE(testMtx == expectedSkewSym);
 

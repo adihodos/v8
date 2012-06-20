@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "v8/math/gfx_math.h"
 #include "v8/math/matrix4X4.h"
 #include "v8/math/transform.h"
 

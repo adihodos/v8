@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "v8/math/gfx_math.h"
 #include "v8/math/color.h"
 
 TEST(gfx_color_tests, conversion_from_rgba) {
