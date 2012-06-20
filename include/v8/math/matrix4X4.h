@@ -403,6 +403,12 @@ public :
         get_column(col, v4->elements_);
     }
 
+    template<typename R2>
+    matrix_4X4<real_t>& transform_affine_vector(vector3<R2>* pvec) const;
+
+    template<typename R2>
+    matrix_4X4<real_t>& transform_affine_point(vector3<R2>* point) const;
+
    /**
     * \fn    matrix4X4& matrix4X4::transform_vector(vector4* pvec) const
     *

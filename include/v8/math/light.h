@@ -107,7 +107,7 @@ private :
     /**
      * \summary Padding field, to make class size a multiple of 16.
      */
-    //float           padding__[3];
+    float           padding__[3];
 
 public :
 

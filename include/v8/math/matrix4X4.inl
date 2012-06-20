@@ -327,6 +327,32 @@ v8::math::matrix_4X4<real_t>::get_column(int col, real_t* data) const {
         data[i] = elements_[i * 4 + col - 1];
 }
 
+template<typename Real_Ty>
+template<typename Real_Ty2>
+v8::math::matrix_4X4<Real_Ty>&
+v8::math::matrix_4X4<Real_Ty>::transform_affine_vector(
+    v8::math::vector3<Real_Ty2>* pvec
+    ) const
+{
+    pvec->x_ = a11_ * pvec->x_ + a12_ * pvec->y_ + a13_ * pvec->z_;
+    pvec->y_ = a21_ * pvec->x_ + a22_ * pvec->y_ + a23_ * pvec->z_;
+    pvec->z_ = a31_ * pvec->x_ + a32_ * pvec->y_ + a33_ * pvec->z_;
+    return *this;
+}
+
+template<typename Real_Ty>
+template<typename Real_Ty2>
+v8::math::matrix_4X4<Real_Ty>&
+v8::math::matrix_4X4<Real_Ty>::transform_affine_point(
+    v8::math::vector3<Real_Ty2>* point
+    ) const
+{
+    point->x_ = a11_ * point->x_ + a12_ * point->y_ + a13_ * point->z_ + a14_;
+    point->y_ = a21_ * point->x_ + a22_ * point->y_ + a23_ * point->z_ + a24_;
+    point->z_ = a31_ * point->x_ + a32_ * point->y_ + a33_ * point->z_ + a34_;
+    return *this;
+}
+
 template<typename real_t>
 v8::math::matrix_4X4<real_t>&
 v8::math::matrix_4X4<real_t>::transform_affine_vector(
