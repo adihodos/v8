@@ -110,10 +110,15 @@ public :
      * \param   inputs  Pointer to an array of elements.
      * \param   count   Number of elements in the array
      */
+    inline 
     vector4(
         const real_t* inputs, 
         size_t count
         );
+
+    template<typename Convertible_Type>
+    vector4(const vector4<Convertible_Type>& other)
+        : x_(other.x_), y_(other.y_), z_(other.z_), w_(other.w_) {}
 
     /**
      * \fn    static inline vector4 vector4::as_affine_point(const math::vector3& pt)
@@ -155,6 +160,16 @@ public :
         real_t w
         );
 
+    template<typename Convertible_Type>
+    inline 
+    vector4<real_t>& 
+    operator=(
+        const vector4<Convertible_Type>& other
+        ) {
+        x_ = other.x_; y_ = other.y_; z_ = other.z_; w_ = other.w_;
+        return *this;
+    }
+
     /**
      * \fn  inline vector4<real_t>& vector4::operator+=( const vector4<real_t>& rhs );
      *
@@ -170,10 +185,11 @@ public :
      * 			then it can be applied to vector4 objects representing affine
      * 			points.
      */
+    template<typename Convertible_Type>
     inline
     vector4<real_t>& 
     operator+=(
-        const vector4<real_t>& rhs
+        const vector4<Convertible_Type>& rhs
         );
 
     /**
@@ -184,10 +200,11 @@ public :
      * \remarks This operation is valid for vectors and affine points. 
      * 			Substracting two affine points result in an affine vector.
      */
+    template<typename Convertible_Type>
     inline
     vector4<real_t>& 
     operator-=(
-        const vector4<real_t>& rhs
+        const vector4<Convertible_Type>& rhs
         );
 
     /**
@@ -195,10 +212,11 @@ public :
      *
      * \brief   Multiplication assignment operator.
      */
+    template<typename Convertible_Type>
     inline
     vector4<real_t>& 
     operator*=(
-        real_t k
+        Convertible_Type k
         );
 
     /**
@@ -206,10 +224,11 @@ public :
      *
      * \brief   Division assignment operator.
      */
+    template<typename Convertible_Type>
     inline
     vector4<real_t>&
     operator/=(
-        real_t k
+        Convertible_Type k
         );
 
     /**
@@ -340,11 +359,11 @@ operator-(
  *
  * \brief   Scalar multiplication operator.
  */
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 math::vector4<real_t>
 operator*(
-    real_t k,
+    Convertible_Type k,
     const math::vector4<real_t>& vec
     );
 
@@ -354,12 +373,12 @@ operator*(
  *
  * \brief   Scalar multiplication operator.
  */
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 math::vector4<real_t>
 operator*(
     const math::vector4<real_t>& vec,
-    real_t k
+    Convertible_Type k
     );
 
 /**
@@ -368,12 +387,12 @@ operator*(
  *
  * \brief   Scalar division operator.
  */
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 math::vector4<real_t>
 operator/(
     const math::vector4<real_t>& vec,
-    real_t k
+    Convertible_Type k
     );
 
 /**
@@ -387,7 +406,7 @@ math::vector4<real_t>
 normalized_from(
     const math::vector4<real_t>& vec
     );
-
+    
 /**
  * \fn  template<typename real_t> inline real_t dot_product( const math::vector4<real_t>& lhs,
  * const math::vector4<real_t>& rhs );

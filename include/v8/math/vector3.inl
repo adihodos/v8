@@ -21,10 +21,11 @@ v8::math::vector3<real_t>::vector3(const real_t* input, size_t count) {
 }
 
 template<typename real_t>
+template<typename Convertible_Type>
 inline
 v8::math::vector3<real_t>&
 v8::math::vector3<real_t>::operator+=(
-    const vector3<real_t>& rhs
+    const vector3<Convertible_Type>& rhs
     ) 
 {
     x_ += rhs.x_;
@@ -34,10 +35,11 @@ v8::math::vector3<real_t>::operator+=(
 }
 
 template<typename real_t>
+template<typename Convertible_Type>
 inline
 v8::math::vector3<real_t>&
 v8::math::vector3<real_t>::operator-=(
-    const vector3<real_t>& rhs
+    const vector3<Convertible_Type>& rhs
     ) 
 {
     x_ -= rhs.x_;
@@ -47,9 +49,10 @@ v8::math::vector3<real_t>::operator-=(
 }
 
 template<typename real_t>
+template<typename Convertible_Type>
 inline
 v8::math::vector3<real_t>&
-v8::math::vector3<real_t>::operator *=(real_t k) {
+v8::math::vector3<real_t>::operator *=(Convertible_Type k) {
     x_ *= k;
     y_ *= k;
     z_ *= k;
@@ -57,9 +60,10 @@ v8::math::vector3<real_t>::operator *=(real_t k) {
 }
 
 template<typename real_t>
+template<typename Convertible_Type>
 inline
 v8::math::vector3<real_t>&
-v8::math::vector3<real_t>::operator /=(real_t k) {
+v8::math::vector3<real_t>::operator /=(Convertible_Type k) {
     using namespace v8::math::internals;
     const real_t dividend = transform_dividend_for_division<
         real_t, is_floating_point
@@ -115,14 +119,20 @@ v8::math::operator==(
 template<typename real_t>
 inline
 bool
-v8::math::operator!=(const v8::math::vector3<real_t>& lhs, const v8::math::vector3<real_t>& rhs) {
+v8::math::operator!=(
+    const v8::math::vector3<real_t>& lhs, 
+    const v8::math::vector3<real_t>& rhs
+    ) {
     return !(lhs == rhs);
 }
 
 template<typename real_t>
 inline
 v8::math::vector3<real_t>
-v8::math::operator+(const v8::math::vector3<real_t>& lhs, const v8::math::vector3<real_t>& rhs) {
+v8::math::operator+(
+    const v8::math::vector3<real_t>& lhs, 
+    const v8::math::vector3<real_t>& rhs
+    ) {
     vector3<real_t> res(lhs);
     res += rhs;
     return res;
@@ -131,7 +141,10 @@ v8::math::operator+(const v8::math::vector3<real_t>& lhs, const v8::math::vector
 template<typename real_t>
 inline
 v8::math::vector3<real_t>
-v8::math::operator-(const v8::math::vector3<real_t>& lhs, const vector3<real_t>& rhs) {
+v8::math::operator-(
+    const v8::math::vector3<real_t>& lhs, 
+    const vector3<real_t>& rhs
+    ) {
     vector3<real_t> res(lhs);
     res -= rhs;
     return res;
@@ -144,26 +157,35 @@ v8::math::operator-(const v8::math::vector3<real_t>& vec) {
     return vector3<real_t>(-vec.x_, -vec.y_, -vec.z_);
 }
 
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 v8::math::vector3<real_t>
-v8::math::operator*(const v8::math::vector3<real_t>& vec, real_t k) {
+v8::math::operator*(
+    const v8::math::vector3<real_t>& vec, 
+    Convertible_Type k
+    ) {
     vector3<real_t> result = vec;
     result *= k;
     return result;
 }
 
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 v8::math::vector3<real_t>
-v8::math::operator*(real_t k, const v8::math::vector3<real_t>& vec) {
+v8::math::operator*(
+    Convertible_Type k, 
+    const v8::math::vector3<real_t>& vec
+    ) {
     return vec * k;
 }
 
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 v8::math::vector3<real_t>
-v8::math::operator/(const v8::math::vector3<real_t>& vec, real_t k) {
+v8::math::operator/(
+    const v8::math::vector3<real_t>& vec, 
+    Convertible_Type k
+    ) {
     v8::math::vector3<real_t> result(vec);
     result /= k;
     return result;
@@ -172,14 +194,20 @@ v8::math::operator/(const v8::math::vector3<real_t>& vec, real_t k) {
 template<typename real_t>
 inline
 real_t
-v8::math::dot_product(const v8::math::vector3<real_t>& lhs, const v8::math::vector3<real_t>& rhs) {
+v8::math::dot_product(
+    const v8::math::vector3<real_t>& lhs, 
+    const v8::math::vector3<real_t>& rhs
+    ) {
     return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_;
 }
 
 template<typename real_t>
 inline
 v8::math::vector3<real_t>
-v8::math::cross_product(const v8::math::vector3<real_t>& lhs, const v8::math::vector3<real_t>& rhs) {
+v8::math::cross_product(
+    const v8::math::vector3<real_t>& lhs, 
+    const v8::math::vector3<real_t>& rhs
+    ) {
     return vector3<real_t>(
         lhs.y_ * rhs.z_ - lhs.z_ * rhs.y_,
         lhs.z_ * rhs.x_ - lhs.x_ * rhs.z_,
@@ -206,7 +234,7 @@ v8::math::angle_of(
     const v8::math::vector3<real_t>& rhs
     )
 {
-    return std::acos(dot_product(lhs, rhs) / (lhs.magnitude() * rhs.magnitude()));
+    return acos(dot_product(lhs, rhs) / (lhs.magnitude() * rhs.magnitude()));
 }
 
 template<typename real_t>
@@ -289,7 +317,7 @@ v8::math::distance(
     const v8::math::vector3<real_t>& point2
     )
 {
-    return std::sqrt(distance_squared(point1, point2));
+    return sqrt(distance_squared(point1, point2));
 }
 
 template<typename real_t>

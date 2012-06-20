@@ -5,6 +5,7 @@ build_output
 ipch
 *~
 *#
+*.bak
 Debug
 Release
 *.opensdf

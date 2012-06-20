@@ -107,33 +107,48 @@ public:
      */
     vector3(const real_t* input, size_t count);
 
+    template<typename Convertible_Type>
+    vector3(const vector3<Convertible_Type>& other)
+        : x_(other.x_), y_(other.y_), z_(other.z_) {}
+
+    template<typename Convertible_Type>
+    vector3<real_t>& operator=(const vector3<Convertible_Type>& other) {
+        x_ = other.x_;
+        y_ = other.y_;
+        return *this;
+    }
+
     /**
      * \fn  inline vector3<real_type>& vector3::operator+=(const vector3<real_type>& rhs);
      *
      * \brief   Addition assignment operator.
      */
-    inline vector3<real_t>& operator+=(const vector3<real_t>& rhs);
+    template<typename Convertible_Type>
+    inline vector3<real_t>& operator+=(const vector3<Convertible_Type>& rhs);
 
     /**
      * \fn  inline vector3<real_t>& vector3::operator-=(const vector3<real_t>& rhs);
      *
      * \brief   Subtraction assignment operator.
      */
-    inline vector3<real_t>& operator-=(const vector3<real_t>& rhs);
+    template<typename Convertible_Type>
+    inline vector3<real_t>& operator-=(const vector3<Convertible_Type>& rhs);
 
     /**
      * \fn  inline vector3<real_t>& vector3::operator*=(float k);
      *
      * \brief   Scalar multiplication assignment operator.
      */
-    inline vector3<real_t>& operator*=(real_t k);
+    template<typename Convertible_Type>
+    inline vector3<real_t>& operator*=(Convertible_Type k);
 
     /**
      * \fn  inline vector3<real_t>& vector3::operator/=(float k);
      *
      * \brief   Scalar division assignment operator.
      */
-    inline vector3<real_t>& operator/=(real_t k);
+    template<typename Convertible_Type>
+    inline vector3<real_t>& operator/=(Convertible_Type k);
 
     /**
      * \fn  inline float vector3::sum_components_squared() const;
@@ -155,7 +170,7 @@ public:
      *
      * \brief   Normalizes the vector (v = v / ||v||);
      */
-    inline vector3& normalize();
+    inline vector3<real_t>& normalize();
 };
 
 /**
@@ -232,12 +247,12 @@ operator-(
  *
  * \brief   Scalar multiplication operator.
  */
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 math::vector3<real_t>
 operator*(
     const math::vector3<real_t>& vec, 
-    real_t k
+    Convertible_Type k
     );
 
 /**
@@ -246,11 +261,11 @@ operator*(
  *
  * \brief   Scalar multiplication operator.
  */
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 math::vector3<real_t>
 operator*(
-    real_t k, 
+    Convertible_Type k, 
     const math::vector3<real_t>& vec
     );
 
@@ -260,12 +275,12 @@ operator*(
  *
  * \brief   Scalar division operator.
  */
-template<typename real_t>
+template<typename real_t, typename Convertible_Type>
 inline
 math::vector3<real_t>
 operator/(
     const math::vector3<real_t>& vec, 
-    real_t k
+    Convertible_Type k
     );
 
 /**
@@ -458,7 +473,8 @@ distance(
  * 			z = -delta * sin(phi) * cos(theta)
  */
 template<typename real_t>
-inline vector3<real_t> point_from_spherical_coordinates(
+inline vector3<real_t> 
+point_from_spherical_coordinates(
     real_t delta,
     real_t phi, 
     real_t theta
@@ -480,7 +496,8 @@ inline vector3<real_t> point_from_spherical_coordinates(
  * 			theta = atan2(pt.x_, pt.z_)
  */
 template<typename real_t>
-inline vector3<real_t> point_to_spherical_coordinates(
+inline vector3<real_t> 
+point_to_spherical_coordinates(
     const vector3<real_t>& pt
     );
 
