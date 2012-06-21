@@ -177,3 +177,62 @@ v8::math::matrix_2X3<real_t>::transform_point(
     pt->y_ = a21_ * pt->x_ + a22_ * pt->y_ + a23_;
     return *this;
 }
+
+template<typename real_t>
+inline bool operator==(
+    const v8::math::matrix_2X3<real_t>& lhs,
+    const v8::math::matrix_2X3<real_t>& rhs
+    ) {
+    for (uint32_t i = 0; i < count_of_array(lhs.elements_); ++i)
+        if (!operands_eq(lhs.elements_[i], rhs.elements_[i]))
+            return false;
+
+    return true;
+}
+
+template<typename real_t>
+inline bool operator!=(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    ) {
+    return !(lhs == rhs);
+}
+
+template<typename real_t>
+inline v8::math::matrix_2X3<real_t> operator+(
+    const v8::math::matrix_2X3<real_t>& lhs,
+    const v8::math::matrix_2X3<real_t>& rhs
+    ) {
+    matrix_2X3<real_t> result(lhs);
+    result += rhs;
+    return result;
+}
+
+template<typename real_t>
+inline matrix_2X3<real_t> operator-(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    ) {
+    matrix_2X3<real_t> result(lhs);
+    result -= rhs;
+    return result;
+}
+
+template<typename real_t, typename real_u>
+inline v8::math::matrix_2X3<real_t> operator*(
+    real_u scalar,
+    const v8::math::matrix_2X3<real_t>& mtx
+    ) {
+    matrix_2X3<real_t> result(mtx);
+    result *= scalar;
+    return result;
+}
+
+template<typename real_t, typename real_u>
+inline matrix_2X3<real_t> operator*(
+    const matrix_2X3<real_t>& mtx,
+    real_u scalar
+    ) {
+    return scalar * mtx;
+}
+

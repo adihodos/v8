@@ -10,6 +10,17 @@
 
 namespace v8 { namespace math {
 
+/**
+ * \brief A two by three matrix for applying linear/affine
+ *      transformations to R^2 vectors/points. The matrix is
+ *      stored in row major format. It follows the convention
+ *      that it multiplies column vectors, on the right side.
+ *      When concatenating matrices representings a sequence
+ *      of transformations, the matrices must be multiplied from
+ *      last to first. So the sequence S1, S2, S3, ... S(n - 1), Sn
+ *      must be concatenated as :
+ *      Sn * S(n-1) * S(n -2) * ... * S3 * S2 * S1.
+ */
 template<typename real_t>
 class matrix_2X3 {
 public :
@@ -25,6 +36,9 @@ public :
         real_t elements_[6];
     };
 
+    /**
+     * \brief Alias for the type of elements of the matrix.
+     */
     typedef real_t  element_type;
 
     static const matrix_2X3<real_t> zero;
@@ -36,6 +50,9 @@ public :
      */
     matrix_2X3() {}
 
+    /**
+     * \brief Construct with six explicit values.
+     */
     inline matrix_2X3(
         real_t a11, real_t a12, real_t a13,
         real_t a21, real_t a22, real_t a23
@@ -53,6 +70,28 @@ public :
      * \param[in] count Number of entries in the data array.
      */
     inline matrix_2X3(const real_t* data, uint32_t count);
+
+    /**
+     * \brief Indexing operator.
+     * \param[in] row Row of the accessed element, 
+     *              using <b>1 based indexing</b>.
+     * \param[in] col Column of the accessed element,
+     *              using <b>1 based indexing</b>.
+     */
+    real_t& operator()(uint32_t row, uint32_t col) {
+        return elements_[(row - 1) * 3 + (col - 1)];
+    }
+
+    /**
+     * \brief Indexing operator.
+     * \param[in] row Row of the accessed element, 
+     *              using <b>1 based indexing</b>.
+     * \param[in] col Column of the accessed element,
+     *              using <b>1 based indexing</b>.
+     */
+    const real_t& operator()(uint32_t row, uint32_t col) const {
+        return elements_[(row - 1) * 3 + (col - 1)];
+    }
 
     template<typename real_u>
     inline matrix_2X3<real_t>& operator=(
@@ -185,6 +224,47 @@ const matrix_2X3<real_t>
 matrix_2X3<real_t>::identity(real_t(1), real_t(0), real_t(0),
                              real_t(0), real_t(1), real_t(0));
 
+template<typename real_t>
+inline bool operator==(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    );
+
+template<typename real_t>
+inline bool operator!=(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    );
+
+template<typename real_t>
+inline matrix_2X3<real_t> operator+(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    );
+
+template<typename real_t>
+inline matrix_2X3<real_t> operator-(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    );
+
+template<typename real_t, typename real_u>
+inline matrix_2X3<real_t> operator*(
+    real_u scalar,
+    const matrix_2X3<real_t>& mtx
+    );
+
+template<typename real_t, typename real_u>
+inline matrix_2X3<real_t> operator*(
+    const matrix_2X3<real_t>& mtx,
+    real_u scalar
+    );
+
+template<typename real_t, typename real_u>
+inline matrix_2X3<real_t> operator/(
+    const matrix_2X3<real_t>& mtx,
+    real_u scalar
+    );
 
 } // namespace math
 } // namespace v8
