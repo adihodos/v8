@@ -13,7 +13,8 @@ namespace v8 { namespace math {
 /**
  * \brief A two by three matrix for applying linear/affine
  *      transformations to R^2 vectors/points. The matrix is
- *      stored in row major format. It follows the convention
+ *      stored in row major format. The third row is implied
+ *      as (0, 0, 1). The matrix follows the convention
  *      that it multiplies column vectors, on the right side.
  *      When concatenating matrices representings a sequence
  *      of transformations, the matrices must be multiplied from
@@ -260,6 +261,12 @@ inline matrix_2X3<real_t> operator*(
     real_u scalar
     );
 
+template<typename real_t>
+matrix_2X3<real_t> operator*(
+    const matrix_2X3<real_t>& lhs,
+    const matrix_2X3<real_t>& rhs
+    );
+
 template<typename real_t, typename real_u>
 inline matrix_2X3<real_t> operator/(
     const matrix_2X3<real_t>& mtx,
@@ -268,4 +275,6 @@ inline matrix_2X3<real_t> operator/(
 
 } // namespace math
 } // namespace v8
+
+#include "v8/math/matrix2X3.inl"
 

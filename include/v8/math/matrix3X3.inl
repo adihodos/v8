@@ -463,12 +463,12 @@ v8::math::matrix_3X3<real_t>::make_scale(real_t sx, real_t sy, real_t sz) {
 template<typename real_t>
 v8::math::matrix_3X3<real_t>&
 v8::math::matrix_3X3<real_t>::make_euler_xyz(real_t rx, real_t ry, real_t rz) {
-    const real_t sx = sinf(rx);
-    const real_t cx = cosf(rx);
-    const real_t sy = sinf(ry);
-    const real_t cy = cosf(ry);
-    const real_t sz = sinf(rz);
-    const real_t cz = cosf(rz);
+    const real_t sx = sin(rx);
+    const real_t cx = cos(rx);
+    const real_t sy = sin(ry);
+    const real_t cy = cos(ry);
+    const real_t sz = sin(rz);
+    const real_t cz = cos(rz);
 
     a11_ = cy * cz; 
     a12_ = -cy * sz; 
@@ -555,8 +555,7 @@ v8::math::matrix_3X3<real_t>&
 v8::math::matrix_3X3<real_t>::rotation(
     const v8::math::vector3<real_t>& v1, 
     const v8::math::vector3<real_t>& v2
-    ) 
-{
+    ) {
     //
     // Compute the angle between the two vectors.
     real_t angle = angle_of(v1, v2);
@@ -589,6 +588,73 @@ v8::math::matrix_3X3<real_t>::planar_reflection(const v8::math::vector3<real_t>&
     a33_ = real_t(1) - real_t(2) * pn.z_ * pn.z_;
 
     return *this;
+}
+
+template<typename real_t>
+void v8::math::matrix_3X3<real_t>::extract_euler_xyz(real_t* angles) const {
+    real_t theta_y = asin(a13_);
+    real_t theta_x = real_t(0);
+    real_t theta_z = real-t(0);
+    if (theta_y < constants::kPiOverTwo) {
+        if (theta_y > -constants::kPiOverTwo) {
+            theta_x = atan2(-a23_, a33_);
+            theta_z = atan2(-a12_, a11_);
+        } else {
+            theta_x = -atan2(a21_, a22_);
+        }
+    } else {
+        theta_x = atan2(a21_, a22_);
+    }
+    angles[0] = theta_x;
+    angles[1] = theta_y;
+    angles[2] = theta_z;
+}
+
+template<typename real_t>
+void v8::math::matrix_3X3<real_t>::extract_axis_angle(
+    vector3<real_t>* rot_axis, 
+    real_t* rot_angle
+    ) const {
+    const real_t theta = acos((trace() - real_t(1)) * real_t(0.5));
+    *rot_angle = theta;
+    if (is_zero(theta)) {
+        //
+        // no rotation, any unit length vector is valid as an axis
+        *rot_axis = v8::math::vector3<real_t>::unit_y;
+    } else {
+        if (theta < constants::kPi) {
+            rot_axis->x_ = a32_ - a23_;
+            rot_axis->y_ = a13_ - a31_;
+            rot_axis->z_ = a21_ - a12_;
+            rot_axis->normalize();
+        } else {
+            if (a11_ > a22_) {
+                if (a11_ > a33_) {
+                    rot_axis->x_ = sqrt(a11_ - a22_ - a33_ + real_t(1)) * real_t(0.5);
+                    const real_t inv_div = real_t(1) / (real_t(2) * rot_axis->x_);
+                    rot_axis->y_ = a12_ * inv_div;
+                    rot_axis->z_ = a13_ * inv_div;
+                } else {
+                    rot_axis->z_ = sqrt(a33_ - a11_ - a22 + real_t(1)) * real_t(0.5);
+                    const real_t inv_div = real_t(1) / (real_t(2) * rot_axis->z_);
+                    rot_axis->x_ = a13_ * inv_div;
+                    rot_axis->y_ = a23_ * inv_div;
+                }
+            } else {
+                if (a22_ > a33_) {
+                    rot_axis->y_ = sqrt(a22_ - a11_ - a33_ + real_t(1)) * real_t(0.5);
+                    const real_t inv_div = real_t(1) / (real_t(2) * rot_axis->y_);
+                    rot_axis->x_ = a12_ * inv_div;
+                    rot_axis->z_ = a13_ * inv_div;
+                } else {
+                    rot_axis->z_ = sqrt(a33_ - a11_ - a22 + real_t(1)) * real_t(0.5);
+                    const real_t inv_div = real_t(1) / (real_t(2) * rot_axis->z_);
+                    rot_axis->x_ = a13_ * inv_div;
+                    rot_axis->y_ = a23_ * inv_div;
+                }
+            }
+        }
+    }
 }
 
 template<typename real_t>

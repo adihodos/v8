@@ -160,6 +160,7 @@
     <ClCompile Include="matrix2x2_unittests.cc" />
     <ClCompile Include="matrix3_tests.cc" />
     <ClCompile Include="matrix4_tests.cc" />
+    <ClCompile Include="quaternion_unit_tests.cc" />
     <ClCompile Include="scoped_handle_unittests.cc" />
     <ClCompile Include="scoped_ptr_unit_tests.cc" />
     <ClCompile Include="transform_tests.cc" />

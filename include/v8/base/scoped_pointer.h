@@ -119,9 +119,9 @@ public :
         right.pointee_ = nullptr;
     }
 
-	/**
-	 * \brief Construct from a temporary of the same type.
-	 */
+    /**
+     * \brief Construct from a temporary of the same type.
+     */
     self_t& operator=(self_t&& right) NOEXCEPT {
         if (this != &right) {
             spolicy_t::dispose(pointee_);
@@ -131,17 +131,23 @@ public :
         return *this;
     }
 
-	/**
-	 * \brief Construct from a temporary holding a pointer to a convertible type.
-	 */
+    /**
+     * \brief Construct from a temporary holding a pointer to a convertible type.
+     */
     template<typename U>
     self_t& operator=(
             scoped_ptr<U, storage_policy, checking_policy>&& right
-            ) NOEXCEPT
-    {
+            ) NOEXCEPT {
         spolicy_t::dispose(pointee_);
-        pointee_ = right.pointee_;
-        right.pointee_ = nullptr;
+        pointee_ = scoped_pointer_release(right);
+        return *this;
+    }
+
+    self_t& operator=(T* rhs) {
+        if (rhs != pointee_) {
+            spolicy_t::dispose(pointee_);
+            pointee_ = rhs;
+        }
         return *this;
     }
 

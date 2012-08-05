@@ -1,6 +1,8 @@
 #pragma once
 
 #include <windows.h>
+#include <cstdint>
+#include <v8/base/compiler_quirks.h>
 
 namespace v8 { namespace base {
 
@@ -10,18 +12,18 @@ namespace v8 { namespace base {
 template<typename real_t>
 class basic_timer {
 private :
-    DWORD start_;
-    DWORD end_;
+    DWORD   t0_;
+    DWORD   t1_;
 
 public :
-    basic_timer() { reset(); }
+    basic_timer() : t0_(0), t1_(1) {}
 
-    void reset() {
-        start_ = timeGetTime();
+    void start() {
+        t0_ = ::timeGetTime();
     }
 
     void stop() {
-        end_ = timeGetTime();
+        t1_ = timeGetTime();
     }
 
     /**
@@ -30,12 +32,13 @@ public :
      * \return  The time interval, in milliseconds.
      */
     real_t get_delta_ms() const {
-        return (real_t(end_) - real_t(start_));
+        return (real_t(t1_) - real_t(t0_));
     }
 
-    real_t get_delta_ms_and_reset() {
-        const real_t delta = get_delta_ms();
-        reset();
+    real_t tick() {
+        stop();
+        real_t delta = get_delta_ms();
+        t0_ = t1_;
         return delta;
     }
 };
@@ -46,40 +49,47 @@ public :
 template<typename real_t>
 class high_resolution_timer {
 private :
-    LARGE_INTEGER	perf_frequency_;
-    LARGE_INTEGER	start_;
-    LARGE_INTEGER	end_;
+    real_t	        perf_multiplier_;
+    int64_t	        start_;
+    int64_t	        end_;
 
 public :
-    high_resolution_timer() {
-        ::QueryPerformanceFrequency(&perf_frequency_);
-        reset();
+    high_resolution_timer() : perf_multiplier_(0), start_(0), end_(0) {
+        int64_t perf_counts_per_second = 0;
+        ::QueryPerformanceFrequency(
+            reinterpret_cast<LARGE_INTEGER*>(&perf_counts_per_second));
+        perf_counts_per_second /= 1000;
+        perf_multiplier_ = 1 / (real_t) perf_counts_per_second;
     }
 
-    void reset() {
-        ::QueryPerformanceCounter(&start_);
+    void start() {
+        ::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&start_));
     }
 
     void stop() {
-        ::QueryPerformanceCounter(&end_);
+        ::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&end_));
     }
 
     /**
      * Gets the elapsed time between the reset() and stop() calls.
      *
-     * \return  The time interval, in milliseconds.
+     * \return  The time interval, <b>in milliseconds</b>.
      */
     real_t get_delta_ms() const {
-        return real_t(end_.QuadPart - start_.QuadPart) 
-                / (real_t(perf_frequency_.QuadPart * 1000));
+        return real_t(end_ - start_) * perf_multiplier_;
     }
 
-    real_t get_delta_ms_and_reset() {
-        const real_t delta = get_delta_ms();
-        reset();
+    /**
+     * \brief Returns the number of elapsed milliseconds from the previous call
+     *  of start()/tick(). Also updates the start time to match end time,
+     * so that time intervals are continuous.
+     */
+    real_t tick() {
+        stop();
+        real_t delta = get_delta_ms();
+        start_ = end_;
         return delta;
     }
-
 };
 
 /**

@@ -329,7 +329,7 @@ v8::math::matrix_4X4<real_t>::get_column(int col, real_t* data) const {
 
 template<typename Real_Ty>
 template<typename Real_Ty2>
-v8::math::matrix_4X4<Real_Ty>&
+const v8::math::matrix_4X4<Real_Ty>&
 v8::math::matrix_4X4<Real_Ty>::transform_affine_vector(
     v8::math::vector3<Real_Ty2>* pvec
     ) const
@@ -342,7 +342,7 @@ v8::math::matrix_4X4<Real_Ty>::transform_affine_vector(
 
 template<typename Real_Ty>
 template<typename Real_Ty2>
-v8::math::matrix_4X4<Real_Ty>&
+const v8::math::matrix_4X4<Real_Ty>&
 v8::math::matrix_4X4<Real_Ty>::transform_affine_point(
     v8::math::vector3<Real_Ty2>* point
     ) const
@@ -354,7 +354,7 @@ v8::math::matrix_4X4<Real_Ty>::transform_affine_point(
 }
 
 template<typename real_t>
-v8::math::matrix_4X4<real_t>&
+const v8::math::matrix_4X4<real_t>&
 v8::math::matrix_4X4<real_t>::transform_affine_vector(
     v8::math::vector4<real_t>* pvec
     ) const
@@ -367,7 +367,7 @@ v8::math::matrix_4X4<real_t>::transform_affine_vector(
 }
 
 template<typename real_t>
-v8::math::matrix_4X4<real_t>&
+const v8::math::matrix_4X4<real_t>&
 v8::math::matrix_4X4<real_t>::transform_affine_point(
     v8::math::vector4<real_t>* apt
     ) const
@@ -380,7 +380,7 @@ v8::math::matrix_4X4<real_t>::transform_affine_point(
 }
 
 template<typename real_t>
-v8::math::matrix_4X4<real_t>&
+const v8::math::matrix_4X4<real_t>&
 v8::math::matrix_4X4<real_t>::transform_homogeneous_point(
     v8::math::vector4<real_t>* hpt
     ) const
@@ -553,8 +553,7 @@ v8::math::matrix_4X4<real_t>::make_perspective_projection_lh(
     real_t far_plane, 
     real_t depth_min, 
     real_t depth_max 
-    )
-{
+    ) {
     const real_t kDistToProjWnd = real_t(1) / std::tan(vertical_fov / 2);
     const real_t kInvFarMinusNear = real_t(1) / (far_plane - near_plane);
 

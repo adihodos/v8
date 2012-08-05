@@ -31,6 +31,7 @@
 #include <cassert>
 #include "v8/base/fundamental_types.h"
 #include "v8/base/compiler_warnings.h"
+#include "v8/math/math_constants.h"
 #include "v8/math/math_utils.h"
 #include "v8/math/vector2.h"
 #include "v8/math/vector3.h"
@@ -239,7 +240,9 @@ public:
      * \param   axisv   Normalized vector that gives the rotation axis.
      * \param   theta   Rotation angle, in radians.
      */
-    matrix_3X3<real_t>& axis_angle(const vector3<real_t>& axisv, real_t theta);
+    matrix_3X3<real_t>& axis_angle(
+        const vector3<real_t>& axisv, real_t theta
+        );
 
     /**
      * \fn  static matrix3X3 matrix3X3::rotation(const vector3<real_t>& v1,
@@ -259,12 +262,32 @@ public:
      *
      * \brief   Return a reflection matrix around a plane's normal.
      *
-     * \author  Adi.hodos
-     * \date    3/8/2012
-     *
      * \param   pn  Normalized vector representing the plane's normal.
      */
-    matrix_3X3<real_t>& planar_reflection(const vector3<real_t>& pn);
+    matrix_3X3<real_t>& planar_reflection(
+        const vector3<real_t>& pn
+        );
+
+    /**
+     * \brief Extract Euler angles from a rotation matrix, in format xyz.
+     * \param[out]  angles Pointer to an array of values that will receive the
+     *              angles of rotation.
+     */
+    void extract_euler_xyz(
+        real_t* angles
+        ) const;
+
+    /**
+     * \brief Extract axis of rotation and rotation angle from a rotation matrix.
+     * \param[in,out] rot_axis  Pointer to a vector3 object that receives a unit
+     *                          vector, representing the rotation axis.
+     * \param[in,out] rot_angle Pointer to a value that receives the rotation 
+     *                          angle.
+     */
+    void extract_axis_angle(
+        vector3<real_t>* rot_axis, 
+        real_t* rot_angle
+        ) const;
 
     /**
      * \fn  static const matrix3X3<real_t> matrix3X3::tensor_product( const vector3<real_t>& u,

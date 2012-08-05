@@ -326,8 +326,7 @@ v8::math::point_from_spherical_coordinates(
     real_t delta, 
     real_t phi, 
     real_t theta
-    )
-{
+    ) {
     const real_t phi_rads = to_radians(phi);
     const real_t theta_rads = to_radians(theta);
 

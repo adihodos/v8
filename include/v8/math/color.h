@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include "v8/base/compiler_warnings.h"
 
 namespace v8 { namespace math {
@@ -100,6 +101,14 @@ public :
         unsigned int green = static_cast<unsigned int>(ceil(255 * g_)) << 16;
         unsigned int blue = static_cast<unsigned int>(ceil(255 * b_)) << 8;
         unsigned int alpha = static_cast<unsigned int>(ceil(255 * a_));
+        return red | green | blue | alpha;
+    }
+
+    uint32_t to_uint32_abgr() const {
+        unsigned int alpha = static_cast<unsigned int>(ceil(255 * a_)) << 24;
+        unsigned int blue = static_cast<unsigned int>(ceil(255 * b_)) << 16;
+        unsigned int green = static_cast<unsigned int>(ceil(255 * g_)) << 8;
+        unsigned int red = static_cast<unsigned int>(ceil(255 * r_));
         return red | green | blue | alpha;
     }
 

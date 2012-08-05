@@ -42,5 +42,8 @@
     <ClCompile Include="matrix2x2_unittests.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="quaternion_unit_tests.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

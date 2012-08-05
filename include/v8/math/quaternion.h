@@ -45,7 +45,7 @@ template<typename real_t>
 class quaternion {
 public :
     enum { 
-        is_floating_point = base::is_floating_point<real_t>::Yes
+        is_floating_point = base::is_floating_point_type<real_t>::Yes
     };
 
     typedef real_t              element_type;
@@ -72,12 +72,17 @@ public :
     /**
      \brief Default constructor, leaves the object uninitialized.
      */
-    quaternion();
+    inline quaternion();
 
     /**
      \brief Constructs a quaternion using the specified values.
      */
-    quaternion(real_t w, real_t x, real_t y, real_t z);
+    inline quaternion(
+        real_t w, 
+        real_t x, 
+        real_t y, 
+        real_t z
+        );
 
     /**
      \brief Constructs a quaternion, using the specified array of values for
@@ -86,7 +91,9 @@ public :
      \param init_data   Pointer to an array of at least 4 elements. Must not be
         null.
      */
-    quaternion(const real_t* init_data);
+    inline quaternion(
+        const real_t* init_data
+        );
 
     /**
      \brief Construct from axis-angle format.
@@ -95,28 +102,38 @@ public :
      \param axis    Vector that represents the axis of rotation. It is not 
         necessary to be in normalized form.
      */
-    quaternion(float angle, const math::vector3<real_t>& axis);
-
-    /**
-     \brief Construct with a three component vector and some scalar value.
-     */
-    quaternion(const math::vector3<real_t> vec, real_t w = real_t(0));
+    inline quaternion(
+        float angle, 
+        const math::vector3<real_t>& axis
+        );
 
     /**
      \brief Given two vectors v1 and v2, construct a quaternion that represents
         the rotation of v1 into v2.
      */
-    quaternion(const math::vector3<real_t>& v1, const math::vector3<real_t>& v2);
+    inline quaternion(
+        const math::vector3<real_t>& v1, 
+        const math::vector3<real_t>& v2
+        );
 
     /**
      \brief Set this quaternion to zero (0, 0, 0, 0).    
      */
-    quaternion<real_t>& make_zero();
+    inline quaternion<real_t>& make_zero();
 
     /**
      \brief Set this quaternion to be the identity (1, 0, 0, 0).
      */
-    quaternion<real_t>& make_identity();
+    inline quaternion<real_t>& make_identity();
+
+    /**
+     * \brief Construct from a vector and a scalar value. Given the vector v
+              and the scalar w, it will create a quaternion q(w, v).
+     */
+    inline quaternion<real_t>& make_from_vector_and_scalar(
+        const vector3<real_t>& vec,
+        real_t scalar = real_t(0)
+        );
 
     /**
      \brief Construct from axis-angle format.
@@ -131,11 +148,11 @@ public :
         );
 
     /**
-     \brief Given two vectors v1 and v2, construct a quaternion that represents
-        the rotation of v1 into v2.
-    
-     \param v1  The first vector.
-     \param v2  The second vector.
+     \brief Given two unit length vectors v1 and v2, construct a quaternion 
+        that represents the rotation of v1 into v2.
+     \param[in] v1  The first vector.
+     \param[in] v2  The second vector.
+     \remarks Both v1 and v2 are expected to be unit length vectors.
      */
     quaternion<real_t>& make_from_vectors(
         const math::vector3<real_t>& v1, 
@@ -144,7 +161,7 @@ public :
 
     /**
      \brief Convert the specified rotation matrix to quaternion format.
-     \param mtx     Rotation matrix.
+     \param[in] mtx     Rotation matrix.
      */
     quaternion<real_t>& make_from_matrix(
         const math::matrix_3X3<real_t>& mtx
@@ -167,7 +184,7 @@ public :
      \brief Sets this quaternion's value to that of its conjugate. The conjugate
         of a quaternion q = [s, v] is the quaternion q' = [s, -v].
      */
-    quaternion<real_t>& conjugate();
+    inline quaternion<real_t>& make_conjugate();
 
     /**
      \brief Sets this quaternion's value to that of it's inverse. The inverse of
@@ -176,12 +193,13 @@ public :
     quaternion<real_t>& invert();
 
     /**
-     
      \brief Converts this quaternion to a rotation matrix.
      \param [in,out]    mtx Pointer to a matrix_3X3 that performs the rotation
         encoded by this quaternion.
      */
-    quaternion<real_t>& to_rotation_matrix(math::matrix_3X3<real_t>* mtx) const;
+    quaternion<real_t>& extract_rotation_matrix(
+        math::matrix_3X3<real_t>* mtx
+        ) const;
 
     /**
      \brief Converts this quaternion to axis-angle format.
@@ -191,7 +209,7 @@ public :
      \param [in,out]    angle   Pointer to a value that receives the angle of
         rotation around the axis (in radians). Must not be null.
      */
-    quaternion<real_t>& to_axis_angle(
+    quaternion<real_t>& extract_axis_angle(
         math::vector3<real_t>* axis, 
         real_t* angle
         ) const;
@@ -200,10 +218,13 @@ public :
      \brief Applies the encoded rotation to the specified vector. If you need
         to transform multiple vectors, it is more efficient to convert the
         quaternion to a rotation matrix and use the matrix to transform the 
-        vectors.
+        vectors. The formula for rotation, given the quaternion q and the
+        vector v, is qvq^(-1).
      \param vec The vector to be rotated.
      */
-    math::vector3<real_t> rotate_vector(const math::vector3<real_t>& vec);
+    math::vector3<real_t> rotate_vector(
+        const math::vector3<real_t>& vec
+        );
 
     /**
      \brief Returns ||q|| ^ 2.

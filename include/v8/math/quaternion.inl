@@ -1,31 +1,28 @@
 template<typename real_t>
-v8::math::quaternion<real_t>::quaternion() {}
+inline v8::math::quaternion<real_t>::quaternion() {}
 
 template<typename real_t>
-v8::math::quaternion<real_t>::quaternion(real_t w, real_t x, real_t y, real_t z)
-    : w_(w), x_(x), y_(y), z_(z) {}
+inline v8::math::quaternion<real_t>::quaternion(
+    real_t w, real_t x, real_t y, real_t z
+    ) : w_(w), x_(x), y_(y), z_(z) {}
 
 template<typename real_t>
-v8::math::quaternion<real_t>::quaternion(const real_t* init_data) {
+inline v8::math::quaternion<real_t>::quaternion(
+    const real_t* init_data
+    ) {
     memcpy(elements_, init_data, _countof(elements_) * sizeof(real_t));
 }
 
 template<typename real_t>
-v8::math::quaternion<real_t>::quaternion(
+inline v8::math::quaternion<real_t>::quaternion(
     float angle,
     const v8::math::vector3<real_t>& axis
-        ) {
+    ) {
     make_from_axis_angle(angle, axis);
 }
 
 template<typename real_t>
-v8::math::quaternion<real_t>::quaternion(
-    const v8::math::vector3<real_t> vec, real_t w /* = real_t */
-    )
-    : w_(w), x_(vec.x_), y_(vec.y_), z_(vec.z_) {}
-
-template<typename real_t>
-v8::math::quaternion<real_t>::quaternion(
+inline v8::math::quaternion<real_t>::quaternion(
     const v8::math::vector3<real_t>& v1, 
     const v8::math::vector3<real_t>& v2
     ) {
@@ -33,17 +30,34 @@ v8::math::quaternion<real_t>::quaternion(
 }
 
 template<typename real_t>
-v8::math::quaternion<real_t>&
+inline v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::make_zero() {
     w_ = x_ = y_ = z_ = real_t(0);
     return *this;
 }
 
 template<typename real_t>
-v8::math::quaternion<real_t>&
+inline v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::make_identity() {
     w_ = real_t(1);
     x_ = y_ = z_ = real_t(0);
+    return *this;
+}
+
+template<typename real_t>
+inline v8::math::quaternion<real_t>&
+v8::math::quaternion<real_t>::make_conjugate() {
+    x_ = -x_; y_ = -y_; z_ = -z_;
+    return *this;
+}
+
+template<typename real_t>
+inline v8::math::quaternion<real_t>& 
+v8::math::quaternion<real_t>::make_from_vector_and_scalar(
+    const v8::math::vector3<real_t>& vec,
+    real_t scalar
+    ) {
+    w_ = scalar; x_ = vec.x_; y_ = vec.y_; z_ = vec.z_;
     return *this;
 }
 
@@ -52,20 +66,18 @@ v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::make_from_axis_angle(
     float angle, 
     const v8::math::vector3<real_t>& axis
-    )
-{
+    ) {
     real_t length_squared = axis.sum_components_squared();
     if (math::operands_eq(real_t(0), length_squared)) {
         return make_identity();
     }
 
-    const real_t scale_factor = std::sin(angle) / std::sqrt(length_squared);
+    const real_t scale_factor = sin(angle / 2) / sqrt(length_squared);
 
-    w_ = std::cosf(angle / 2);
+    w_ = cos(angle / 2);
     x_ = axis.x_ * scale_factor;
     y_ = axis.y_ * scale_factor;
     z_ = axis.z_ * scale_factor;
-
     return *this;
 }
 
@@ -74,8 +86,11 @@ v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::make_from_vectors( 
     const v8::math::vector3<real_t>& v1, 
     const v8::math::vector3<real_t>& v2
-    )
-{
+    ) {
+    //
+    // What's the explanation behind this method ?? I can't remember where
+    // I've seen it first.
+
     vector3<real_t> bisector(v1 + v2);
     bisector.normalize();
 
@@ -88,7 +103,7 @@ v8::math::quaternion<real_t>::make_from_vectors(
         z_ = axis.z_;
     } else {
         real_t inv_length;
-        if (std::fabs(v1.x_) >= std::fabs(v1.y_)) {
+        if (abs(v1.x_) >= abs(v1.y_)) {
             inv_length = math::inv_sqrt(v1.x_ * v1.x_ + v1.z_ * v1.z_);
             x_ = -v1.z_ * inv_length;
             y_ = real_t(0);
@@ -108,11 +123,10 @@ template<typename real_t>
 v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::make_from_matrix(
     const v8::math::matrix_3X3<real_t>& mtx
-    )
-{
+    ) {
     const real_t trace = mtx.trace();
     if (trace > real_t(0)) {
-        const real_t s = std::sqrt(trace + 1);
+        const real_t s = sqrt(trace + 1);
         w_ = s * real_t(0.5);
         const real_t recip = real_t(0.5) / s;
         x_ = (mtx(3, 2) - mtx(2, 3)) * recip;
@@ -146,8 +160,7 @@ template<typename real_t>
 v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::operator +=(
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     w_ += rhs.w_;
     x_ += rhs.x_;
     y_ += rhs.y_;
@@ -159,8 +172,7 @@ template<typename real_t>
 v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::operator -=(
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     w_ -= rhs.w_;
     x_ -= rhs.x_;
     y_ -= rhs.y_;
@@ -203,15 +215,6 @@ v8::math::quaternion<real_t>::normalize() {
 
 template<typename real_t>
 v8::math::quaternion<real_t>&
-v8::math::quaternion<real_t>::conjugate() {
-    x_ = -x_;
-    y_ = -y_;
-    z_ = -z_;
-    return *this;
-}
-
-template<typename real_t>
-v8::math::quaternion<real_t>&
 v8::math::quaternion<real_t>::invert() {
     const real_t len_sq = length_squared();
     if (math::operands_eq(real_t(0), len_sq)) {
@@ -231,8 +234,7 @@ template<typename real_t>
 v8::math::vector3<real_t>
 v8::math::quaternion<real_t>::rotate_vector(
     const v8::math::vector3<real_t>& p
-    )
-{
+    ) {
     assert(is_unit() && "Quaternion must be unit length!");
 
     const real_t dotp = 2 * (x_ * p.x_ + y_ * p.y_ + z_ * p.z_);
@@ -284,10 +286,9 @@ v8::math::quaternion<real_t>::is_identity() const {
 
 template<typename real_t>
 v8::math::quaternion<real_t>&
-v8::math::quaternion<real_t>::to_rotation_matrix(
+v8::math::quaternion<real_t>::extract_rotation_matrix(
     v8::math::matrix_3X3<real_t>* mtx
-    ) const
-{
+    ) const {
     real_t s, xs, ys, zs, wx, wy, wz, xx, xy, xz, yy, yz, zz;
 
     s = 2 / length_squared();
@@ -326,26 +327,19 @@ v8::math::quaternion<real_t>::to_rotation_matrix(
 
 template<typename real_t>
 v8::math::quaternion<real_t>&
-v8::math::quaternion<real_t>::to_axis_angle(
+v8::math::quaternion<real_t>::extract_axis_angle(
     v8::math::vector3<real_t>* axis, 
     real_t* angle
-    )
-{
-    assert(is_unit() && "Quaternion must be of unit length!!");
+    ) const {
 
+    assert(is_unit() && "Quaternion must be of unit length!!");
     *angle = 2 * std::acos(w_);
 
     const real_t len_sq = real_t(1) - x_ * x_ + y_ * y_ + z_ * z_;
-
-    if (math::operands_eq(real_t(0), len_sq)) {
-        *axis = v8::math::vector3<real_t>::zero;
-    } else {
-        const real_t scale_factor = real_t(1) / len_sq;
-        axis->x_ = x_ * scale_factor;
-        axis->y_ = y_ * scale_factor;
-        axis->z_ = z_ * scale_factor;
-    }
-
+    const real_t scale_factor = real_t(1) / len_sq;
+    axis->x_ = x_ * scale_factor;
+    axis->y_ = y_ * scale_factor;
+    axis->z_ = z_ * scale_factor;
     return *this;
 }
 
@@ -355,8 +349,7 @@ real_t
 v8::math::dot_product(
     const v8::math::quaternion<real_t>& lhs, 
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_ + lhs.w_ * rhs.w_;
 }
 
@@ -365,8 +358,7 @@ inline
 v8::math::quaternion<real_t>
 v8::math::inverse_of(
     const v8::math::quaternion<real_t> quat
-    )
-{
+    ) {
     quaternion<real_t> result(quat);
     return result.invert();
 }
@@ -376,8 +368,7 @@ inline
 v8::math::quaternion<real_t>
 v8::math::normal_of(
     const v8::math::quaternion<real_t> quat
-    )
-{
+    ) {
     quaternion<real_t> result(quat);
     return result.normalize();
 }
@@ -387,19 +378,17 @@ inline
 v8::math::quaternion<real_t>
 v8::math::conjugate_of(
     const v8::math::quaternion<real_t> quat
-    )
-{
+    ) {
     quaternion<real_t> result(quat);
-    return result.conjugate();
+    return result.make_conjugate();
 }
 
 template<typename real_t>
-v8::math::quaternion<real_t>
+bool
 v8::math::operator==(
     const v8::math::quaternion<real_t>& lhs, 
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     return math::operands_eq(lhs.w_, rhs.w_) && 
            math::operands_eq(lhs.x_, rhs.x_) &&
            math::operands_eq(lhs.y_, rhs.y_) &&
@@ -408,12 +397,11 @@ v8::math::operator==(
 
 template<typename real_t>
 inline
-v8::math::quaternion<real_t>
+bool
 v8::math::operator!=(
     const v8::math::quaternion<real_t>& lhs, 
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     return !(lhs == rhs);
 }
 
@@ -423,8 +411,7 @@ v8::math::quaternion<real_t>
 v8::math::operator+(
     const v8::math::quaternion<real_t>& lhs, 
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     quaternion<real_t> result(lhs);
     return result += rhs;
 }
@@ -435,8 +422,7 @@ v8::math::quaternion<real_t>
 v8::math::operator-(
     const v8::math::quaternion<real_t>& lhs, 
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     quaternion<real_t> result(lhs);
     return result -= rhs;
 }
@@ -446,8 +432,7 @@ inline
 v8::math::quaternion<real_t>
 v8::math::operator-(
     const v8::math::quaternion<real_t>& quat
-    )
-{
+    ) {
     return quaternion<real_t>(-quat.w_, -quat.x_, -quat.y_, -quat.z_);
 }
 
@@ -456,8 +441,7 @@ v8::math::quaternion<real_t>
 v8::math::operator*(
     const v8::math::quaternion<real_t>& lhs, 
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     vector3<real_t> v1(lhs.x_, lhs.y_, lhs.z_);
     vector3<real_t> v2(rhs.x_, rhs.y_, rhs.z_);
 
@@ -475,8 +459,7 @@ v8::math::quaternion<real_t>
 v8::math::operator*(
     const v8::math::quaternion<real_t>& lhs, 
     real_t scalar
-    )
-{
+    ) {
     quaternion<real_t> result(lhs);
     return lhs *= scalar;
 }
@@ -487,8 +470,7 @@ v8::math::quaternion<real_t>
 v8::math::operator*(
     real_t scalar,
     const v8::math::quaternion<real_t>& rhs
-    )
-{
+    ) {
     return rhs * scalar;
 }
 
@@ -497,8 +479,7 @@ v8::math::quaternion<real_t>
 v8::math::operator/(
     const v8::math::quaternion<real_t>& lhs,
     real_t scalar    
-    )
-{
+    ) {
     quaternion<real_t> result(lhs);
     return result /= scalar;
 }

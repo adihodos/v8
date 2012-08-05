@@ -404,10 +404,10 @@ public :
     }
 
     template<typename R2>
-    matrix_4X4<real_t>& transform_affine_vector(vector3<R2>* pvec) const;
+    const matrix_4X4<real_t>& transform_affine_vector(vector3<R2>* pvec) const;
 
     template<typename R2>
-    matrix_4X4<real_t>& transform_affine_point(vector3<R2>* point) const;
+    const matrix_4X4<real_t>& transform_affine_point(vector3<R2>* point) const;
 
    /**
     * \fn    matrix4X4& matrix4X4::transform_vector(vector4* pvec) const
@@ -418,7 +418,7 @@ public :
     * \param [in,out]    pvec    Pointer to the vector4 to be transformed. 
     * 					Must not be null.
     */
-    matrix_4X4<real_t>& transform_affine_vector(vector4<real_t>* pvec) const;
+    const matrix_4X4<real_t>& transform_affine_vector(vector4<real_t>* pvec) const;
 
     /**
      * \fn  matrix4X4<real_t>& matrix4X4::transform_affine_point(vector4<real_t>* point) const;
@@ -428,7 +428,7 @@ public :
      *
      * \param [in,out]  point   If non-null, the point.
      */
-    matrix_4X4<real_t>& transform_affine_point(vector4<real_t>* point) const;
+    const matrix_4X4<real_t>& transform_affine_point(vector4<real_t>* point) const;
 
     /**
      * \fn  matrix4X4<real_t>& matrix4X4::transform_homogeneous_point(vector4<real_t>& point) const;
@@ -438,7 +438,7 @@ public :
      *
      * \param [in,out]  point   The point.
      */
-    matrix_4X4<real_t>& transform_homogeneous_point(vector4<real_t>* point) const;
+    const matrix_4X4<real_t>& transform_homogeneous_point(vector4<real_t>* point) const;
 
     /**
      * \fn  matrix4X4 perspective_projection_left_handed( float aspect_ratio, float vertical_fov,

@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "base", "base", "{56843748-3
 		include\v8\base\compiler_warnings.h = include\v8\base\compiler_warnings.h
 		include\v8\base\compound_types.h = include\v8\base\compound_types.h
 		include\v8\base\count_of.h = include\v8\base\count_of.h
+		include\v8\base\cpu_counter_win.h = include\v8\base\cpu_counter_win.h
 		include\v8\base\crt_handle_policies.h = include\v8\base\crt_handle_policies.h
 		include\v8\base\debug_helpers.h = include\v8\base\debug_helpers.h
 		include\v8\base\function_types.h = include\v8\base\function_types.h

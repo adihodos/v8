@@ -32,6 +32,8 @@ const float kEpsilon = 1.0e-6f; ///< The epsilon value, used for testing with ze
 
 const float kPi = 3.14159265f;  ///< The pi constant. */
 
+const float kPiOverTwo = kPi / 2;
+
 const float kPiOver180 = kPi / 180.0f;
 
 const float k180OverPi = 180.0f / kPi;

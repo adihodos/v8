@@ -101,8 +101,7 @@ inline
 real_t
 to_degrees(
     real_t radians
-    )
-{
+    ) {
     return radians * constants::k180OverPi;
 }
 
@@ -114,8 +113,7 @@ inline
 real_t
 to_radians(
     real_t degrees
-    )
-{
+    ) {
     return degrees * constants::kPiOver180;
 }
 

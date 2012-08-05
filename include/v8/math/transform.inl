@@ -236,18 +236,17 @@ v8::math::transform<real_t>::operator*=(const v8::math::transform<real_t>& rhs) 
     }
 
     cache_valid_ = false;
-    matrix_component_ = matrix_component_ * rhs.get_matrix_component();
+    matrix_component_ = rhs.get_matrix_component() * matrix_component_;
     is_rotation_reflection_ = is_rotation_reflection_ 
-                              & rhs.is_rotation_or_reflection();
+                              || rhs.is_rotation_or_reflection();
 
-    rotation_component_ = rhs.get_matrix_component() * rotation_component_;
     if (rhs.is_scaling()) {
         is_scale_ = true;
         scale_factor_component_ *= rhs.get_scale_component();
-        rotation_component_ *= rhs.get_scale_component();
     }
 
-    rotation_component_ += rhs.get_translation_component();
+    translation_component_ = rhs.matrix_component_ * translation_component_;
+    translation_component_ += rhs.translation_component_;
     return *this;
 }
 
@@ -257,9 +256,8 @@ v8::math::transform<real_t>
 v8::math::operator*(
     const v8::math::transform<real_t>& lhs, 
     const v8::math::transform<real_t>& rhs
-    )
-{
-    transform<real_t>& result(lhs);
+    ) {
+    transform<real_t> result(lhs);
     result *= rhs;
     return result;
 }

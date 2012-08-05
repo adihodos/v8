@@ -179,7 +179,7 @@ v8::math::matrix_2X3<real_t>::transform_point(
 }
 
 template<typename real_t>
-inline bool operator==(
+inline bool v8::math::operator==(
     const v8::math::matrix_2X3<real_t>& lhs,
     const v8::math::matrix_2X3<real_t>& rhs
     ) {
@@ -191,15 +191,16 @@ inline bool operator==(
 }
 
 template<typename real_t>
-inline bool operator!=(
-    const matrix_2X3<real_t>& lhs,
-    const matrix_2X3<real_t>& rhs
+inline bool v8::math::operator!=(
+    const v8::math::matrix_2X3<real_t>& lhs,
+    const v8::math::matrix_2X3<real_t>& rhs
     ) {
     return !(lhs == rhs);
 }
 
 template<typename real_t>
-inline v8::math::matrix_2X3<real_t> operator+(
+inline v8::math::matrix_2X3<real_t> 
+v8::math::operator+(
     const v8::math::matrix_2X3<real_t>& lhs,
     const v8::math::matrix_2X3<real_t>& rhs
     ) {
@@ -209,17 +210,37 @@ inline v8::math::matrix_2X3<real_t> operator+(
 }
 
 template<typename real_t>
-inline matrix_2X3<real_t> operator-(
-    const matrix_2X3<real_t>& lhs,
-    const matrix_2X3<real_t>& rhs
+inline v8::math::matrix_2X3<real_t> 
+v8::math::operator-(
+    const v8::math::matrix_2X3<real_t>& lhs,
+    const v8::math::matrix_2X3<real_t>& rhs
     ) {
     matrix_2X3<real_t> result(lhs);
     result -= rhs;
     return result;
 }
 
+template<typename real_t>
+v8::math::matrix_2X3<real_t> 
+v8::math::operator*(
+    const v8::math::matrix_2X3<real_t>& lhs,
+    const v8::math::matrix_2X3<real_t>& rhs
+    ) {
+    matrix_2X3<real_t> rs;
+    rs.a11_ = lhs.a11_ * rhs.a11_ + lhs.a12_ * rhs.a21_;
+    rs.a12_ = lhs.a11_ * rhs.a12_ + lhs.a12_ * rhs.a22_;
+    rs.a13_ = lhs.a11_ * rhs.a13_ + lhs.a12_ * rhs.a23_ + lhs.a13_;
+
+    rs.a21_ = lhs.a21_ * rhs.a11_ + lhs.a22_ * rhs.a21_;
+    rs.a22_ = lhs.a21_ * rhs.a12_ + lhs.a22_ * rhs.a22_;
+    rs.a23_ = lhs.a21_ * rhs.a13_ + lhs.a22_ * rhs.a23_ + lhs.a23_;
+
+    return rs;
+}
+
 template<typename real_t, typename real_u>
-inline v8::math::matrix_2X3<real_t> operator*(
+inline v8::math::matrix_2X3<real_t> 
+v8::math::operator*(
     real_u scalar,
     const v8::math::matrix_2X3<real_t>& mtx
     ) {
@@ -229,8 +250,9 @@ inline v8::math::matrix_2X3<real_t> operator*(
 }
 
 template<typename real_t, typename real_u>
-inline matrix_2X3<real_t> operator*(
-    const matrix_2X3<real_t>& mtx,
+inline v8::math::matrix_2X3<real_t> 
+v8::math::operator*(
+    const v8::math::matrix_2X3<real_t>& mtx,
     real_u scalar
     ) {
     return scalar * mtx;
