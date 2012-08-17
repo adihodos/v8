@@ -42,17 +42,38 @@ namespace v8 { namespace math {
  */
 class camera {
 public :
-    enum projection_type {
-        proj_type_perspective,
-        proj_type_ortho
+    enum Projection_Type_t {
+        Projection_Perspective,
+        Projection_Orthographic,
+        Projection_Last
+    };
+
+    enum Frustrum_Param_t {
+        Frustrum_DMin,
+        Frustrum_DMax,
+        Frustrum_UMin,
+        Frustrum_UMax,
+        Frustrum_RMin,
+        Frustrum_RMax,
+        Frustrum_Params_Max
     };
 
 private :
+
+    /**
+     * \brief   The frustrum is defined by 6 parameters :
+     *          - dmin : distance to near plane (z axis)
+     *          - dmax : distance to far plane (z axis)
+     *          - rmin : min x axis value (left) for the projection window
+     *          - rmax : max x axis value (right) for the projection window
+     *          - umin : min y axis value (bottom) for the projection window
+     *          - umax : max y axis value (top) for the projection window
+     */
+    float               frustrum_params_[6];
     vector3F            view_pos_; ///< The view frame origin, in world coordinates */
     vector3F            view_side_;	///< The side direction vector (x axis) */
     vector3F            view_up_;  ///< The up direction vector (y axis) */
     vector3F            view_dir_; ///< The look direction vector (z axis) */
-
     matrix_4X4F         view_matrix_;   /*!< Stores the view space transform */
     matrix_4X4F         projection_matrix_; /*!< Stores the projection matrix */
     /*!
@@ -89,6 +110,12 @@ private :
      * Recompute projection * view matrix.
      */
     inline void update_projection_view_transform();
+
+    /**
+     * \brief   Rebuilds the projection matrix after a change in the frustrum
+     *          parameter values.
+     */
+    void handle_frustrum_param_change();
 
 public :
 
@@ -170,13 +197,101 @@ public :
         );
 
     /**
+     * \brief   Sets the frustrum's parameters and builds the corresponding
+     *          projection matrix.
+     * \param   dmin            Minimum depth value (near plane).
+     * \param   dmax            Maximum depth value (far plane).
+     * \param   umin            Minimum height of the projection window.
+     * \param   umax            Maximum height of the projection window.
+     * \param   rmin            Minumum width of the projection window.
+     * \param   rmax            Maximum height of the projection window.
+     * \param   projection_type (optional) Type of the projection.
+     * \remarks The matrix for a perspective projection is built this way :
+     *          Let umax = U, umin = u, rmax = R, rmin = r, dmax = D, dmin = d.
+     *          [   2*d/(R - r)     0           -(R + r)/(R - r) 0             ]
+     *          [   0               2*d/(U - u) -(U + u)/(U - u) 0             ]
+     *          [   0               0           D/(D - d)        -D*d/(D - d)  ]
+     *          [   0               0           1                0             ]
+     *
+     *          The matrix for an ortho projection is built this way :
+     *          [ 2/(R - r) 0           0           -(R + r)/(R - r) ]
+     *          [ 0         2/(U - u)   0           -(U + u)/(U - u) ]
+     *          [ 0         0           1/(D - d)   -d/(D - d)       ]
+     *          [ 0         0           0           0                ]
+     */
+    void set_frustrum(
+        float dmin, 
+        float dmax, 
+        float umin, 
+        float umax, 
+        float rmin, 
+        float rmax,
+        int projection_type = Projection_Perspective
+        );
+
+    /**
+     * \brief   Sets a symmetric frustrum, where (rmin = -rmax, umin = -umax) and
+     *          builds a perspective projection matrix.
+     * \param   fov_angle       The vertical field of view angle, 
+     *                          expressed in <b>degrees</b>.
+     * \param   aspect_ratio    The aspect ratio.
+     * \param   dmin            Minimum depth (near plane).
+     * \param   dmax            Maximum depth (far plane).
+     */
+    void set_symmetric_frustrum(
+        float fov_angle, 
+        float aspect_ratio, 
+        float dmin, 
+        float dmax
+        );
+
+    /**
+     * \brief   Retrieves a pointer to the array storing the frustrum's paramteres.
+     *          The parameters can be easily accessed by using the members of
+     *          the Frustrum_Param_t enumeration.
+     * \see     camera::Frustrum_Param_t enum.
+     */
+
+    inline const float* get_frustrum() const;
+
+    /**
+     * \brief   Gets the minimum depth of the frustrum.
+     */
+    inline float get_dmin() const;
+
+    /**
+     * \brief   Gets the maximum depth of the frustrum.
+     */
+    inline float get_dmax() const;
+
+    /**
+     * \brief   Gets the minimum height of the frustrum.
+     */
+    inline float get_umin() const;
+
+    /**
+     * \brief   Gets the maximum height of the frustrum.
+     */
+    inline float get_umax() const;
+
+    /**
+     * \brief   Gets the minimum width of the frustrum.
+     */
+    inline float get_rmin() const;
+
+    /**
+     * \brief   Gets the maximum height of the frustrum.
+     */
+    inline float get_rmax() const;
+
+    /**
      * \brief   Gets the origin point of the view frame.
      *
      */
     inline const math::vector3F& get_origin() const;
 
     /**
-     * \brief   Gets the direction vector of the camera.
+     * \brief   Gets the look direction vector of the camera.
      *
      */
     inline const math::vector3F& get_direction_vector() const;
@@ -187,7 +302,7 @@ public :
     inline const math::vector3F& get_up_vector() const;
 
     /**
-     * \brief   Gets the direction vector.
+     * \brief   Gets the right direction vector.
      */
     inline const math::vector3F& get_right_vector() const;
 
@@ -202,19 +317,15 @@ public :
     inline const math::matrix_4X4F& get_projection_transform() const;
 
     /**
-     * Sets a new projection matrix.
-     *
+     * \brief   Allows the user to set a custom projection matrix.
      * \param   mtx     The projection matrix.
-     * \param   type    The projection type(ortho/perspective).
      */
     inline void set_projection_matrix(
-        const matrix_4X4F& mtx, 
-        projection_type type
+        const matrix_4X4F& mtx
         );
 
     /**
-     * Sets a projection matrix using the four vectors as columns.
-     *
+     * \brief   Sets a projection matrix using the four vectors as columns.
      * \param   first_col   The first column vector.
      * \param   second_col  The second column vector.
      * \param   third_col   The third column vector.
@@ -225,14 +336,18 @@ public :
         const vector4F& first_col, 
         const vector4F& second_col,
         const vector4F& third_col,
-        const vector4F& fourth_col,
-        projection_type type
+        const vector4F& fourth_col
         );
 
     /**
      * Return the type of the projection matrix.
      */
     inline int get_projection_type() const;
+
+    /**
+     * \brief   Sets the projection's type.
+     */
+    inline void set_projection_type(int proj_type);
 
     /**
      * Return the product of P (projection matrix) * V (view matrix).

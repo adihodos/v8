@@ -42,12 +42,9 @@ v8::math::camera::get_projection_transform() const {
 inline 
 void 
 v8::math::camera::set_projection_matrix(
-    const v8::math::matrix_4X4F& mtx, 
-    v8::math::camera::projection_type type
-    )
-{
+    const v8::math::matrix_4X4F& mtx
+    ) {
     projection_matrix_ = mtx;
-    projection_type_ = type;
     update_projection_view_transform();
 }
 
@@ -59,4 +56,32 @@ inline
 const v8::math::matrix_4X4F&
 v8::math::camera::get_projection_wiew_transform() const {
     return projection_view_matrix_;
+}
+
+inline const float* v8::math::camera::get_frustrum() const {
+    return frustrum_params_;
+}
+
+inline float v8::math::camera::get_dmin() const {
+    return frustrum_params_[Frustrum_DMin];
+}
+
+inline float v8::math::camera::get_dmax() const {
+    return frustrum_params_[Frustrum_DMax];
+}
+
+inline float v8::math::camera::get_umin() const {
+    return frustrum_params_[Frustrum_UMin];
+}
+
+inline float v8::math::camera::get_umax() const {
+    return frustrum_params_[Frustrum_UMax];
+}
+
+inline float v8::math::camera::get_rmin() const {
+    return frustrum_params_[Frustrum_RMin];
+}
+
+inline float v8::math::camera::get_rmax() const {
+    return frustrum_params_[Frustrum_RMax];
 }
